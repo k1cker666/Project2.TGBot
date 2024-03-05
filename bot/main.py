@@ -1,7 +1,10 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from src.handlers import start, help, echo
-    
+from src import bot
+from src.log import *
+
+
 def main():
     application = Application.builder().token("7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4").build()
 
@@ -14,4 +17,5 @@ def main():
 
 
 if __name__ == "__main__":
+    bot.print_text()
     main()
