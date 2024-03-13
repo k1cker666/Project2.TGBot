@@ -1,10 +1,13 @@
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from src.handlers import start, help, echo
 
+def start_bot():
+    application = Application.builder().token("7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4").build()
 
-def print_text():
-    print('проверка')
-    if __name__ == "__main__":
-        print('if __main__')
-    if __name__ == "main":
-        print('if __main__')
+    application.add_handler(CommandHandler("start", start.start))
+    application.add_handler(CommandHandler("help", help.help_command))
+    
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo.echo))
+
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
