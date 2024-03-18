@@ -1,1 +1,4 @@
-**/*.py[cod]
+*.py[cod]
+.vscode
+pytest.ini
+.pytest_cache
