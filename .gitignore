@@ -6,3 +6,5 @@ redisdata/
 
 *.py[cod]
 pytest.ini
+test.py
+bot/src/db/docker-compose.yml

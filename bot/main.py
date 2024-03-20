@@ -1,7 +1,6 @@
 from src import bot
 from src.log import *
-from src.db import psql
-from src.db import redis
+from src.db import psql, redis
 
 def main():
     bot.start_bot()

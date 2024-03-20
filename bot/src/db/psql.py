@@ -1,7 +1,9 @@
 import psycopg2
 from psycopg2 import OperationalError
+import logging
 
-def create_connection(db_name='postgres', db_user='postgres', db_password='roma1234', db_host='localhost', db_port='5434'):
+def create_connection(db_name='postgres', db_user='postgres', db_password='roma1234', db_host='postgres', db_port='5432'):
+    logger = logging.getLogger(__name__)
     connection = None
     try:
         connection = psycopg2.connect(
@@ -11,6 +13,6 @@ def create_connection(db_name='postgres', db_user='postgres', db_password='roma1
             host = db_host,
             port = db_port
         )
-        print('Connection to PostgreSQL DB successful')
+        logger.info('Connection to PostgreSQL DB successful')
     except OperationalError as e:
-        print(f'PostgreSQL: The error {e} occured')
+        logger.info(f'{e}')
