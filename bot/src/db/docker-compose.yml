@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  psql_db:
+    restart: always
+    image: postgres:14.11
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: roma1234
+      POSTGRES_DB: testdb
+    # volumes:
+    #   - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+
+  redis_db:
+    restart: always
+    image: redis:6.0
+    # volumes:
+    #   - ./redisdata:/data
+    ports:
+      - 6379:6379

@@ -1,1 +1,10 @@
-**/*.py[cod]
+.vscode
+.pytest_cache/
+__pycache__/
+pgdata/
+redisdata/
+
+*.py[cod]
+pytest.ini
+test.py
+bot/src/db/docker-compose.yml
