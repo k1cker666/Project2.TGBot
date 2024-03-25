@@ -1,14 +1,10 @@
 from src import bot
 from src.log import *
-from src.db import psql, redis
+from src.dependencies import DependenciesBuilder
 
 def main():
-    bot.start_bot()
-    
-def db_connect():
-    psql.create_connection()
-    redis.create_connectrion()
+    dependencies = DependenciesBuilder.build()
+    bot.start_bot(dependencies)
 
 if __name__ == "__main__":
-    db_connect()
     main()
