@@ -8,10 +8,8 @@ def main():
     try:
         dependencies = DependenciesBuilder.build()
     except OperationalError:
-        logger.info('Application was not started')
         return
     except ConnectionError:
-        logger.info('Application was not started')
         return
     else:
         bot.start_bot(dependencies)  
