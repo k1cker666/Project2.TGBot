@@ -1,5 +1,5 @@
 import redis
-from redis import exceptions
+from redis.exceptions import ConnectionError
 import logging
 
 def create_connectrion(db_host='localhost', db_port=6379, decode_responses=True): # db_host='localhost'/'redis'
@@ -12,5 +12,6 @@ def create_connectrion(db_host='localhost', db_port=6379, decode_responses=True)
     try:
         connection.ping()
         logger.info('Connection to Redis DB successful')
-    except exceptions.ConnectionError as e:
+    except ConnectionError as e:
         logger.error(f'{e}')
+        raise ConnectionError
