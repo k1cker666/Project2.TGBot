@@ -4,4 +4,3 @@ from telegram.constants import ParseMode
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(update.message.text)
-    user = update.effective_user
