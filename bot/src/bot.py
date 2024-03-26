@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from src.handlers import start, help, echo
 
-def start_bot():
+def start_bot(dependencies):
     application = Application.builder().token("7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4").build()
 
     application.add_handler(CommandHandler("start", start.start))
