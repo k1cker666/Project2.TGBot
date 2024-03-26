@@ -7,12 +7,11 @@ from redis.exceptions import ConnectionError
 def main():
     try:
         dependencies = DependenciesBuilder.build()
+        bot.start_bot(dependencies) 
     except OperationalError:
         return
     except ConnectionError:
-        return
-    else:
-        bot.start_bot(dependencies)  
+        return  
 
 if __name__ == "__main__":
     main()
