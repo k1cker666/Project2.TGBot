@@ -16,3 +16,5 @@ def create_connection(db_name='postgres', db_user='postgres', db_password='roma1
         logger.info('Connection to PostgreSQL DB successful')
     except OperationalError as e:
         logger.error(f'{e}')
+        logger.info('Application was not started')
+        raise OperationalError
