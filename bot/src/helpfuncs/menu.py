@@ -7,3 +7,5 @@ def build_menu(buttons, n_cols,
     if footer_buttons:
         menu.append([footer_buttons])
     return menu
+
+print(build_menu(['a','v'], -1))
