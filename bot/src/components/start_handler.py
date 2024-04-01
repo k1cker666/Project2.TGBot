@@ -1,19 +1,46 @@
 from telegram import (
     Update,
     KeyboardButton,
-    ReplyKeyboardMarkup
+    ReplyKeyboardMarkup,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup
     )
 from telegram.ext import ContextTypes
 from src.helpfuncs.menu import build_menu
+from enum import Enum, auto
 
 class StartHandler:
+    name = "start"
     
-    async def handle_start_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    class CallBackType(Enum):
+        auth = auto()
+    
+    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE, deps):
+        user = update.effective_user
+        await update.message.reply_html(
+            rf"Привет {user.mention_html()}, я бот, которы поможет тебе выучить иностранные слова!")
+        buttons =[
+            InlineKeyboardButton(
+                "Авторизация",
+                callback_data = str({
+                    "cb_processor": self.name,
+                    "cb_type": self.CallBackType.auth.name
+                    })
+                ),
+            ]
+        reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
+        await context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text="Выбери действие",
+            reply_markup=reply_markup
+        )
+        
+    async def handle_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE, cb_type):
         query = update.callback_query
-        user_answer = query.data
         await query.answer()
-        if str(user_answer) == "1":
-            await query.edit_message_text("Авторизация успешно выполнена")
+        if cb_type == self.CallBackType.auth.name:
+            query = update.callback_query
+            await query.delete_message()
             buttons = [
                 KeyboardButton("Начать урок"),
                 KeyboardButton("Посмотреть статистику")
@@ -21,6 +48,6 @@ class StartHandler:
             reply_markup = ReplyKeyboardMarkup(build_menu(buttons, 2), resize_keyboard=True)
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Выбери действие",
+                text="Авторизация успешно выполнена\nВыбери следующее действие",
                 reply_markup=reply_markup
             )
