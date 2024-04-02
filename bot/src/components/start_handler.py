@@ -15,7 +15,7 @@ class StartHandler:
     class CallBackType(Enum):
         auth = auto()
     
-    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE, deps):
+    async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
         await update.message.reply_html(
             rf"Привет {user.mention_html()}, я бот, которы поможет тебе выучить иностранные слова!")
@@ -24,7 +24,7 @@ class StartHandler:
                 "Авторизация",
                 callback_data = str({
                     "cb_processor": self.name,
-                    "cb_type": self.CallBackType.auth.name
+                    "cb_type": self.CallBackType.auth.value
                     })
                 ),
             ]
@@ -38,7 +38,7 @@ class StartHandler:
     async def handle_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE, cb_type):
         query = update.callback_query
         await query.answer()
-        if cb_type == self.CallBackType.auth.name:
+        if cb_type == self.CallBackType.auth.value:
             query = update.callback_query
             await query.delete_message()
             buttons = [

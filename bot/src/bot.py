@@ -17,12 +17,12 @@ import json
 def start_bot(deps):
     application = Application.builder().token("7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4").build()
     
-    start_mes = partial(deps.start_handler.start, deps = deps)
-    callback = partial(callback_handler, deps = deps)
+    start_with_deps = partial(start, deps = deps)
+    callback_handler_with_deps = partial(callback_handler, deps = deps)
     
-    application.add_handler(CommandHandler("start", start_mes))
+    application.add_handler(CommandHandler("start", start_with_deps))
     
-    application.add_handler(CallbackQueryHandler(callback))
+    application.add_handler(CallbackQueryHandler(callback_handler_with_deps))
     
     application.add_handler(CommandHandler("help", help.help_command))
     
@@ -30,6 +30,9 @@ def start_bot(deps):
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, deps):
+    await deps.start_handler.handle(update, context)
 
 async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, deps):
     query = update.callback_query
