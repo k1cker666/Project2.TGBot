@@ -1,4 +1,4 @@
-create schema tgbot;
+create schema if not exists tgbot;
 
 set search_path to tgbot;
 
@@ -10,7 +10,7 @@ create type level_t_v1 as enum (
     'A1', 'A2', 'A3'
     );
 
-create table users (
+create table if not exists users (
     user_id smallserial primary key,
     tg_login text not null,
     login varchar(16) not null unique,
@@ -20,7 +20,7 @@ create table users (
     language_to_learn language_t_v1 not null
 );
 
-create table words (
+create table if not exists words (
     word_id serial,
     language language_t_v1,
     level level_t_v1 not null,
@@ -28,7 +28,7 @@ create table words (
     primary key (word_id, language)
 );
 
-create table words_in_progress (
+create table if not exists words_in_progress (
     user_id smallserial,
     word_id serial,
     language language_t_v1 not null,
