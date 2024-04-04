@@ -1,13 +1,13 @@
-import psycopg2
-from psycopg2 import OperationalError
+import psycopg
+from psycopg import OperationalError
 import logging
 
 def create_connection(db_name='postgres', db_user='postgres', db_password='roma1234', db_host='localhost', db_port='5432'): # db_host='localhost'/'postgres'
     logger = logging.getLogger(__name__)
     connection = None
     try:
-        connection = psycopg2.connect(
-            database = db_name,
+        connection = psycopg.connect(
+            dbname = db_name,
             user = db_user,
             password = db_password,
             host = db_host,
