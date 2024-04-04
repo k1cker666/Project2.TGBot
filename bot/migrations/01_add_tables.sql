@@ -2,13 +2,27 @@ create schema if not exists tgbot;
 
 set search_path to tgbot;
 
-create type language_t_v1 as enum (
-    'ru', 'en'
-    );
+do $$
+begin
+    if not exists (
+        select 1 from pg_type 
+        where typname = 'language_t_v1') then
+        create type language_t_v1 as enum (
+            'ru', 'en');
+    end if;
+end
+$$;
 
-create type level_t_v1 as enum (
-    'A1', 'A2', 'A3'
-    );
+do $$
+begin
+    if not exists (
+        select 1 from pg_type 
+        where typname = 'level_t_v1') then
+        create type level_t_v1 as enum (
+            'A1', 'A2', 'A3');
+    end if;
+end
+$$;
 
 create table if not exists users (
     user_id smallserial primary key,
