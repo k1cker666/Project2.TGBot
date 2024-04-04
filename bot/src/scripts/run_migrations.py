@@ -7,9 +7,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger('migrations')
 
-directory = f"{os.path.abspath(os.curdir)}/bot/src/migrations/"
+directory = f"{os.path.abspath(os.curdir)}/bot/migrations/"
 migrations = os.listdir(directory)
-migrations.reverse()
+migrations.sort()
 
 try:
     with psycopg.connect(
@@ -23,12 +23,11 @@ try:
         with conn.cursor() as cur:
             for file in migrations:
                 path =f'{directory}{file}'
-                print(path)
 
                 with open(path, 'r') as command:
                     cur.execute(command.read())
-                    logger.info('succes')
                     conn.commit()
+                    logger.info(f'Migration {file} complete')
 
 except Exception as error:    
     logger.error(f"{error}")
