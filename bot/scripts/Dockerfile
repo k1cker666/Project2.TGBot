@@ -1,9 +1,9 @@
 FROM python:3-slim
 
-WORKDIR /tgbot/
+WORKDIR /project/
 
-COPY *.py /tgbot/scripts/
-COPY /migrations/*.sql /tgbot/bot/scripts/migrations/
+COPY /scripts/*.py /project/bot/scripts/
+COPY /migrations/*.sql /project/bot/migrations/
 
 RUN apt-get update \
     && apt-get install -y postgresql-client \

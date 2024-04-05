@@ -7,7 +7,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger('migrations')
 
-directory = f"{os.path.abspath(os.curdir)}/bot/scripts/migrations/"
+directory = f"{os.path.abspath(os.curdir)}/bot/migrations/"
 migrations = os.listdir(directory)
 migrations.sort()
 

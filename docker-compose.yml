@@ -8,15 +8,20 @@ services:
     depends_on:
       - postgres
       - redis
-    command: sh -c "while ! redis-cli -h redis -p 6379 ping; do sleep 5; done && while ! pg_isready -h postgres -p 5432 -U postgres; do sleep 5; done && python3 main.py"
+    command: sh -c "while ! redis-cli -h redis -p 6379 ping; do sleep 5; done 
+      && while ! pg_isready -h postgres -p 5432 -U postgres; do sleep 5; done 
+      && python3 /project/bot/main.py"
   
   migrations:
-    build: bot/scripts/
+    build:
+      context: ./bot/
+      dockerfile: scripts/Dockerfile
     restart: 'no'
     container_name: migrations
     depends_on:
       - postgres
-    command: sh -c "while ! pg_isready -h postgres -p 5432; do sleep 5; done && python3 /tgbot/scripts/run_migrations.py"
+    command: sh -c "while ! pg_isready -h postgres -p 5432; do sleep 5; done 
+      && python3 /project/bot/scripts/run_migrations.py"
 
   postgres:
     restart: always
