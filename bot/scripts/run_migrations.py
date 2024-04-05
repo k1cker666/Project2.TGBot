@@ -7,7 +7,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger('migrations')
 
-directory = f"{os.path.abspath(os.curdir)}/bot/migrations/"
+directory = f"{os.path.abspath(os.curdir)}/bot/scripts/migrations/"
 migrations = os.listdir(directory)
 migrations.sort()
 
@@ -16,7 +16,7 @@ try:
         dbname = 'postgres',
         user = 'postgres',
         password = 'roma1234',
-        host = 'localhost',
+        host = 'postgres',
         port = '5432') as conn:
         logger.info('Connection to PostgreSQL DB successful')
         

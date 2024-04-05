@@ -8,10 +8,16 @@ services:
     depends_on:
       - postgres
       - redis
-    networks:
-      - backend
     command: sh -c "while ! redis-cli -h redis -p 6379 ping; do sleep 5; done && while ! pg_isready -h postgres -p 5432 -U postgres; do sleep 5; done && python3 main.py"
   
+  migrations:
+    build: bot/scripts/
+    restart: 'no'
+    container_name: migrations
+    depends_on:
+      - postgres
+    command: sh -c "while ! pg_isready -h postgres -p 5432; do sleep 5; done && python3 /tgbot/scripts/run_migrations.py"
+
   postgres:
     restart: always
     image: postgres:14.11
@@ -20,18 +26,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: roma1234
       POSTGRES_DB: postgres
-    networks:
-      - backend
     ports:
-      - 5432:5432
+      - 5000:5432
 
   redis:
     restart: always
     image: redis:6.0
-    networks:
-      - backend
     ports:
-      - 6379:6379
-
-networks:
-  backend:
+      - 6000:6379
