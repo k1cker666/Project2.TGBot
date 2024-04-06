@@ -12,6 +12,7 @@ def create_connectrion(db_host='localhost', db_port=6379, decode_responses=True)
     try:
         connection.ping()
         logger.info('Connection to Redis DB successful')
+        return connection
     except ConnectionError as e:
         logger.error(f'{e}')
         logger.info('Application was not started')

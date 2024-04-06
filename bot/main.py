@@ -1,7 +1,7 @@
 from src import bot
 from src.log import *
 from src.dependencies import DependenciesBuilder
-from psycopg2 import OperationalError
+from psycopg import OperationalError
 from redis.exceptions import ConnectionError
 
 def main():
