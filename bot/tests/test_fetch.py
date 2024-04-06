@@ -16,7 +16,7 @@ def test_fetch(id, res):
         with create_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "select * from tgbot.words where word_id = %s",
+                    "select * from words where word_id = %s",
                     (id,)
                 )
                 result = cur.fetchone()

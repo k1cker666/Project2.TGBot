@@ -1,7 +1,3 @@
-create schema if not exists tgbot;
-
-set search_path to tgbot;
-
 do $$
 begin
     if not exists (
