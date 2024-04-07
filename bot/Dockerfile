@@ -9,6 +9,8 @@ COPY /src/db/*.py /project/bot/src/db/
 COPY /src/handlers/*.py /project/bot/src/handlers/
 COPY /src/components/*.py /project/bot/src/components/
 COPY /src/helpfuncs/*.py /project/bot/src/helpfuncs/
+COPY /src/models/*.py /project/bot/src/models/
+COPY /src/repository/*.py /project/bot/src/repository/
 
 RUN apt-get update \
     && apt-get install -y redis-tools \

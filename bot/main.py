@@ -7,7 +7,9 @@ from redis.exceptions import ConnectionError
 def main():
     try:
         deps = DependenciesBuilder.build()
-        bot.start_bot(deps) 
+        bot.start_bot(deps)
+        deps.word_repository.connection.close()
+        deps.redis_connect.close()
     except OperationalError:
         return
     except ConnectionError:
