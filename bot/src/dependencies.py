@@ -20,7 +20,7 @@ class Dependencies:
     ):
         self.redis_connect = redis_connect
         self.start_handler = start_handler
-        self.word_repository = word_repository,
+        self.word_repository = word_repository
         self.user_repository = user_repository
     
 class DependenciesBuilder:

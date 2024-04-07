@@ -9,6 +9,7 @@ def main():
         deps = DependenciesBuilder.build()
         bot.start_bot(deps)
         deps.word_repository.connection.close()
+        deps.user_repository.connection.close()
         deps.redis_connect.close()
     except OperationalError:
         return
