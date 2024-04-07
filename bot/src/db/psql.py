@@ -14,7 +14,7 @@ def create_connection(db_name='tgbot', db_user='postgres', db_password='roma1234
             port = db_port,
             autocommit = True
         )
-        logger.info('Connection to PostgreSQL DB successful')
+        logger.info(f'{db_host}:{db_port} - Connection to PostgreSQL as user {db_user} successful')
         return connection
     except OperationalError as e:
         logger.error(f'{e}')

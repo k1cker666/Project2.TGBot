@@ -31,7 +31,7 @@ create table if not exists users (
 );
 
 create table if not exists words (
-    word_id serial,
+    word_id int,
     language language_t_v1,
     level level_t_v1 not null,
     word text not null,
@@ -40,7 +40,7 @@ create table if not exists words (
 
 create table if not exists words_in_progress (
     user_id smallserial,
-    word_id serial,
+    word_id int,
     language language_t_v1 not null,
     number_of_repetitions smallint not null,
     primary key (user_id, word_id, language),

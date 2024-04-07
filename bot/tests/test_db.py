@@ -26,4 +26,3 @@ def test_check_psql_tables(table_name, schema_name, res):
                 for res in result:
                     return res
     assert check_psql_tables(table_name, schema_name) == res
-                
