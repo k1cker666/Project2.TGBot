@@ -1,16 +1,14 @@
 from src import bot
-from src.log import *
 from src.dependencies import DependenciesBuilder
 from psycopg import OperationalError
 from redis.exceptions import ConnectionError
+from loguru import logger
 
 def main():
     try:
         deps = DependenciesBuilder.build()
         bot.start_bot(deps)
-        deps.word_repository.connection.close()
-        deps.user_repository.connection.close()
-        deps.redis_connect.close()
+        deps.close()
     except OperationalError:
         return
     except ConnectionError:

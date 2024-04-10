@@ -23,6 +23,11 @@ class Dependencies:
         self.word_repository = word_repository
         self.user_repository = user_repository
     
+    def close(self):
+        self.redis_connect.close()
+        self.word_repository.connection.close()
+        self.user_repository.connection.close()
+        
 class DependenciesBuilder:
     
     def build() -> Dependencies:

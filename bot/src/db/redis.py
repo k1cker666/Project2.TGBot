@@ -1,9 +1,8 @@
 import redis
 from redis.exceptions import ConnectionError
-import logging
+from loguru import logger
 
 def create_connectrion(db_host='localhost', db_port=6379, decode_responses=True): # db_host='localhost'/'redis'
-    logger = logging.getLogger(__name__)
     connection = redis.Redis(
         host = db_host,
         port = db_port,
@@ -14,6 +13,6 @@ def create_connectrion(db_host='localhost', db_port=6379, decode_responses=True)
         logger.info(f'{db_host}:{db_port} - Connection to Redis DB successful')
         return connection
     except ConnectionError as e:
-        logger.error(f'{e}')
+        logger.error(f'{db_host}:{db_port} - {e}')
         logger.info('Application was not started')
         raise ConnectionError
