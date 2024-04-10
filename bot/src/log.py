@@ -1,10 +1,3 @@
-import logging
+from loguru import logger
 
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
-logging.getLogger("httpx").setLevel(logging.WARNING)
-
-logger = logging.getLogger(__name__)
+logger.add(format="{time} {level} {message}", level="INFO")
