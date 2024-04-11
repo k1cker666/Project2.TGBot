@@ -12,10 +12,13 @@ from telegram.ext import (
 from src.handlers import help, echo
 from functools import partial
 import json
+from loguru import logger
 
 
 def start_bot(deps):
     application = Application.builder().token("7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4").build()
+    
+    logger.info('Application was started')
     
     start_with_deps = partial(start, deps = deps)
     callback_handler_with_deps = partial(callback_handler, deps = deps)

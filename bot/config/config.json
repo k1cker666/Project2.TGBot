@@ -1,0 +1,14 @@
+{
+    "bot_token" : "7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4",
+    "psql" : {
+        "dbname" : "tgbot",
+        "user" : "postgres",
+        "password" : "roma1234",
+        "host" : "localhost",
+        "port" : "5432"
+    },
+    "redis" : {
+        "host" : "localhost",
+        "port" : 6379
+    }
+}
