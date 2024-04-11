@@ -15,5 +15,5 @@ def create_connectrion(config: RedisDB, decode_responses=True):
         return connection
     except ConnectionError as e:
         logger.error(f'{config.host}:{config.port} - {e}')
-        logger.info('Application was not started')
+        logger.error('Application was not started')
         raise ConnectionError

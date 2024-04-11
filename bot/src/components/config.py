@@ -23,5 +23,3 @@ def load_config():
         config_json = json.load(config_json)
         config = Config(**config_json)
         return config
-    
-    
