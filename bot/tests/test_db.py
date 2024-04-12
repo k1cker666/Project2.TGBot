@@ -1,5 +1,5 @@
+import psycopg
 import pytest
-from src.db.psql import create_connection
 
 @pytest.mark.parametrize(
     "table_name, schema_name, res",
@@ -13,7 +13,13 @@ from src.db.psql import create_connection
 )
 def test_check_psql_tables(table_name, schema_name, res):
     def check_psql_tables(table_name, schema_name):
-        with create_connection() as conn:
+        with psycopg.connect(
+            dbname = 'tgbot',
+            user = 'postgres',
+            password = 'roma1234',
+            host = 'localhost',
+            port = '5432',
+            autocommit = True) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select exists (select *

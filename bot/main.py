@@ -7,6 +7,9 @@ from redis.exceptions import ConnectionError
 def main():
     try:
         deps = DependenciesBuilder.build()
+        
+        print(deps.user_state_processor.get_state('privet'))
+        
         bot.start_bot(deps)
         deps.close()
     except OperationalError:

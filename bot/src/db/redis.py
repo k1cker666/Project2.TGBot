@@ -8,7 +8,7 @@ def create_connection(config: RedisDB):
         host = config.host,
         port = config.port,
         decode_responses = True,
-        charset = "utf-8"
+        encoding = "utf-8"
     )
     try:
         connection.ping()
