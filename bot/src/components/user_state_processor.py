@@ -32,5 +32,8 @@ class UserStateProcessor:
     
     def get_data(self, user_id: str) -> dict:
         data = self.conn.hget(user_id, 'data')
-        data_dict = json.loads(data.replace("'",'"'))
-        return data_dict
+        if data == None:
+            return None
+        else:
+            data_dict = json.loads(data.replace("'",'"'))
+            return data_dict
