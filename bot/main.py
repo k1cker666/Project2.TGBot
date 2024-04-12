@@ -1,3 +1,4 @@
+from pprint import pprint
 from src import bot
 from src.dependencies import DependenciesBuilder
 from psycopg import OperationalError
