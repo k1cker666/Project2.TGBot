@@ -17,7 +17,7 @@ from src.dependencies import Dependencies
 
 
 def start_bot(deps: Dependencies):
-    application = Application.builder().token(deps.bot_token).build()
+    application = Application.builder().token(deps.config.bot_token).build()
     
     logger.info('Application was started')
     

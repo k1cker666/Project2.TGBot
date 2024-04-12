@@ -12,6 +12,7 @@ class PostgresDB(BaseModel):
 class RedisDB(BaseModel):
     host: str
     port: int
+    ttl: int
 
 class Config(BaseModel):
     bot_token: str
