@@ -1,21 +1,22 @@
 import psycopg
 from psycopg import OperationalError
 from loguru import logger
+from src.components.config import PostgresDB
 
-def create_connection(db_name='tgbot', db_user='postgres', db_password='roma1234', db_host='localhost', db_port='5432'): # db_host='localhost'/'postgres'
+def create_connection(config: PostgresDB):
     connection = None
     try:
         connection = psycopg.connect(
-            dbname = db_name,
-            user = db_user,
-            password = db_password,
-            host = db_host,
-            port = db_port,
+            dbname = config.dbname,
+            user = config.user,
+            password = config.password,
+            host = config.host,
+            port = config.port,
             autocommit = True
         )
-        logger.info(f'{db_host}:{db_port} - Connection to PostgreSQL as user {db_user} successful')
+        logger.info(f'{config.host}:{config.port} - Connection to PostgreSQL as user {config.user} successful')
         return connection
     except OperationalError as e:
-        logger.error(f'{db_host}:{db_port} - {e}')
+        logger.error(f'{config.host}:{config.port} - {e}')
         logger.info('Application was not started')
         raise OperationalError
