@@ -26,14 +26,10 @@ class UserStateProcessor:
         return self.conn.hget(user_id, 'state')
     
     def set_data(self, user_id: str, data: dict):
-        self.conn.hset(f'{user_id}', 'data', str(data))
+        self.conn.hset(f'{user_id}', 'data', json.dumps(data))
         ttl = timedelta(minutes=self.config.ttl)
         self.conn.expire(name=f'{user_id}', time=ttl)
     
     def get_data(self, user_id: str) -> dict:
         data = self.conn.hget(user_id, 'data')
-        if data == None:
-            return None
-        else:
-            data_dict = json.loads(data.replace("'",'"'))
-            return data_dict
+        return json.loads(data) if data else None

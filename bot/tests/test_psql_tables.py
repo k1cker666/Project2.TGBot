@@ -10,10 +10,9 @@ import pytest
         ('users', 'other', False)
     ]
 )
-def test_check_psql_tables(create_psql_connect, table_name, schema_name, res):
+def test_check_psql_tables(psql_connect, table_name, schema_name, res):
     def check_psql_tables(table_name, schema_name):
-        conn = create_psql_connect
-        with conn.cursor() as cur:
+        with psql_connect.cursor() as cur:
             cur.execute("""
                 select exists (select *
                 from information_schema.tables

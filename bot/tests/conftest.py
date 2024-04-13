@@ -5,18 +5,21 @@ from src.components.user_state_processor import UserStateProcessor
 from src.components.config import load_config
 
 @pytest.fixture(scope="session")
-def create_user_state_proc_obj():
+def config_init():
+    return load_config()
+
+@pytest.fixture(scope="session")
+def redis_connect():
     config = load_config().redis
-    with redis.Redis(
+    conn = redis.Redis(
         host = config.host,
         port = config.port,
         decode_responses = True,
-        encoding = "utf-8") as conn:
-        user_state = UserStateProcessor(connection=conn, config=config)
-        return user_state
+        encoding = "utf-8")
+    return conn
     
 @pytest.fixture(scope="session")
-def create_psql_connect():
+def psql_connect():
     config = load_config().psql
     conn = psycopg.connect(
         dbname = config.dbname,
@@ -28,8 +31,8 @@ def create_psql_connect():
     return conn
 
 @pytest.fixture(scope="session")
-def setup_users_table(create_psql_connect):
-    with create_psql_connect.cursor() as curs:
+def setup_users_table(psql_connect):
+    with psql_connect.cursor() as curs:
         curs.execute("""
         do $$
         begin
@@ -43,8 +46,8 @@ def setup_users_table(create_psql_connect):
         $$;""")
         
 @pytest.fixture(scope="session")
-def setup_words_table(create_psql_connect):
-    with create_psql_connect.cursor() as curs:
+def setup_words_table(psql_connect):
+    with psql_connect.cursor() as curs:
         curs.execute("""
         do $$
         begin

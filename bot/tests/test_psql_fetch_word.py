@@ -9,10 +9,9 @@ from src.repository.word_repository import WordRepository
         ("1", 'ru', 'привет')
     ]
 )
-def test_fetch_word(create_psql_connect, setup_words_table, id, language, res):
-    conn = create_psql_connect
+def test_fetch_word(psql_connect, setup_words_table, id, language, res):
     setup_words_table
-    word_repo = WordRepository(conn)
+    word_repo = WordRepository(psql_connect)
     assert word_repo.fetch(id, language).word == res
 
 @pytest.mark.parametrize(
@@ -23,7 +22,6 @@ def test_fetch_word(create_psql_connect, setup_words_table, id, language, res):
         ("10", 'ru', None)
     ]
 )
-def test_fetch_nonetype(create_psql_connect, id, language, res):
-    conn = create_psql_connect
-    word_repo = WordRepository(conn)
+def test_fetch_nonetype(psql_connect, id, language, res):
+    word_repo = WordRepository(psql_connect)
     assert word_repo.fetch(id, language) == res

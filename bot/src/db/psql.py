@@ -3,7 +3,7 @@ from psycopg import OperationalError
 from loguru import logger
 from src.components.config import PostgresDB
 
-def create_connection(config: PostgresDB):
+def create_connection(config: PostgresDB) -> psycopg.Connection:
     connection = None
     try:
         connection = psycopg.connect(
