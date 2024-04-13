@@ -6,7 +6,10 @@ class UserRepository:
     
     connection: psycopg.Connection
     
-    def __init__(self, connection):
+    def __init__(
+        self,
+        connection: psycopg.Connection
+        ):
         self.connection = connection
         
     def fetch(self, id: int) -> User:

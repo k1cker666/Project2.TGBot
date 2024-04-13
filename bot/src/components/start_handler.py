@@ -15,7 +15,11 @@ class StartHandler:
     class CallBackType(Enum):
         auth = auto()
     
-    async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def handle(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE
+        ):
         user = update.effective_user
         await update.message.reply_html(
             rf"Привет {user.mention_html()}, я бот, которы поможет тебе выучить иностранные слова!")
@@ -35,7 +39,12 @@ class StartHandler:
             reply_markup=reply_markup
         )
         
-    async def handle_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE, cb_type):
+    async def handle_callback(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
+        cb_type: str
+        ):
         query = update.callback_query
         await query.answer()
         if cb_type == self.CallBackType.auth.value:
