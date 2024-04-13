@@ -1,17 +1,22 @@
 import os
 import psycopg
 from loguru import logger
+import json
 
 directory = f"{os.path.abspath(os.curdir)}/bot/migrations/"
 migrations = os.listdir(directory)
 migrations.sort()
 
+json_dir = f"{os.path.abspath(os.curdir)}/bot/config/config.json"
+with open(json_dir, 'r') as file:
+    config = json.load(file)['psql']
+
 try:
-    db_name = 'tgbot'
-    db_user = 'postgres'
-    db_password = 'roma1234'
-    db_host = 'localhost' #'postgres'/'localhost'
-    db_port =  "5432"
+    db_name = config['dbname']
+    db_user = config['user']
+    db_password = config['password']
+    db_host = config['host']
+    db_port =  config['port']
     with psycopg.connect(
         user = db_user,
         password = db_password,

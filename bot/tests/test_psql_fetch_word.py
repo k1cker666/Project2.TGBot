@@ -1,6 +1,5 @@
 import pytest
 from src.repository.word_repository import WordRepository
-import psycopg
 
 @pytest.mark.parametrize(
     "id, language, res",
