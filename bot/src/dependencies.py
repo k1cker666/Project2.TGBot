@@ -6,6 +6,7 @@ from src.repository.user_repository import UserRepository
 from src.components.user_state_processor import UserStateProcessor
 from src.components.lesson_handler import LessonHandler
 from src.components.lesson_init_processor import LessonInitProcessor
+from loguru import logger
 
 class Dependencies:
 
@@ -33,8 +34,10 @@ class Dependencies:
     
     def close(self):
         self.user_state_processor.conn.close()
+        logger.info("Redis connections closed")
         self.word_repository.connection.close()
         self.user_repository.connection.close()
+        logger.info("PostgreSQL connections closed")
         
 class DependenciesBuilder:
     

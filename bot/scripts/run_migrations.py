@@ -51,4 +51,4 @@ try:
                     logger.info(f'{db_host}:{db_port} - Migration {file} complete')
 
 except Exception as error:    
-    logger.error(f"{error}")
+    logger.error(f"{db_host}:{db_port} - {error}")

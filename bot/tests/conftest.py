@@ -1,7 +1,6 @@
 import psycopg
 import pytest
 import redis
-from src.components.user_state_processor import UserStateProcessor
 from src.components.config import load_config
 
 @pytest.fixture(scope="session")
@@ -9,8 +8,8 @@ def config_init():
     return load_config()
 
 @pytest.fixture(scope="session")
-def redis_connect():
-    config = load_config().redis
+def redis_connect(config_init):
+    config = config_init.redis
     conn = redis.Redis(
         host = config.host,
         port = config.port,
@@ -19,8 +18,8 @@ def redis_connect():
     return conn
     
 @pytest.fixture(scope="session")
-def psql_connect():
-    config = load_config().psql
+def psql_connect(config_init):
+    config = config_init.psql
     conn = psycopg.connect(
         dbname = config.dbname,
         user = config.user,
