@@ -17,7 +17,7 @@ from src.dependencies import Dependencies
 
 
 def start_bot(deps: Dependencies):
-    application = Application.builder().token(deps.bot_token).build()
+    application = Application.builder().token(deps.config.bot_token).build()
     
     logger.info('Application was started')
     
@@ -25,20 +25,24 @@ def start_bot(deps: Dependencies):
     callback_handler_with_deps = partial(callback_handler, deps = deps)
     
     application.add_handler(CommandHandler("start", start_with_deps))
-    
     application.add_handler(CallbackQueryHandler(callback_handler_with_deps))
-    
     application.add_handler(CommandHandler("help", help.help_command))
-    
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo.echo))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE, deps):
+async def start(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    deps: Dependencies
+    ):
     await deps.start_handler.handle(update, context)
 
-async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, deps):
+async def callback_handler(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    deps: Dependencies
+    ):
     query = update.callback_query
     user_answer = json.loads(query.data.replace("'",'"'))
     if user_answer["cb_processor"] == deps.start_handler.name:

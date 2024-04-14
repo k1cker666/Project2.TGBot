@@ -2,7 +2,6 @@ from src import bot
 from src.dependencies import DependenciesBuilder
 from psycopg import OperationalError
 from redis.exceptions import ConnectionError
-from loguru import logger
 
 def main():
     try:

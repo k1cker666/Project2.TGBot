@@ -3,11 +3,12 @@ from redis.exceptions import ConnectionError
 from loguru import logger
 from src.components.config import RedisDB
 
-def create_connectrion(config: RedisDB, decode_responses=True):
+def create_connection(config: RedisDB) -> redis.Redis:
     connection = redis.Redis(
         host = config.host,
         port = config.port,
-        decode_responses = decode_responses
+        decode_responses = True,
+        encoding = "utf-8"
     )
     try:
         connection.ping()

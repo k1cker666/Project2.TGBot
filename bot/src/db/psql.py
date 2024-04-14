@@ -3,7 +3,7 @@ from psycopg import OperationalError
 from loguru import logger
 from src.components.config import PostgresDB
 
-def create_connection(config: PostgresDB):
+def create_connection(config: PostgresDB) -> psycopg.Connection:
     connection = None
     try:
         connection = psycopg.connect(
@@ -18,5 +18,5 @@ def create_connection(config: PostgresDB):
         return connection
     except OperationalError as e:
         logger.error(f'{config.host}:{config.port} - {e}')
-        logger.info('Application was not started')
+        logger.error('Application was not started')
         raise OperationalError
