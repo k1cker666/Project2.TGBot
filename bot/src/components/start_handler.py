@@ -1,3 +1,4 @@
+import json
 from telegram import (
     Update,
     KeyboardButton,
@@ -14,6 +15,7 @@ class StartHandler:
     
     class CallBackType(Enum):
         auth = auto()
+        init_lesson = auto()
     
     async def handle(
         self,
@@ -26,7 +28,7 @@ class StartHandler:
         buttons =[
             InlineKeyboardButton(
                 "Авторизация",
-                callback_data = str({
+                callback_data = json.dumps({
                     "cb_processor": self.name,
                     "cb_type": self.CallBackType.auth.value
                     })
@@ -51,13 +53,22 @@ class StartHandler:
             query = update.callback_query
             await query.delete_message()
             buttons = [
-                KeyboardButton("Начать урок"),
-                KeyboardButton("Посмотреть статистику")
+                InlineKeyboardButton(
+                    "Начать урок",
+                    callback_data = json.dumps({
+                        "cb_processor": "lesson",
+                        "cb_type": self.CallBackType.init_lesson.value
+                    })
+                    ),
+                InlineKeyboardButton(
+                    "Посмотреть статистику",
+                    callback_data = json.dumps({
+                        "cb_processor": "stat"
+                    })
+                    )
             ]
-            reply_markup = ReplyKeyboardMarkup(
-                build_menu(buttons, 2),
-                resize_keyboard=True,
-                one_time_keyboard=True
+            reply_markup = InlineKeyboardMarkup(
+                build_menu(buttons, 1)
                 )
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
