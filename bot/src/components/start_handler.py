@@ -62,9 +62,7 @@ class StartHandler:
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",
-                    callback_data = json.dumps({
-                        "cb_processor": "stat"
-                    })
+                    url="https://www.google.ru/"
                     )
             ]
             reply_markup = InlineKeyboardMarkup(

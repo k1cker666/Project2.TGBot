@@ -21,3 +21,4 @@ class LessonHandler:
             chat_id=update.effective_chat.id,
             text="Начинаем урок"
         )
+        await self.lesson_init_processor.init()
