@@ -24,9 +24,13 @@ def start_bot(deps: Dependencies):
     start_with_deps = partial(start, deps = deps)
     callback_handler_with_deps = partial(callback_handler, deps = deps)
     
+    start_lesson_with_deps = partial(start_lesson, deps = deps)
+    
     application.add_handler(CommandHandler("start", start_with_deps))
     application.add_handler(CallbackQueryHandler(callback_handler_with_deps))
     application.add_handler(CommandHandler("help", help.help_command))
+
+    application.add_handler(MessageHandler(filters.Text("Начать урок"), start_lesson_with_deps))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo.echo))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
@@ -37,6 +41,13 @@ async def start(
     deps: Dependencies
     ):
     await deps.start_handler.handle(update, context)
+
+async def start_lesson(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    deps: Dependencies
+    ):
+    await deps.lesson_handler.handle(update, context)
 
 async def callback_handler(
     update: Update,

@@ -54,7 +54,11 @@ class StartHandler:
                 KeyboardButton("Начать урок"),
                 KeyboardButton("Посмотреть статистику")
             ]
-            reply_markup = ReplyKeyboardMarkup(build_menu(buttons, 2), resize_keyboard=True)
+            reply_markup = ReplyKeyboardMarkup(
+                build_menu(buttons, 2),
+                resize_keyboard=True,
+                one_time_keyboard=True
+                )
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Авторизация успешно выполнена\nВыбери следующее действие",
