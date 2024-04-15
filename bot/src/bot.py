@@ -14,7 +14,7 @@ from functools import partial
 import json
 from loguru import logger
 from src.dependencies import Dependencies
-
+from src.models.callback import BaseCallback
 
 def start_bot(deps: Dependencies):
     
@@ -47,7 +47,7 @@ async def callback_handler(
     deps: Dependencies
     ):
     query = update.callback_query
-    user_answer = json.loads(query.data)
+    user_answer: BaseCallback = json.loads(query.data)
     if user_answer["cb_processor"] == deps.start_handler.name:
         await deps.start_handler.handle_callback(update, context, user_answer["cb_type"])
     if user_answer["cb_processor"] == deps.lesson_handler.name:

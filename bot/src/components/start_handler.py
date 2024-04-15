@@ -1,21 +1,26 @@
 import json
 from telegram import (
     Update,
-    KeyboardButton,
-    ReplyKeyboardMarkup,
     InlineKeyboardButton,
     InlineKeyboardMarkup
     )
 from telegram.ext import ContextTypes
+from src.components.lesson_handler import LessonHandler
+from src.models.callback import BaseCallback
 from src.helpfuncs.menu import build_menu
 from enum import Enum, auto
 
 class StartHandler:
+    
     name = "start"
+    lesson_handler: LessonHandler
     
     class CallBackType(Enum):
         auth = auto()
         init_lesson = auto()
+    
+    def __init__(self, lesson_handler):
+        self.lesson_handler = lesson_handler
     
     async def handle(
         self,
@@ -48,17 +53,14 @@ class StartHandler:
         cb_type: str
         ):
         query = update.callback_query
-        await query.answer()
         if cb_type == self.CallBackType.auth.value:
-            query = update.callback_query
             await query.delete_message()
             buttons = [
                 InlineKeyboardButton(
                     "Начать урок",
-                    callback_data = json.dumps({
-                        "cb_processor": "lesson",
-                        "cb_type": self.CallBackType.init_lesson.value
-                    })
+                    callback_data = json.dumps(BaseCallback(
+                        cb_processor = self.lesson_handler.name, 
+                        cb_type = self.CallBackType.init_lesson.value))
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",

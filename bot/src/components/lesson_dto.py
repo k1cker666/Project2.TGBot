@@ -11,4 +11,4 @@ class Question(TypedDict):
 class LessonDTO(BaseModel):
     
     questions: List[Question]
-    
+    active_question: int = 0

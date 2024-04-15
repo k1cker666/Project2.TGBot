@@ -17,6 +17,8 @@ class LessonHandler:
         update: Update,
         context: ContextTypes.DEFAULT_TYPE
         ):
+        query = update.callback_query
+        await query.delete_message()
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="Начинаем урок"
