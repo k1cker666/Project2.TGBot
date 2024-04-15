@@ -51,4 +51,4 @@ async def callback_handler(
     if user_answer["cb_processor"] == deps.start_handler.name:
         await deps.start_handler.handle_callback(update, context, user_answer["cb_type"])
     if user_answer["cb_processor"] == deps.lesson_handler.name:
-        await deps.lesson_handler.handle(update, context)
+        await deps.lesson_handler.handle_callback(update, context, user_answer["cb_type"])
