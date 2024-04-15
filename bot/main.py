@@ -12,7 +12,7 @@ def main():
         return
     except ConnectionError:
         return
-    finally:    
+    finally:
         deps.close()
         logger.info("Application was stopped")
     
