@@ -1,12 +1,13 @@
 from enum import Enum, auto
+import json
 from telegram import (
     Update,
-    KeyboardButton,
-    ReplyKeyboardMarkup
+    InlineKeyboardButton,
+    InlineKeyboardMarkup
 )
 from telegram.ext import ContextTypes
 from src.helpfuncs.menu import build_menu
-from src.models.callback import Callback
+from src.models.callback import Data
 from src.components.user_state_processor import UserStateProcessor, State
 from src.components.lesson_init_processor import LessonInitProcessor
 
@@ -18,6 +19,7 @@ class LessonHandler:
     
     class CallBackType(Enum):
         init_lesson = auto()
+        check_answer = auto()
     
     def __init__(
         self,
@@ -36,29 +38,25 @@ class LessonHandler:
         query = update.callback_query
         await query.delete_message()
         if cb_type == self.CallBackType.init_lesson.name:
-            await context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="Начинаем урок"
-            )
             words = self.lesson_init_processor.init()
-            callback = Callback(
-                cb_processor = self.name,
-                cb_type = State.lesson_active.name,
+            data = Data(
+                state = State.lesson_active.name,
                 num_of_question = words.active_question,
-                correct_answer = words.questions[0]["correct_answer"]
+                correct_answer = words.questions[words.active_question]["correct_answer"]
             )
-            self.user_state_processor.set_data(user_id='kicker', data=callback)
+            self.user_state_processor.set_data(user_id='kicker', data=data)
             buttons = []
-            for word in words.questions[0]["answers"]:
+            for word in words.questions[data["num_of_question"]]["answers"]:
                 buttons.append(self.create_answer_button(word))
-            reply_markup = ReplyKeyboardMarkup(
-                build_menu(buttons=buttons, n_cols=2),
-                resize_keyboard=True)
+            reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text=f"Переведи слово {words.questions[0]['word_to_translate']}",
                 reply_markup=reply_markup
-            )            
+            )
             
-    def create_answer_button(self, word: str) -> KeyboardButton:
-        return (KeyboardButton(word))
+    def create_answer_button(self, word: str) -> InlineKeyboardButton:
+        return InlineKeyboardButton(
+            text=word,
+            callback_data = f'{self.name}, {self.CallBackType.check_answer.name}, {word}'
+            )

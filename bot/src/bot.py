@@ -11,10 +11,9 @@ from telegram.ext import (
     )
 from src.handlers import help, echo
 from functools import partial
-import json
 from loguru import logger
 from src.dependencies import Dependencies
-from src.models.callback import Callback
+from src.models.callback import BaseCallback, WordCallback
 
 def start_bot(deps: Dependencies):
     
@@ -47,8 +46,14 @@ async def callback_handler(
     deps: Dependencies
     ):
     query = update.callback_query
-    user_answer: Callback = json.loads(query.data)
-    if user_answer["cb_processor"] == deps.start_handler.name:
-        await deps.start_handler.handle_callback(update, context, user_answer["cb_type"])
-    if user_answer["cb_processor"] == deps.lesson_handler.name:
-        await deps.lesson_handler.handle_callback(update, context, user_answer["cb_type"])
+    user_answer = get_callback(query.data.split(', '))
+    if user_answer.cb_processor == deps.start_handler.name:
+        await deps.start_handler.handle_callback(update, context, user_answer.cb_type)
+    if user_answer.cb_processor == deps.lesson_handler.name:
+        await deps.lesson_handler.handle_callback(update, context, user_answer.cb_type)
+        
+def get_callback(data: list) -> BaseCallback | WordCallback:
+    if len(data) == 2:
+        return BaseCallback(*data)
+    elif len(data) == 3:
+        return WordCallback(*data)
