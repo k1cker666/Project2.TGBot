@@ -51,7 +51,7 @@ class LessonHandler:
             
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f"Переведи слово {questions.questions[questions.active_question] ['word_to_translate']}",
+                text=f"Переведи слово {questions.questions[questions.active_question]['word_to_translate']}",
                 reply_markup=reply_markup
             )
         
@@ -59,9 +59,28 @@ class LessonHandler:
             data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id='kicker'))
             callback = WordCallback(*query.data.split(', '))
             if callback.word == data.questions[data.active_question]['correct_answer']:
-                await query.edit_message_text('Перевод верный')
+                if data.active_question+1 != len(data.questions):
+                    data.active_question +=1
+                    self.user_state_processor.set_data(user_id='kicker', data=data.model_dump_json())
+                    
+                    buttons = []
+                    for word in data.questions[data.active_question]['answers']:
+                        buttons.append(self.create_answer_button(word))
+                    reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
+
+                    await query.edit_message_text(f"Перевод верный\nСледующее слово {data.questions[data.active_question]['word_to_translate']}")
+                    await query.edit_message_reply_markup(reply_markup)
+                else:
+                    await query.edit_message_text('Все слова урока переведены')
             else:
-                await query.edit_message_text('Перевод неверный')
+                buttons = []
+                for word in data.questions[data.active_question]['answers']:
+                    buttons.append(self.create_answer_button(word))
+                reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
+                await query.edit_message_text(f"Перевод неверный.\nПопробуй еще раз перевести слово {data.questions[data.active_question]['word_to_translate']}")
+                
+                await query.edit_message_reply_markup(reply_markup)
+                
             
     def create_answer_button(self, word: str) -> InlineKeyboardButton:
         return InlineKeyboardButton(
