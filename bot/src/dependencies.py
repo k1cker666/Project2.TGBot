@@ -49,7 +49,7 @@ class DependenciesBuilder:
         user_repository = UserRepository(connection=psql_connect)
         user_state_processor = UserStateProcessor(connection=redis_connect, config=config.redis)
         lesson_init_processor = LessonInitProcessor()
-        lesson_handler = LessonHandler(lesson_init_processor)
+        lesson_handler = LessonHandler(lesson_init_processor, user_state_processor)
         start_handler = StartHandler(lesson_handler)
         return Dependencies(
             start_handler=start_handler,

@@ -13,6 +13,7 @@ class RedisDB(BaseModel):
     host: str
     port: int
     ttl: int
+    ttl_for_test: int
 
 class Config(BaseModel):
     bot_token: str

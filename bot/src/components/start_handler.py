@@ -6,7 +6,7 @@ from telegram import (
     )
 from telegram.ext import ContextTypes
 from src.components.lesson_handler import LessonHandler
-from src.models.callback import BaseCallback
+from src.models.callback import Callback
 from src.helpfuncs.menu import build_menu
 from enum import Enum, auto
 
@@ -33,11 +33,10 @@ class StartHandler:
         buttons =[
             InlineKeyboardButton(
                 "Авторизация",
-                callback_data = json.dumps({
-                    "cb_processor": self.name,
-                    "cb_type": self.CallBackType.auth.value
-                    })
-                ),
+                callback_data = json.dumps(Callback(
+                    cb_processor = self.name,
+                    cb_type = self.CallBackType.auth.value))
+            )
             ]
         reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
         await context.bot.send_message(
@@ -58,9 +57,9 @@ class StartHandler:
             buttons = [
                 InlineKeyboardButton(
                     "Начать урок",
-                    callback_data = json.dumps(BaseCallback(
+                    callback_data = json.dumps(Callback(
                         cb_processor = self.lesson_handler.name, 
-                        cb_type = self.CallBackType.init_lesson.value))
+                        cb_type = self.CallBackType.init_lesson.name))
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",

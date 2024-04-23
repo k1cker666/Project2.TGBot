@@ -10,6 +10,7 @@
     "redis" : {
         "host" : "localhost",
         "port" : 6379,
-        "ttl" : 1
+        "ttl" : 10,
+        "ttl_for_test" : 1
     }
 }
