@@ -6,9 +6,10 @@ from telegram import (
     InlineKeyboardMarkup
 )
 from telegram.ext import ContextTypes
+from src.models.callback import WordCallback
+from src.components.lesson_dto import LessonDTO
 from src.helpfuncs.menu import build_menu
-from src.models.callback import Data
-from src.components.user_state_processor import UserStateProcessor, State
+from src.components.user_state_processor import UserStateProcessor
 from src.components.lesson_init_processor import LessonInitProcessor
 
 class LessonHandler:
@@ -36,24 +37,31 @@ class LessonHandler:
         cb_type: str
         ):
         query = update.callback_query
-        await query.delete_message()
+        
         if cb_type == self.CallBackType.init_lesson.name:
-            words = self.lesson_init_processor.init()
-            data = Data(
-                state = State.lesson_active.name,
-                num_of_question = words.active_question,
-                correct_answer = words.questions[words.active_question]["correct_answer"]
-            )
-            self.user_state_processor.set_data(user_id='kicker', data=data)
+            await query.delete_message()
+            
+            questions = self.lesson_init_processor.init()
+            self.user_state_processor.set_data(user_id='kicker', data=questions.model_dump_json())
+            
             buttons = []
-            for word in words.questions[data["num_of_question"]]["answers"]:
+            for word in questions.questions[questions.active_question]['answers']:
                 buttons.append(self.create_answer_button(word))
             reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
+            
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f"Переведи слово {words.questions[0]['word_to_translate']}",
+                text=f"Переведи слово {questions.questions[questions.active_question] ['word_to_translate']}",
                 reply_markup=reply_markup
             )
+        
+        if cb_type == self.CallBackType.check_answer.name:
+            data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id='kicker'))
+            callback = WordCallback(*query.data.split(', '))
+            if callback.word == data.questions[data.active_question]['correct_answer']:
+                await query.edit_message_text('Перевод верный')
+            else:
+                await query.edit_message_text('Перевод неверный')
             
     def create_answer_button(self, word: str) -> InlineKeyboardButton:
         return InlineKeyboardButton(
