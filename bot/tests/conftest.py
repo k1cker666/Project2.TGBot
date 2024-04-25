@@ -5,7 +5,9 @@ from src.components.config import load_config
 
 @pytest.fixture(scope="session")
 def config_init():
-    return load_config()
+    config = load_config()
+    config.redis.ttl = 1
+    return config
 
 @pytest.fixture(scope="session")
 def redis_connect(config_init):
