@@ -46,7 +46,6 @@ async def callback_handler(
     deps: Dependencies
     ):
     query = update.callback_query
-    await query.answer()
     user_answer = get_callback(query.data.split(', '))
     if user_answer.cb_processor == deps.start_handler.name:
         await deps.start_handler.handle_callback(update, context, user_answer.cb_type)
