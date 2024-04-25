@@ -13,7 +13,7 @@ from src.handlers import help, echo
 from functools import partial
 from loguru import logger
 from src.dependencies import Dependencies
-from src.models.callback import BaseCallback, WordCallback, CallbackData
+from src.models.callback import CallbackData
 
 def start_bot(deps: Dependencies):
     
@@ -51,9 +51,3 @@ async def callback_handler(
         await deps.start_handler.handle_callback(update, context, callback_data)
     if callback_data.cb_processor == deps.lesson_handler.name:
         await deps.lesson_handler.handle_callback(update, context, callback_data)
-        
-def get_callback(data: list) -> BaseCallback | WordCallback:
-    if len(data) == 2:
-        return BaseCallback(*data)
-    elif len(data) == 3:
-        return WordCallback(*data)
