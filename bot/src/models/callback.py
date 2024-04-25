@@ -1,20 +1,3 @@
-from typing import NamedTuple
-
-class BaseCallback(NamedTuple):
-    cb_processor: str
-    cb_type: str
-    
-    def to_string(self):
-        return '{},{}'.format(self.cb_processor, self.cb_type)
-
-class WordCallback(NamedTuple):
-    cb_processor: str
-    cb_type: str
-    word: str
-
-    def to_string(self):
-        return '{},{},{}'.format(self.cb_processor, self.cb_type, self.word)
-    
 class CallbackData:
     cb_processor: str
     cb_type: str
@@ -26,7 +9,7 @@ class CallbackData:
         self.cb_type = cb_type
         self.word = word
  
-    def to_string(self):
+    def to_string(self) -> str:
         fields = [self.cb_processor, self.cb_type, self.word]
         filled_fields = [field for field in fields if field is not None]
         template = self.TEMPLATE.join(['{}'] * len(filled_fields))

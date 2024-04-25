@@ -6,7 +6,7 @@ from telegram import (
     InlineKeyboardMarkup
 )
 from telegram.ext import ContextTypes
-from src.models.callback import WordCallback
+from src.models.callback import CallbackData
 from src.components.lesson_dto import LessonDTO
 from src.helpfuncs.menu import build_menu
 from src.components.user_state_processor import UserStateProcessor
@@ -34,11 +34,11 @@ class LessonHandler:
         self,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
-        cb_type: str
+        callback_data: CallbackData
         ):
         query = update.callback_query
         
-        if cb_type == self.CallBackType.init_lesson.name:
+        if callback_data.cb_type == self.CallBackType.init_lesson.name:
             await query.delete_message()
             
             questions = self.lesson_init_processor.init()
@@ -55,9 +55,9 @@ class LessonHandler:
                 reply_markup=reply_markup
             )
         
-        if cb_type == self.CallBackType.check_answer.name:
+        if callback_data.cb_type == self.CallBackType.check_answer.name:
             data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id='kicker'))
-            callback = WordCallback(*query.data.split(', '))
+            callback: CallbackData = CallbackData.from_string(query.data)
             if callback.word == data.questions[data.active_question]['correct_answer']:
                 if data.active_question+1 != len(data.questions):
                     data.active_question +=1
@@ -85,5 +85,9 @@ class LessonHandler:
     def create_answer_button(self, word: str) -> InlineKeyboardButton:
         return InlineKeyboardButton(
             text=word,
-            callback_data = f'{self.name}, {self.CallBackType.check_answer.name}, {word}'
+            callback_data=CallbackData(
+                cb_processor=f'{self.name}',
+                cb_type=f'{self.CallBackType.check_answer.name}',
+                word=f'{word}'
+            ).to_string()
             )
