@@ -1,22 +1,23 @@
-import psycopg
+import psycopg_pool
 from src.models.user import User
 from psycopg.rows import class_row
 
 class UserRepository:
     
-    connection: psycopg.Connection
+    connection_pool: psycopg_pool.ConnectionPool
     
     def __init__(
         self,
-        connection: psycopg.Connection
+        connection_pool: psycopg_pool.ConnectionPool
         ):
-        self.connection = connection
+        self.connection_pool = connection_pool
         
     def fetch(self, id: int) -> User:
-        with self.connection.cursor(row_factory=class_row(User)) as cur:
-            cur.execute(
-                "select * from users where user_id = %s",
-                (id,)
-            )
-            result = cur.fetchone()
-            return result
+        with self.connection_pool.connection() as conn:
+            with conn.cursor(row_factory=class_row(User)) as cur:
+                cur.execute(
+                    "select * from users where user_id = %s",
+                    (id,)
+                )
+                result = cur.fetchone()
+                return result

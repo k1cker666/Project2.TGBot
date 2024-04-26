@@ -12,14 +12,15 @@ import pytest
 )
 def test_check_psql_tables(psql_connect, table_name, schema_name, res):
     def check_psql_tables(table_name, schema_name):
-        with psql_connect.cursor() as cur:
-            cur.execute("""
-                select exists (select *
-                from information_schema.tables
-                where table_name = %s
-                and table_schema = %s) as table_exists;""",
-                (table_name, schema_name))
-            result = cur.fetchone()
-            for res in result:
-                return res
+        with psql_connect.connection() as conn:
+            with conn.cursor() as curs:
+                curs.execute("""
+                    select exists (select *
+                    from information_schema.tables
+                    where table_name = %s
+                    and table_schema = %s) as table_exists;""",
+                    (table_name, schema_name))
+                result = curs.fetchone()
+                for res in result:
+                    return res
     assert check_psql_tables(table_name, schema_name) == res

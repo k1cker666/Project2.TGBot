@@ -18,6 +18,7 @@ RUN apt-get update \
     && apt-get install -y postgresql-client \
     && pip install python-telegram-bot \
     && pip install psycopg[binary] \
+    && pip install psycopg_pool \
     && pip install redis[hiredis] \
     && pip install pydantic \
     && pip install loguru

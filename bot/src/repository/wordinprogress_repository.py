@@ -1,11 +1,11 @@
-import psycopg
+import psycopg_pool
 
 class WordInProgressRepository:
     
-    connection: psycopg.Connection
+    connection_pool: psycopg_pool.ConnectionPool
     
     def __init__(
         self,
-        connection: psycopg.Connection
+        connection_pool: psycopg_pool.ConnectionPool
         ):
-        self.connection = connection
+        self.connection_pool = connection_pool

@@ -1,6 +1,6 @@
-import psycopg
 import pytest
 import redis
+from src.db.psql import create_connection_pool
 from src.components.config import load_config
 
 @pytest.fixture(scope="session")
@@ -22,19 +22,13 @@ def redis_connect(config_init):
 @pytest.fixture(scope="session")
 def psql_connect(config_init):
     config = config_init.psql
-    conn = psycopg.connect(
-        dbname = config.dbname,
-        user = config.user,
-        password = config.password,
-        host = config.host,
-        port = config.port,
-        autocommit = True)
-    return conn
+    pool = create_connection_pool(config)
+    return pool
 
 @pytest.fixture(scope="session")
 def setup_users_table(psql_connect):
-    with psql_connect.cursor() as curs:
-        curs.execute("""
+    with psql_connect.connection() as conn:
+        conn.execute("""
         do $$
         begin
             if not exists (
@@ -48,8 +42,8 @@ def setup_users_table(psql_connect):
         
 @pytest.fixture(scope="session")
 def setup_words_table(psql_connect):
-    with psql_connect.cursor() as curs:
-        curs.execute("""
+    with psql_connect.connection() as conn:
+        conn.execute("""
         do $$
         begin
             if not exists (
