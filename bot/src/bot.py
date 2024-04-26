@@ -11,23 +11,25 @@ from telegram.ext import (
     )
 from src.handlers import help, echo
 from functools import partial
-import json
 from loguru import logger
 from src.dependencies import Dependencies
-
+from src.models.callback import CallbackData
 
 def start_bot(deps: Dependencies):
+    
+    def partial_deps(func):
+        return partial(func, deps = deps)
+        
     application = Application.builder().token(deps.config.bot_token).build()
     
     logger.info('Application was started')
     
-    start_with_deps = partial(start, deps = deps)
-    callback_handler_with_deps = partial(callback_handler, deps = deps)
-    
-    application.add_handler(CommandHandler("start", start_with_deps))
-    application.add_handler(CallbackQueryHandler(callback_handler_with_deps))
+    application.add_handler(CommandHandler("start", partial_deps(start)))
     application.add_handler(CommandHandler("help", help.help_command))
+
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo.echo))
+
+    application.add_handler(CallbackQueryHandler(partial_deps(callback_handler)))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
@@ -44,6 +46,8 @@ async def callback_handler(
     deps: Dependencies
     ):
     query = update.callback_query
-    user_answer = json.loads(query.data.replace("'",'"'))
-    if user_answer["cb_processor"] == deps.start_handler.name:
-        await deps.start_handler.handle_callback(update, context, user_answer["cb_type"])
+    callback_data: CallbackData = CallbackData.from_string(query.data)
+    if callback_data.cb_processor == deps.start_handler.name:
+        await deps.start_handler.handle_callback(update, context, callback_data)
+    if callback_data.cb_processor == deps.lesson_handler.name:
+        await deps.lesson_handler.handle_callback(update, context, callback_data)

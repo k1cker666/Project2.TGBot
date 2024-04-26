@@ -9,7 +9,7 @@ services:
       - postgres
       - redis
       - migrations
-    command: sh -c "while ! redis-cli -h redis -p 6379 ping; do sleep 5; done 
+    command: sh -c "sleep 7 && while ! redis-cli -h redis -p 6379 ping; do sleep 5; done 
       && while ! pg_isready -d tgbot -h postgres -p 5432 -U postgres; do sleep 10; done
       && python3 /project/bot/main.py"
   

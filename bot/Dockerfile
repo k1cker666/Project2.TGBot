@@ -11,6 +11,7 @@ COPY /src/components/*.py /project/bot/src/components/
 COPY /src/helpfuncs/*.py /project/bot/src/helpfuncs/
 COPY /src/models/*.py /project/bot/src/models/
 COPY /src/repository/*.py /project/bot/src/repository/
+COPY /config/*.json /project/bot/config/
 
 RUN apt-get update \
     && apt-get install -y redis-tools \
@@ -18,4 +19,5 @@ RUN apt-get update \
     && pip install python-telegram-bot \
     && pip install psycopg[binary] \
     && pip install redis[hiredis] \
-    && pip install pydantic
+    && pip install pydantic \
+    && pip install loguru
