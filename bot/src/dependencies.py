@@ -54,7 +54,7 @@ class DependenciesBuilder:
         user_repository = UserRepository(connection_pool=psql_connect_pool)
         word_in_progress_repository = WordInProgressRepository(connection_pool=psql_connect_pool)
         user_state_processor = UserStateProcessor(connection=redis_connect, config=config.redis)
-        lesson_init_processor = LessonInitProcessor()
+        lesson_init_processor = LessonInitProcessor(user_repository=user_repository, word_repository= word_repository)
         lesson_handler = LessonHandler(lesson_init_processor, user_state_processor)
         start_handler = StartHandler(lesson_handler)
         return Dependencies(

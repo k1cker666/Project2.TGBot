@@ -21,7 +21,8 @@ def create_connection_pool(config: PostgresDB) -> psycopg_pool.ConnectionPool:
         connection.close()
         pool = psycopg_pool.ConnectionPool(
             conninfo = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}',
-            open=True
+            open=True,
+            max_size=10
         )
         logger.info(f'{config.host}:{config.port} - Connection to PostgreSQL as user {config.user} successful')
         return pool
