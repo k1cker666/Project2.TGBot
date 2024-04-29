@@ -25,6 +25,7 @@ create table if not exists users (
     tg_login text not null,
     login varchar(16) not null unique,
     password varchar(16) not null,
+    level level_t_v1,
     words_in_lesson smallint not null,
     native_language language_t_v1  not null,
     language_to_learn language_t_v1 not null

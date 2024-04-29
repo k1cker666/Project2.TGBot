@@ -1,4 +1,3 @@
-from random import randint
 from src.repository.word_repository import WordRepository
 from src.repository.user_repository import UserRepository
 from src.components.lesson_dto import LessonDTO, Question
