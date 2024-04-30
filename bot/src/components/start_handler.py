@@ -28,7 +28,7 @@ class StartHandler:
         ):
         user = update.effective_user
         await update.message.reply_html(
-            rf"Привет {user.mention_html()}, я бот, которы поможет тебе выучить иностранные слова!")
+            rf"Привет {user.mention_html()}, я бот, который поможет тебе выучить иностранные слова!")
         buttons =[
             InlineKeyboardButton(
                 "Авторизация",

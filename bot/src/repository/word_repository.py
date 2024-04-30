@@ -70,4 +70,3 @@ class WordRepository:
         answers = [answer[0].capitalize() for answer in result]
         answers.insert(randint(0,3), word.capitalize())
         return answers
-    

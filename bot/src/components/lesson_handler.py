@@ -59,8 +59,8 @@ class LessonHandler:
         query = update.callback_query
         await query.delete_message()
         data = self.lesson_init_processor.init(user_telegram_login='@k1cker666')
-        self.user_state_processor.set_data(user_id='kicker', data=data.model_dump_json())
-        self.user_state_processor.set_state(user_id='kicker', state=State.lesson_active)
+        self.user_state_processor.set_data(user_id=update.effective_user.username, data=data.model_dump_json())
+        self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_active)
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -75,10 +75,10 @@ class LessonHandler:
         self.user_state_processor.set_data(user_id=user_id, data=data.model_dump_json())
         return data
     
-    async def __end_lesson(self, update: Update, user_id:str):
+    async def __end_lesson(self, update: Update):
         query = update.callback_query
         await query.edit_message_text('Все слова урока переведены')
-        self.user_state_processor.set_state(user_id=user_id, state=State.lesson_inactive)
+        self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_inactive)
     
     async def __send_next_question(self, update: Update, data: LessonDTO):
         query = update.callback_query
@@ -93,12 +93,12 @@ class LessonHandler:
         await query.edit_message_reply_markup(reply_markup)
     
     async def __check_answer(self, update: Update, callback_data: CallbackData):
-        data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id='kicker'))
+        data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id=update.effective_user.username))
         if callback_data.word.lower() == data.questions[data.active_question]['correct_answer']:
             if self.__have_next_question(data.active_question, data.questions):
-                data = self.__update_active_question(user_id='kicker', data=data)
+                data = self.__update_active_question(user_id=update.effective_user.username, data=data)
                 await self.__send_next_question(update=update, data=data)
             else:
-                await self.__end_lesson(update=update, user_id='kicker')
+                await self.__end_lesson(update=update)
         else:
             await self.__send_same_question(update=update, data=data)
