@@ -1,3 +1,4 @@
+from random import randint
 from typing import List
 from psycopg.rows import class_row
 import psycopg_pool
@@ -25,11 +26,16 @@ class WordRepository:
                 result = cur.fetchone()
                 return result
             
-    def fetch_words_for_lesson(self,
-                               user_id: int,
-                               word_language: str,
-                               word_level: str,
-                               limit: int) -> List[Word]:
+    #TODO: добавить в миграции 
+    # create extension pg_trgm;
+    # create index word_trgm_index on words using gist (word gist_trgm_ops);
+    
+    def fetch_words_for_lesson(
+        self,
+        user_id: int,
+        word_language: str,
+        word_level: str,
+        limit: int) -> List[Word]:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(Word)) as cur:
                 cur.execute("""
@@ -45,3 +51,22 @@ class WordRepository:
                     """, (user_id, word_language, word_level, limit))
                 result = cur.fetchmany(size = limit)
                 return result
+            
+    def fetch_words_for_answers(
+        self,
+        word: str,
+        language: str
+    ) -> List[str]:
+        with self.connection_pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    select word, word_similarity(word, %s) as sml
+                    from words
+                    where language = %s and word != %s
+                    order by sml desc, word
+                    limit 3
+                    """, (word, language, word))
+                result = cur.fetchmany(size=3)
+        answers = [answer[0] for answer in result]
+        answers.insert(randint(0,3), word)
+        return answers
