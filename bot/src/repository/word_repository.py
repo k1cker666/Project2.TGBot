@@ -67,6 +67,7 @@ class WordRepository:
                     limit 3
                     """, (word, language, word))
                 result = cur.fetchmany(size=3)
-        answers = [answer[0] for answer in result]
-        answers.insert(randint(0,3), word)
+        answers = [answer[0].capitalize() for answer in result]
+        answers.insert(randint(0,3), word.capitalize())
         return answers
+    

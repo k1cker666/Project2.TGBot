@@ -55,16 +55,16 @@ class LessonInitProcessor:
         for word in words_for_lesson:
             correct_answer = self.word_repository.fetch(
                 id=word.word_id,
-                language=word.language.name
+                language=user.native_language.name
             )
             questions.append(
                 Question(
                     id=word.word_id,
                     word_to_translate=word.word,
                     answers=self.word_repository.fetch_words_for_answers(
-                        word=word.word,
+                        word=correct_answer.word,
                         language=user.native_language.name),
-                    correct_answer=correct_answer
+                    correct_answer=correct_answer.word
                 )
             )
         return questions

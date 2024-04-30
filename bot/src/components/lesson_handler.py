@@ -64,7 +64,7 @@ class LessonHandler:
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f"Переведи слово {data.questions[data.active_question]['word_to_translate']}",
+            text=f"Переведи слово {data.questions[data.active_question]['word_to_translate'].capitalize()}",
             reply_markup=reply_markup)
     
     def __have_next_question(self, active_question: int, questions_pool: int) -> bool:
@@ -83,18 +83,18 @@ class LessonHandler:
     async def __send_next_question(self, update: Update, data: LessonDTO):
         query = update.callback_query
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
-        await query.edit_message_text(f"Перевод верный\nСледующее слово {data.questions[data.active_question]['word_to_translate']}")
+        await query.edit_message_text(f"Перевод верный\nСледующее слово {data.questions[data.active_question]['word_to_translate'].capitalize()}")
         await query.edit_message_reply_markup(reply_markup)
     
     async def __send_same_question(self, update: Update, data: LessonDTO):
         query = update.callback_query
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
-        await query.edit_message_text(f"Перевод неверный.\nПопробуй еще раз перевести слово {data.questions[data.active_question]['word_to_translate']}")
+        await query.edit_message_text(f"Перевод неверный.\nПопробуй еще раз перевести слово {data.questions[data.active_question]['word_to_translate'].capitalize()}")
         await query.edit_message_reply_markup(reply_markup)
     
     async def __check_answer(self, update: Update, callback_data: CallbackData):
         data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id='kicker'))
-        if callback_data.word == data.questions[data.active_question]['correct_answer']:
+        if callback_data.word.lower() == data.questions[data.active_question]['correct_answer']:
             if self.__have_next_question(data.active_question, data.questions):
                 data = self.__update_active_question(user_id='kicker', data=data)
                 await self.__send_next_question(update=update, data=data)
