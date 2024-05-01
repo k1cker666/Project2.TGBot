@@ -20,7 +20,7 @@ class LessonInitProcessor:
             user_id=user.user_id,
             word_language=user.language_to_learn,
             word_level=user.word_level,
-            limit=user.words_in_lesson
+            words_in_lesson=user.words_in_lesson
         )
         
         return LessonDTO(questions=self.get_questions(

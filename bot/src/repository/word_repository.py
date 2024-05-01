@@ -30,7 +30,7 @@ class WordRepository:
         user_id: int,
         word_language: str,
         word_level: str,
-        limit: int) -> List[Word]:
+        words_in_lesson: int) -> List[Word]:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(Word)) as cur:
                 cur.execute("""
@@ -43,8 +43,8 @@ class WordRepository:
                     and words.language=%s
                     and words.level=%s
                     limit %s;
-                    """, (user_id, word_language, word_level, limit))
-                result = cur.fetchmany(size = limit)
+                    """, (user_id, word_language, word_level, words_in_lesson))
+                result = cur.fetchmany(size = words_in_lesson)
                 return result
             
     def fetch_words_for_answers(

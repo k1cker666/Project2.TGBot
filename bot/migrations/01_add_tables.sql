@@ -51,3 +51,4 @@ create table if not exists words_in_progress (
 
 create extension if not exists pg_trgm with schema public;
 create index if not exists word_trgm_index on words using GIN (word gin_trgm_ops);
+create unique index if not exists user_tg_login on users (tg_login);
