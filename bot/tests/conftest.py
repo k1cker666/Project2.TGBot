@@ -28,17 +28,18 @@ def psql_connect(config_init):
 @pytest.fixture(scope="session")
 def setup_users_table(psql_connect):
     with psql_connect.connection() as conn:
-        conn.execute("""
-        do $$
-        begin
-            if not exists (
-                select 1 from users
-                where tg_login = '@k1cker666') then
-                insert into users (tg_login, login, password, words_in_lesson, native_language, language_to_learn)
-                VALUES ('@k1cker666', 'admin', 'admin', 15, 'ru', 'en');
-            end if;
-        end
-        $$;""")
+        with conn.cursor() as cur:
+            cur.execute("""
+            do $$
+            begin
+                if not exists (
+                    select 1 from users
+                    where tg_login = '@k1cker666') then
+                    insert into users (tg_login, login, password, words_in_lesson, native_language, language_to_learn, word_level)
+                    VALUES ('@k1cker666', 'admin', 'admin', 15, 'ru', 'en', 'A1');
+                end if;
+            end
+            $$;""")
         
 @pytest.fixture(scope="session")
 def setup_words_table(psql_connect):

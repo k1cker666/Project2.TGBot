@@ -8,10 +8,10 @@ from src.repository.user_repository import UserRepository
         (1.0, '@k1cker666')
     ]
 )
-def test_fetch_user(psql_connect, setup_users_table, id, res):
+def test_fetch_user_by_id(psql_connect, setup_users_table, id, res):
     setup_users_table
     user_repo = UserRepository(psql_connect)
-    assert user_repo.fetch(id).tg_login == res
+    assert user_repo.fetch_user_by_id(id).tg_login == res
 
 @pytest.mark.parametrize(
     "id, res",
@@ -20,6 +20,6 @@ def test_fetch_user(psql_connect, setup_users_table, id, res):
         (-10, None)
     ]
 )
-def test_fetch_nonetype(psql_connect, id, res):
+def test_fetch_nonetype_by_id(psql_connect, id, res):
     user_repo = UserRepository(psql_connect)
-    assert user_repo.fetch(id) == res
+    assert user_repo.fetch_user_by_id(id) == res
