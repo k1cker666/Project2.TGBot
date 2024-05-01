@@ -48,3 +48,6 @@ create table if not exists words_in_progress (
     foreign key (user_id) references Users (user_id),
     foreign key (word_id, language) references Words (word_id, language)
 );
+
+create extension if not exists pg_trgm with schema public;
+create index if not exists word_trgm_index on words using GIN (word gin_trgm_ops);

@@ -58,7 +58,7 @@ class LessonHandler:
     async def __start_lesson(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         query = update.callback_query
         await query.delete_message()
-        data = self.lesson_init_processor.init(user_telegram_login='@k1cker666')
+        data = self.lesson_init_processor.get_lesson(user_telegram_login='@k1cker666')
         self.user_state_processor.set_data(user_id=update.effective_user.username, data=data.model_dump_json())
         self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_active)
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])

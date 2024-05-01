@@ -2,7 +2,6 @@ from random import randint
 from typing import List
 from psycopg.rows import class_row
 import psycopg_pool
-from src.components.lesson_dto import LessonDTO
 from src.models.word import Word
 from src.models.enums import WordLanguage
 
@@ -25,10 +24,6 @@ class WordRepository:
                 )
                 result = cur.fetchone()
                 return result
-            
-    #TODO: добавить в миграции 
-    # create extension pg_trgm;
-    # create index word_trgm_index on words using gist (word gist_trgm_ops);
     
     def fetch_words_for_lesson(
         self,

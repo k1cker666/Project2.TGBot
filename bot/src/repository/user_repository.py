@@ -12,7 +12,7 @@ class UserRepository:
         ):
         self.connection_pool = connection_pool
         
-    def fetch(self, id: int) -> User:
+    def fetch_user_by_id(self, id: int) -> User:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(User)) as cur:
                 cur.execute(
@@ -22,7 +22,7 @@ class UserRepository:
                 result = cur.fetchone()
                 return result
             
-    def fetch_tg_login(self, tg_login: str) -> User:
+    def fetch_user_by_tg_login(self, tg_login: str) -> User:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(User)) as cur:
                 cur.execute(
