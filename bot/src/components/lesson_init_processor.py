@@ -10,7 +10,11 @@ class LessonInitProcessor:
     user_repository: UserRepository
     word_repository: WordRepository
     
-    def __init__(self, user_repository, word_repository):
+    def __init__(
+        self,
+        user_repository: UserRepository,
+        word_repository: WordRepository
+    ):
         self.user_repository = user_repository
         self.word_repository = word_repository
     
