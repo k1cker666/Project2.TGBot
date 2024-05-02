@@ -43,7 +43,7 @@ class LessonInitProcessor:
                 Question(
                     id=word.word_id,
                     word_to_translate=word.word,
-                    answers=self.word_repository.fetch_words_for_answers(
+                    answers=self.word_repository.fetch_words_for_answer(
                         word=correct_answer.word,
                         language=user.native_language.name),
                     correct_answer=correct_answer.word
