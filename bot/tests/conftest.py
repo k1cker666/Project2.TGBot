@@ -1,6 +1,6 @@
-import psycopg
 import pytest
 import redis
+from src.db.psql import create_connection_pool
 from src.components.config import load_config
 
 @pytest.fixture(scope="session")
@@ -22,34 +22,29 @@ def redis_connect(config_init):
 @pytest.fixture(scope="session")
 def psql_connect(config_init):
     config = config_init.psql
-    conn = psycopg.connect(
-        dbname = config.dbname,
-        user = config.user,
-        password = config.password,
-        host = config.host,
-        port = config.port,
-        autocommit = True)
-    return conn
+    pool = create_connection_pool(config)
+    return pool
 
 @pytest.fixture(scope="session")
 def setup_users_table(psql_connect):
-    with psql_connect.cursor() as curs:
-        curs.execute("""
-        do $$
-        begin
-            if not exists (
-                select 1 from users
-                where tg_login = '@k1cker666') then
-                insert into users (tg_login, login, password, words_in_lesson, native_language, language_to_learn)
-                VALUES ('@k1cker666', 'admin', 'admin', 15, 'ru', 'en');
-            end if;
-        end
-        $$;""")
+    with psql_connect.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+            do $$
+            begin
+                if not exists (
+                    select 1 from users
+                    where tg_login = '@k1cker666') then
+                    insert into users (tg_login, login, password, words_in_lesson, native_language, language_to_learn, word_level)
+                    VALUES ('@k1cker666', 'admin', 'admin', 15, 'ru', 'en', 'A1');
+                end if;
+            end
+            $$;""")
         
 @pytest.fixture(scope="session")
 def setup_words_table(psql_connect):
-    with psql_connect.cursor() as curs:
-        curs.execute("""
+    with psql_connect.connection() as conn:
+        conn.execute("""
         do $$
         begin
             if not exists (

@@ -27,7 +27,8 @@ create table if not exists users (
     password varchar(16) not null,
     words_in_lesson smallint not null,
     native_language language_t_v1  not null,
-    language_to_learn language_t_v1 not null
+    language_to_learn language_t_v1 not null,
+    level level_t_v1 not null
 );
 
 create table if not exists words (
@@ -47,3 +48,8 @@ create table if not exists words_in_progress (
     foreign key (user_id) references Users (user_id),
     foreign key (word_id, language) references Words (word_id, language)
 );
+
+create extension if not exists plpgsql with schema public;
+create extension if not exists pg_trgm with schema public;
+create index if not exists word_trgm_index on words using GIN (word gin_trgm_ops);
+create unique index if not exists user_tg_login on users (tg_login);

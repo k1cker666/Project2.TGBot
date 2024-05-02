@@ -11,10 +11,11 @@ class CallbackData:
  
     def to_string(self) -> str:
         fields = [self.cb_processor, self.cb_type, self.word]
-        filled_fields = [field for field in fields if field is not None]
+        filled_fields = [field if field is not None else '_' for field in fields]
         template = self.TEMPLATE.join(['{}'] * len(filled_fields))
         return template.format(*filled_fields)
  
     def from_string(string: str):
-        parts = [part for part in string.split(CallbackData.TEMPLATE)]
-        return CallbackData(*parts)
+        parts = [part.strip() if part != '_' else None for part in string.split(CallbackData.TEMPLATE)]
+        cb_processor, cb_type, word = parts
+        return CallbackData(cb_processor, cb_type, word)

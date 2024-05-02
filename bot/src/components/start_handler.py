@@ -1,4 +1,3 @@
-import json
 from telegram import (
     Update,
     InlineKeyboardButton,
@@ -28,13 +27,13 @@ class StartHandler:
         ):
         user = update.effective_user
         await update.message.reply_html(
-            rf"Привет {user.mention_html()}, я бот, которы поможет тебе выучить иностранные слова!")
+            rf"Привет {user.mention_html()}, я бот, который поможет тебе выучить иностранные слова!")
         buttons =[
             InlineKeyboardButton(
                 "Авторизация",
                 callback_data = CallbackData(
-                        cb_processor=f'{self.name}',
-                        cb_type = f'{self.CallBackType.auth.name}').to_string())
+                        cb_processor = self.name,
+                        cb_type = self.CallBackType.auth.name).to_string())
             ]
         reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
         await context.bot.send_message(
@@ -56,8 +55,8 @@ class StartHandler:
                 InlineKeyboardButton(
                     "Начать урок",
                     callback_data = CallbackData(
-                        cb_processor=f'{self.lesson_handler.name}',
-                        cb_type = f'{self.lesson_handler.CallBackType.init_lesson.name}').to_string()
+                        cb_processor = self.lesson_handler.name,
+                        cb_type = self.lesson_handler.CallBackType.init_lesson.name).to_string()
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",
