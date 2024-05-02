@@ -45,9 +45,9 @@ class WordRepository:
                     limit %s;
                     """, (user_id, word_language, word_level, words_in_lesson))
                 result = cur.fetchmany(size = words_in_lesson)
-                return result
+                return result if len(result) != 0 else None
             
-    def fetch_words_for_answers(
+    def fetch_words_for_answer(
         self,
         word: str,
         language: str
@@ -58,7 +58,7 @@ class WordRepository:
                     select word, word_similarity(word, %s) as sml
                     from words
                     where language = %s and word != %s
-                    order by sml desc, word
+                    order by sml desc
                     limit 3
                     """, (word, language, word))
                 result = cur.fetchmany(size=3)
