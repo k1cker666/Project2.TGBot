@@ -1,8 +1,8 @@
 from enum import Enum, auto
-from bot.src.components.repetition_init_processor import RepetitionInitProcessor
-from bot.src.components.user_state_processor import UserStateProcessor
+from src.components.repetition_init_processor import RepetitionInitProcessor
+from src.components.user_state_processor import UserStateProcessor
 
-class LessonHandler:
+class RepetitionHandler:
     
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor

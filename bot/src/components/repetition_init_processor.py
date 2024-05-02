@@ -1,5 +1,5 @@
-from bot.src.repository.user_repository import UserRepository
-from bot.src.repository.wordinprogress_repository import WordInProgressRepository
+from src.repository.user_repository import UserRepository
+from src.repository.wordinprogress_repository import WordInProgressRepository
 
 class RepetitionInitProcessor:
     
