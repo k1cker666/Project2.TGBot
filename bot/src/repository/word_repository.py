@@ -30,7 +30,8 @@ class WordRepository:
         user_id: int,
         word_language: str,
         word_level: str,
-        words_in_lesson: int) -> List[Word]:
+        words_in_lesson: int
+    ) -> List[Word] | None:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(Word)) as cur:
                 cur.execute("""
@@ -65,3 +66,24 @@ class WordRepository:
         answers = [answer[0].capitalize() for answer in result]
         answers.insert(randint(0,3), word.capitalize())
         return answers
+    
+    def fetch_words_for_repetition(
+        self,
+        user_id: int,
+        word_language: str,
+        words_in_lesson: int
+    ) -> List[Word] | None:
+        with self.connection_pool.connection() as conn:
+            with conn.cursor(row_factory=class_row(Word)) as cur:
+                cur.execute("""
+                    select words.word_id, words.language, level, word from words_in_progress
+                    inner join words
+                    on words_in_progress.word_id = words.word_id
+                    and words_in_progress.language = words.language
+                    and user_id = %s
+                    where words_in_progress.language = %s
+                    and words_in_progress.number_of_repetitions != 0
+                    limit %s
+                    """, (user_id, word_language, words_in_lesson))
+                result = cur.fetchmany(size=words_in_lesson)
+                return result if len(result) != 0 else None
