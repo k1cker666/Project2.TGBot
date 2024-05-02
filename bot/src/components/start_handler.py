@@ -56,10 +56,16 @@ class StartHandler:
             await query.delete_message()
             buttons = [
                 InlineKeyboardButton(
-                    "Начать урок",
+                    "Начать новый урок",
                     callback_data = CallbackData(
                         cb_processor = self.lesson_handler.name,
                         cb_type = self.lesson_handler.CallBackType.init_lesson.name).to_string()
+                    ),
+                InlineKeyboardButton(
+                    "Повторить слова",
+                    callback_data = CallbackData(
+                        cb_processor = self.repetition_handler.name,
+                        cb_type = self.repetition_handler.CallBackType.init_repetition.name).to_string()
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",
@@ -67,7 +73,7 @@ class StartHandler:
                     )
             ]
             reply_markup = InlineKeyboardMarkup(
-                build_menu(buttons, 1)
+                build_menu(buttons, 2)
                 )
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,

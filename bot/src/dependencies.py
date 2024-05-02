@@ -94,5 +94,6 @@ class DependenciesBuilder:
             word_in_progress_repository=word_in_progress_repository,
             config = config,
             user_state_processor = user_state_processor,
-            lesson_handler = lesson_handler
+            lesson_handler = lesson_handler,
+            repetition_handler=repetition_handler
         )
