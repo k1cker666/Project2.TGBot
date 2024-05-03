@@ -6,3 +6,6 @@ __pycache__/
 pytest.ini
 test.py
 help.txt
+bot/images/right_answer.png
+bot/images/start_image.png
+bot/images/wrong_answer.png
