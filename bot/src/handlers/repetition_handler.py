@@ -5,16 +5,18 @@ from telegram import (
     InlineKeyboardMarkup
     )
 from telegram.ext import ContextTypes
+from src.components.user_state_processor import State, UserStateProcessor
+from src.components.repetition_init_processor import RepetitionInitProcessor
+from src.handlers.image_handler import ImageHandler
 from src.models.lesson_dto import LessonDTO, Question
 from src.helpfuncs.menu import build_menu
 from src.models.callback import CallbackData
-from src.components.repetition_init_processor import RepetitionInitProcessor
-from src.components.user_state_processor import State, UserStateProcessor
 
 class RepetitionHandler:
     
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
+    image_handler: ImageHandler
     name = "repetition"
     
     class CallBackType(Enum):
@@ -24,10 +26,12 @@ class RepetitionHandler:
     def __init__(
         self,
         repetition_init_processor: RepetitionInitProcessor,
-        user_state_processor: UserStateProcessor
+        user_state_processor: UserStateProcessor,
+        image_handler: ImageHandler
         ):
         self.repetition_init_processor = repetition_init_processor
         self.user_state_processor = user_state_processor
+        self.image_handler = image_handler
     
     async def handle_callback(
         self,

@@ -5,16 +5,18 @@ from telegram import (
     InlineKeyboardMarkup
 )
 from telegram.ext import ContextTypes
+from src.components.lesson_init_processor import LessonInitProcessor
+from src.components.user_state_processor import UserStateProcessor, State
+from bot.src.handlers.image_handler import ImageHandler
 from src.models.callback import CallbackData
 from src.models.lesson_dto import LessonDTO, Question
 from src.helpfuncs.menu import build_menu
-from src.components.user_state_processor import UserStateProcessor, State
-from src.components.lesson_init_processor import LessonInitProcessor
 
 class LessonHandler:
     
     lesson_init_processor: LessonInitProcessor
     user_state_processor: UserStateProcessor
+    image_handler: ImageHandler
     name = "lesson"
     
     class CallBackType(Enum):
@@ -24,10 +26,12 @@ class LessonHandler:
     def __init__(
         self,
         lesson_init_processor: LessonInitProcessor,
-        user_state_processor: UserStateProcessor
+        user_state_processor: UserStateProcessor,
+        image_handler: ImageHandler
         ):
         self.lesson_init_processor = lesson_init_processor
         self.user_state_processor = user_state_processor
+        self.image_handler = image_handler
         
     async def handle_callback(
         self,
