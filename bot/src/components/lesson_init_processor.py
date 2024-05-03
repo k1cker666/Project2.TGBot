@@ -3,7 +3,7 @@ from src.models.user import User
 from src.models.word import Word
 from src.repository.word_repository import WordRepository
 from src.repository.user_repository import UserRepository
-from src.components.lesson_dto import LessonDTO, Question
+from src.models.lesson_dto import LessonDTO, Question
 
 class LessonInitProcessor:
     

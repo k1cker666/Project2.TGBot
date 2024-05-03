@@ -5,8 +5,8 @@ from telegram import (
     )
 from telegram.ext import ContextTypes
 from src.models.callback import CallbackData
-from src.components.lesson_handler import LessonHandler
-from src.components.repetition_handler import RepetitionHandler
+from src.handlers.lesson_handler import LessonHandler
+from src.handlers.repetition_handler import RepetitionHandler
 from src.helpfuncs.menu import build_menu
 from enum import Enum, auto
 

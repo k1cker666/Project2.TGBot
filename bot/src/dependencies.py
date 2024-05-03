@@ -1,12 +1,12 @@
 from src.db import psql, redis
-from src.components.start_handler import StartHandler
+from src.handlers.start_handler import StartHandler
 from src.components.config import load_config, Config
 from src.repository.word_repository import WordRepository
 from src.repository.user_repository import UserRepository
 from src.components.user_state_processor import UserStateProcessor
-from src.components.lesson_handler import LessonHandler
+from src.handlers.lesson_handler import LessonHandler
 from src.components.lesson_init_processor import LessonInitProcessor
-from src.components.repetition_handler import RepetitionHandler
+from src.handlers.repetition_handler import RepetitionHandler
 from src.components.repetition_init_processor import RepetitionInitProcessor
 from loguru import logger
 

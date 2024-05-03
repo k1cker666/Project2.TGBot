@@ -3,40 +3,40 @@ from telegram import (
     Update,
     InlineKeyboardButton,
     InlineKeyboardMarkup
-)
+    )
 from telegram.ext import ContextTypes
-from src.models.callback import CallbackData
-from src.components.lesson_dto import LessonDTO, Question
+from src.models.lesson_dto import LessonDTO, Question
 from src.helpfuncs.menu import build_menu
-from src.components.user_state_processor import UserStateProcessor, State
-from src.components.lesson_init_processor import LessonInitProcessor
+from src.models.callback import CallbackData
+from src.components.repetition_init_processor import RepetitionInitProcessor
+from src.components.user_state_processor import State, UserStateProcessor
 
-class LessonHandler:
+class RepetitionHandler:
     
-    lesson_init_processor: LessonInitProcessor
+    repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
-    name = "lesson"
+    name = "repetition"
     
     class CallBackType(Enum):
-        init_lesson = auto()
+        init_repetition = auto()
         check_answer = auto()
-    
+        
     def __init__(
         self,
-        lesson_init_processor: LessonInitProcessor,
+        repetition_init_processor: RepetitionInitProcessor,
         user_state_processor: UserStateProcessor
         ):
-        self.lesson_init_processor = lesson_init_processor
+        self.repetition_init_processor = repetition_init_processor
         self.user_state_processor = user_state_processor
-        
+    
     async def handle_callback(
         self,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
         callback_data: CallbackData
         ):
-        if callback_data.cb_type == self.CallBackType.init_lesson.name:
-            await self.__start_lesson(update, context)
+        if callback_data.cb_type == self.CallBackType.init_repetition.name:
+            await self.__start_repetition(update, context)
         if callback_data.cb_type == self.CallBackType.check_answer.name:
             await self.__check_answer(update, callback_data)
                 
@@ -55,10 +55,10 @@ class LessonHandler:
         reply_markup = InlineKeyboardMarkup(build_menu(buttons=buttons, n_cols=1))
         return reply_markup
         
-    async def __start_lesson(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def __start_repetition(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         query = update.callback_query
         await query.delete_message()
-        data = self.lesson_init_processor.get_lesson(user_telegram_login='@k1cker666')
+        data = self.repetition_init_processor.get_lesson(user_telegram_login='@k1cker666')
         self.user_state_processor.set_data(user_id=update.effective_user.username, data=data.model_dump_json())
         self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_active)
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
@@ -75,9 +75,9 @@ class LessonHandler:
         self.user_state_processor.set_data(user_id=user_id, data=data.model_dump_json())
         return data
     
-    async def __end_lesson(self, update: Update):
+    async def __end_repetition(self, update: Update):
         query = update.callback_query
-        await query.edit_message_text('Все слова урока переведены')
+        await query.edit_message_text('Больше нет слов для перевода')
         self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_inactive)
     
     async def __send_next_question(self, update: Update, data: LessonDTO):
@@ -99,6 +99,6 @@ class LessonHandler:
                 data = self.__update_active_question(user_id=update.effective_user.username, data=data)
                 await self.__send_next_question(update=update, data=data)
             else:
-                await self.__end_lesson(update=update)
+                await self.__end_repetition(update=update)
         else:
             await self.__send_same_question(update=update, data=data)
