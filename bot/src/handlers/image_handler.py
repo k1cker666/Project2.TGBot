@@ -7,6 +7,7 @@ class ImageHandler:
     start_image = Image.open(f"{os.path.abspath(os.curdir)}/bot/images/start_image_template.png")
     right_answer = Image.open(f"{os.path.abspath(os.curdir)}/bot/images/right_answer_template.png")
     wrong_answer = Image.open(f"{os.path.abspath(os.curdir)}/bot/images/wrong_answer_template.png")
+    end_lesson = Image.open(f"{os.path.abspath(os.curdir)}/bot/images/end_lesson_template.png")
     font = ImageFont.truetype(
         font=f"{os.path.abspath(os.curdir)}/bot/fonts/Merriweather.ttf",
         size=72,
@@ -18,7 +19,10 @@ class ImageHandler:
         image.save(buffer, 'PNG')
         buffer.seek(0)
         return buffer
-        
+    
+    def get_end_lesson_image(self) -> BytesIO:
+        return self.write_in_buffer(self.end_lesson)
+    
     def get_start_image(self, word: str) -> BytesIO:
         start_image = self.start_image.copy()
         draw = ImageDraw.Draw(start_image)

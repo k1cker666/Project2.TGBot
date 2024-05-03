@@ -84,10 +84,12 @@ class RepetitionHandler:
     async def __end_repetition(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         query = update.callback_query
         await query.delete_message()
-        await context.bot.send_message(
+        photo_buffer = self.image_handler.get_end_lesson_image()
+        await context.bot.send_photo(
             chat_id=update.effective_chat.id,
-            text='Повторение закончено'
+            photo=photo_buffer
         )
+        photo_buffer.close()
         self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_inactive)
     
     async def __send_next_question(self, update: Update, context: ContextTypes.DEFAULT_TYPE, data: LessonDTO):
