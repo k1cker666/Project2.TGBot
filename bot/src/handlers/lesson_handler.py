@@ -114,7 +114,8 @@ class LessonHandler:
             photo=photo_buffer,
             reply_markup=reply_markup
         )
-    
+        photo_buffer.close()
+        
     async def __check_answer(self, update: Update, context: ContextTypes.DEFAULT_TYPE, callback_data: CallbackData):
         data = LessonDTO.model_validate_json(self.user_state_processor.get_data(user_id=update.effective_user.username))
         if callback_data.word.lower() == data.questions[data.active_question]['correct_answer']:
