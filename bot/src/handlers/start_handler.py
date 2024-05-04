@@ -19,7 +19,11 @@ class StartHandler:
     class CallBackType(Enum):
         auth = auto()
     
-    def __init__(self, lesson_handler, repetition_handler):
+    def __init__(
+        self,
+        lesson_handler: LessonHandler,
+        repetition_handler:RepetitionHandler
+    ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
     
