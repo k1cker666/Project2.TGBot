@@ -77,12 +77,12 @@ class StartHandler:
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",
-                    url="https://www.google.ru/"
+                    callback_data=CallbackData(
+                        cb_processor = self.statistic_handler.name,
+                        cb_type = self.statistic_handler.CallBackType.init_stat.name).to_string()
                     )
             ]
-            reply_markup = InlineKeyboardMarkup(
-                build_menu(buttons, 2)
-                )
+            reply_markup = InlineKeyboardMarkup(build_menu(buttons, 2))
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Авторизация успешно выполнена\nВыбери следующее действие",

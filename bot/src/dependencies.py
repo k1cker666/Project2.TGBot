@@ -28,7 +28,8 @@ class Dependencies:
         config: Config,
         user_state_processor: UserStateProcessor,
         lesson_handler: LessonHandler,
-        repetition_handler: RepetitionHandler
+        repetition_handler: RepetitionHandler,
+        statistic_handler: StatisticHandler
     ):
         self.start_handler = start_handler
         self.word_repository = word_repository
@@ -37,6 +38,7 @@ class Dependencies:
         self.user_state_processor = user_state_processor
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
+        self.statistic_handler = statistic_handler
     
     def close(self):
         self.user_state_processor.conn.close()
@@ -100,5 +102,6 @@ class DependenciesBuilder:
             config = config,
             user_state_processor = user_state_processor,
             lesson_handler = lesson_handler,
-            repetition_handler=repetition_handler
+            repetition_handler = repetition_handler,
+            statistic_handler = statistic_handler
         )
