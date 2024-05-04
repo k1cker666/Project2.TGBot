@@ -4,6 +4,7 @@ from telegram import (
     Update
 )
 from telegram.ext import ContextTypes
+from telegram.constants import ParseMode
 from src.repository.user_repository import UserRepository
 from src.repository.word_repository import WordRepository
 from src.components.image_builder import ImageBuilder
@@ -40,12 +41,7 @@ class StatisticHandler:
         ):
         query = update.callback_query
         if callback_data.cb_type == self.CallBackType.init_stat.name:
-            await query.delete_message()
-            await context.bot.send_photo(
-                chat_id=update.effective_chat.id,
-                photo=self.image_builder.get_progress_bar_image(),
-                caption='Статистика'
-            )
+            await self.send_statistic(update, context)
     
     async def send_statistic(
         self,
@@ -53,11 +49,25 @@ class StatisticHandler:
         context: ContextTypes.DEFAULT_TYPE
         ):
         user = self.user_repository.fetch_user_by_tg_login(tg_login="@k1cker666")
-        learned_words = self.word_repository.fetch_count_learned_words(
-            user_id=user.user_id,
-            language_to_learn=user.language_to_learn
-        )
         passed_words = self.word_repository.fetch_count_passed_words(
             user_id=user.user_id,
             language_to_learn=user.language_to_learn
         )
+        learned_words = self.word_repository.fetch_count_learned_words(
+            user_id=user.user_id,
+            language_to_learn=user.language_to_learn
+        )
+        photo_buffer = self.image_builder.get_progress_bar_image(
+            passed_words=passed_words,
+            learned_words=learned_words
+        )
+        caption = f"Пользователь: <i>{user.tg_login}</i>\nАккаунт: <i>{user.login}</i>\nПройдено слов: <b>{passed_words}/{self.word_count}</b>\nВыучено слов: <b>{learned_words}/{self.word_count}</b>"
+        query = update.callback_query
+        await query.delete_message()
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=photo_buffer,
+            caption=caption,
+            parse_mode=ParseMode.HTML
+        )
+        photo_buffer.close()
