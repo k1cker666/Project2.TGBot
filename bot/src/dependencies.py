@@ -7,6 +7,7 @@ from src.components.image_builder import ImageBuilder
 from src.handlers.start_handler import StartHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.lesson_handler import LessonHandler
+from src.handlers.statistic_handler import StatisticHandler
 from src.repository.word_repository import WordRepository
 from src.repository.user_repository import UserRepository
 from loguru import logger
@@ -81,9 +82,15 @@ class DependenciesBuilder:
             image_builder=image_builder
         )
         
+        statistic_handler = StatisticHandler(
+            user_repository=user_repository,
+            word_repository=word_repository
+        )
+        
         start_handler = StartHandler(
             lesson_handler=lesson_handler,
-            repetition_handler=repetition_handler
+            repetition_handler=repetition_handler,
+            statistic_handler=statistic_handler
         )
         
         return Dependencies(

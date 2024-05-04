@@ -7,6 +7,7 @@ from telegram.ext import ContextTypes
 from src.models.callback import CallbackData
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.repetition_handler import RepetitionHandler
+from src.handlers.statistic_handler import StatisticHandler
 from src.helpfuncs.menu import build_menu
 from enum import Enum, auto
 
@@ -15,6 +16,7 @@ class StartHandler:
     name = "start"
     lesson_handler: LessonHandler
     repetition_handler: RepetitionHandler
+    statistic_handler: StatisticHandler
     
     class CallBackType(Enum):
         auth = auto()
@@ -22,10 +24,12 @@ class StartHandler:
     def __init__(
         self,
         lesson_handler: LessonHandler,
-        repetition_handler:RepetitionHandler
+        repetition_handler: RepetitionHandler,
+        statistic_handler: StatisticHandler
     ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
+        self.statistic_handler = statistic_handler
     
     async def handle(
         self,
