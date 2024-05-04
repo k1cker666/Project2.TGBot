@@ -40,9 +40,9 @@ create table if not exists words (
 );
 
 create table if not exists words_in_progress (
-    user_id smallserial,
+    user_id int,
     word_id int,
-    language language_t_v1 not null,
+    language language_t_v1,
     number_of_repetitions smallint not null,
     primary key (user_id, word_id, language),
     foreign key (user_id) references Users (user_id),
@@ -52,4 +52,4 @@ create table if not exists words_in_progress (
 create extension if not exists plpgsql with schema public;
 create extension if not exists pg_trgm with schema public;
 create index if not exists word_trgm_index on words using GIN (word gin_trgm_ops);
-create unique index if not exists user_tg_login on users (tg_login);
+create index if not exists user_tg_login on users (tg_login);
