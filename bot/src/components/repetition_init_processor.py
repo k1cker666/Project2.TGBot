@@ -1,29 +1,24 @@
 from typing import List
 from src.models.user import User
 from src.models.word import Word
-from src.repository.word_repository import WordRepository
-from src.repository.user_repository import UserRepository
 from src.models.lesson_dto import LessonDTO, Question
+from src.repository.user_repository import UserRepository
+from src.repository.word_repository import WordRepository
 
-class LessonInitProcessor:
+class RepetitionInitProcessor:
     
     user_repository: UserRepository
     word_repository: WordRepository
     
-    def __init__(
-        self,
-        user_repository: UserRepository,
-        word_repository: WordRepository
-    ):
+    def __init__(self, user_repository, word_repository):
         self.user_repository = user_repository
         self.word_repository = word_repository
-    
+        
     def get_lesson(self, user_telegram_login: str) -> LessonDTO:
         user = self.user_repository.fetch_user_by_tg_login(user_telegram_login)
-        words_for_lesson = self.word_repository.fetch_words_for_lesson(
+        words_for_lesson = self.word_repository.fetch_words_for_repetition(
             user_id=user.user_id,
             word_language=user.language_to_learn,
-            word_level=user.word_level,
             words_in_lesson=user.words_in_lesson
         )
         

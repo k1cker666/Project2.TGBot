@@ -6,7 +6,7 @@ from telegram import (
 )
 from telegram.ext import ContextTypes
 from src.models.callback import CallbackData
-from src.components.lesson_dto import LessonDTO, Question
+from src.models.lesson_dto import LessonDTO, Question
 from src.helpfuncs.menu import build_menu
 from src.components.user_state_processor import UserStateProcessor, State
 from src.components.lesson_init_processor import LessonInitProcessor

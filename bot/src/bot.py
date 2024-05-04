@@ -51,3 +51,5 @@ async def callback_handler(
         await deps.start_handler.handle_callback(update, context, callback_data)
     if callback_data.cb_processor == deps.lesson_handler.name:
         await deps.lesson_handler.handle_callback(update, context, callback_data)
+    if callback_data.cb_processor == deps.repetition_handler.name:
+        await deps.repetition_handler.handle_callback(update, context, callback_data)

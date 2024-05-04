@@ -5,7 +5,8 @@ from telegram import (
     )
 from telegram.ext import ContextTypes
 from src.models.callback import CallbackData
-from src.components.lesson_handler import LessonHandler
+from src.handlers.lesson_handler import LessonHandler
+from src.handlers.repetition_handler import RepetitionHandler
 from src.helpfuncs.menu import build_menu
 from enum import Enum, auto
 
@@ -13,12 +14,14 @@ class StartHandler:
     
     name = "start"
     lesson_handler: LessonHandler
+    repetition_handler: RepetitionHandler
     
     class CallBackType(Enum):
         auth = auto()
     
-    def __init__(self, lesson_handler):
+    def __init__(self, lesson_handler, repetition_handler):
         self.lesson_handler = lesson_handler
+        self.repetition_handler = repetition_handler
     
     async def handle(
         self,
@@ -53,10 +56,16 @@ class StartHandler:
             await query.delete_message()
             buttons = [
                 InlineKeyboardButton(
-                    "Начать урок",
+                    "Начать новый урок",
                     callback_data = CallbackData(
                         cb_processor = self.lesson_handler.name,
                         cb_type = self.lesson_handler.CallBackType.init_lesson.name).to_string()
+                    ),
+                InlineKeyboardButton(
+                    "Повторить слова",
+                    callback_data = CallbackData(
+                        cb_processor = self.repetition_handler.name,
+                        cb_type = self.repetition_handler.CallBackType.init_repetition.name).to_string()
                     ),
                 InlineKeyboardButton(
                     "Посмотреть статистику",
@@ -64,7 +73,7 @@ class StartHandler:
                     )
             ]
             reply_markup = InlineKeyboardMarkup(
-                build_menu(buttons, 1)
+                build_menu(buttons, 2)
                 )
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
