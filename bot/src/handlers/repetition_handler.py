@@ -7,7 +7,7 @@ from telegram import (
 from telegram.ext import ContextTypes
 from src.components.user_state_processor import State, UserStateProcessor
 from src.components.repetition_init_processor import RepetitionInitProcessor
-from src.handlers.image_handler import ImageHandler
+from src.components.image_builder import ImageBuilder
 from src.models.lesson_dto import LessonDTO, Question
 from src.helpfuncs.menu import build_menu
 from src.models.callback import CallbackData
@@ -16,7 +16,7 @@ class RepetitionHandler:
     
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
-    image_handler: ImageHandler
+    image_builder: ImageBuilder
     name = "repetition"
     
     class CallBackType(Enum):
@@ -27,11 +27,11 @@ class RepetitionHandler:
         self,
         repetition_init_processor: RepetitionInitProcessor,
         user_state_processor: UserStateProcessor,
-        image_handler: ImageHandler
+        image_builder: ImageBuilder
         ):
         self.repetition_init_processor = repetition_init_processor
         self.user_state_processor = user_state_processor
-        self.image_handler = image_handler
+        self.image_builder = image_builder
     
     async def handle_callback(
         self,
@@ -66,7 +66,7 @@ class RepetitionHandler:
         self.user_state_processor.set_data(user_id=update.effective_user.username, data=data.model_dump_json())
         self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_active)
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
-        photo_buffer = self.image_handler.get_start_image(data.questions[data.active_question]['word_to_translate'].capitalize())
+        photo_buffer = self.image_builder.get_start_image(data.questions[data.active_question]['word_to_translate'].capitalize())
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo_buffer,
@@ -84,7 +84,7 @@ class RepetitionHandler:
     async def __end_repetition(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         query = update.callback_query
         await query.delete_message()
-        photo_buffer = self.image_handler.get_end_lesson_image()
+        photo_buffer = self.image_builder.get_end_lesson_image()
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo_buffer
@@ -96,7 +96,7 @@ class RepetitionHandler:
         query = update.callback_query
         await query.delete_message()
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
-        photo_buffer = self.image_handler.get_right_answer_image(data.questions[data.active_question]['word_to_translate'].capitalize())
+        photo_buffer = self.image_builder.get_right_answer_image(data.questions[data.active_question]['word_to_translate'].capitalize())
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo_buffer,
@@ -107,7 +107,7 @@ class RepetitionHandler:
         query = update.callback_query
         await query.delete_message()
         reply_markup = self.create_answers_menu(question=data.questions[data.active_question])
-        photo_buffer = self.image_handler.get_wrong_answer_image(data.questions[data.active_question]['word_to_translate'].capitalize())
+        photo_buffer = self.image_builder.get_wrong_answer_image(data.questions[data.active_question]['word_to_translate'].capitalize())
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo_buffer,

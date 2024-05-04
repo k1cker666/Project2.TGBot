@@ -7,8 +7,7 @@ def create_connection_pool(config: PostgresDB) -> psycopg_pool.ConnectionPool:
     pool = psycopg_pool.ConnectionPool(
             conninfo = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}',
             open=True,
-            max_size=10,
-            max_waiting=10
+            max_size=config.pool_max_size
         )
     try:
         conn = pool.getconn()
