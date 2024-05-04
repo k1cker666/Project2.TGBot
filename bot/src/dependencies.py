@@ -57,7 +57,9 @@ class DependenciesBuilder:
         word_repository = WordRepository(connection_pool=psql_connect_pool)
         user_repository = UserRepository(connection_pool=psql_connect_pool)
         
-        image_builder = ImageBuilder()
+        image_builder = ImageBuilder(
+            word_count=config.word_count
+        )
         
         user_state_processor = UserStateProcessor(
             connection=redis_connect,
@@ -86,7 +88,9 @@ class DependenciesBuilder:
         
         statistic_handler = StatisticHandler(
             user_repository=user_repository,
-            word_repository=word_repository
+            word_repository=word_repository,
+            image_builder=image_builder,
+            word_count=config.word_count
         )
         
         start_handler = StartHandler(
