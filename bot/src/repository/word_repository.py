@@ -83,6 +83,7 @@ class WordRepository:
                     and user_id = %s
                     where words_in_progress.language = %s
                     and words_in_progress.number_of_repetitions != 0
+                    order by random()
                     limit %s
                     """, (user_id, word_language, words_in_lesson))
                 result = cur.fetchmany(size=words_in_lesson)

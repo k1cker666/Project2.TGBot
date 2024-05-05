@@ -61,7 +61,11 @@ class StatisticHandler:
             passed_words=passed_words,
             learned_words=learned_words
         )
-        caption = f"Пользователь: <i>{user.tg_login}</i>\nАккаунт: <i>{user.login}</i>\nПройдено слов: <b>{passed_words}/{self.word_count}</b>\nВыучено слов: <b>{learned_words}/{self.word_count}</b>"
+        caption = f"Пользователь: <i>{user.tg_login}</i>" + \
+            f"\nАккаунт: <i>{user.login}</i>" + \
+            f"\nТекущий уровень изучаемых слов: <b>{user.word_level.get_description()}</b>" + \
+            f"\nПройдено слов: <b>{passed_words}/{self.word_count}</b>" + \
+            f"\nВыучено слов: <b>{learned_words}/{self.word_count}</b>"
         query = update.callback_query
         await query.delete_message()
         await context.bot.send_photo(
