@@ -1,8 +1,13 @@
 .vscode
 .pytest_cache/
 __pycache__/
+dataset/
 
 *.py[cod]
 pytest.ini
 test.py
 help.txt
+bot/images/right_answer.png
+bot/images/start_image.png
+bot/images/wrong_answer.png
+bot/scripts/dataset_convert.py

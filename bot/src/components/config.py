@@ -8,6 +8,7 @@ class PostgresDB(BaseModel):
     password: str
     host: str
     port: str
+    pool_max_size: int
 
 class RedisDB(BaseModel):
     host: str

@@ -12,6 +12,8 @@ COPY /src/helpfuncs/*.py /project/bot/src/helpfuncs/
 COPY /src/models/*.py /project/bot/src/models/
 COPY /src/repository/*.py /project/bot/src/repository/
 COPY /config/*.json /project/bot/config/
+COPY /images/*template.png /project/bot/images/
+COPY /fonts/*.ttf /project/bot/fonts/
 
 RUN apt-get update \
     && apt-get install -y redis-tools \
@@ -21,4 +23,5 @@ RUN apt-get update \
     && pip install psycopg_pool \
     && pip install redis[hiredis] \
     && pip install pydantic \
-    && pip install loguru
+    && pip install loguru \
+    && pip install Pillow
