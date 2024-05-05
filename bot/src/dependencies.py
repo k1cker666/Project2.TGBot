@@ -7,6 +7,7 @@ from src.components.image_builder import ImageBuilder
 from src.handlers.start_handler import StartHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.lesson_handler import LessonHandler
+from src.handlers.statistic_handler import StatisticHandler
 from src.repository.word_repository import WordRepository
 from src.repository.user_repository import UserRepository
 from loguru import logger
@@ -27,7 +28,8 @@ class Dependencies:
         config: Config,
         user_state_processor: UserStateProcessor,
         lesson_handler: LessonHandler,
-        repetition_handler: RepetitionHandler
+        repetition_handler: RepetitionHandler,
+        statistic_handler: StatisticHandler
     ):
         self.start_handler = start_handler
         self.word_repository = word_repository
@@ -36,6 +38,7 @@ class Dependencies:
         self.user_state_processor = user_state_processor
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
+        self.statistic_handler = statistic_handler
     
     def close(self):
         self.user_state_processor.conn.close()
@@ -54,7 +57,9 @@ class DependenciesBuilder:
         word_repository = WordRepository(connection_pool=psql_connect_pool)
         user_repository = UserRepository(connection_pool=psql_connect_pool)
         
-        image_builder = ImageBuilder()
+        image_builder = ImageBuilder(
+            common_word_count=config.common_word_count
+        )
         
         user_state_processor = UserStateProcessor(
             connection=redis_connect,
@@ -81,9 +86,17 @@ class DependenciesBuilder:
             image_builder=image_builder
         )
         
+        statistic_handler = StatisticHandler(
+            user_repository=user_repository,
+            word_repository=word_repository,
+            image_builder=image_builder,
+            common_word_count=config.common_word_count
+        )
+        
         start_handler = StartHandler(
             lesson_handler=lesson_handler,
-            repetition_handler=repetition_handler
+            repetition_handler=repetition_handler,
+            statistic_handler=statistic_handler
         )
         
         return Dependencies(
@@ -93,5 +106,6 @@ class DependenciesBuilder:
             config = config,
             user_state_processor = user_state_processor,
             lesson_handler = lesson_handler,
-            repetition_handler=repetition_handler
+            repetition_handler = repetition_handler,
+            statistic_handler = statistic_handler
         )

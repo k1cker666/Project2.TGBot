@@ -83,7 +83,40 @@ class WordRepository:
                     and user_id = %s
                     where words_in_progress.language = %s
                     and words_in_progress.number_of_repetitions != 0
+                    order by random()
                     limit %s
                     """, (user_id, word_language, words_in_lesson))
                 result = cur.fetchmany(size=words_in_lesson)
                 return result if len(result) != 0 else None
+            
+    def fetch_count_learned_words(
+        self,
+        user_id: int,
+        language_to_learn: str
+    ) -> int:
+        with self.connection_pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    select count(*) from words_in_progress
+                    where user_id = %s
+                    and language = %s
+                    and number_of_repetitions = 0
+                    """, (user_id, language_to_learn))
+                result = cur.fetchone()
+                return result[0]
+            
+    def fetch_count_passed_words(
+        self,
+        user_id: int,
+        language_to_learn: str
+    ) -> int:
+        with self.connection_pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    select count(*) from words_in_progress
+                    where user_id = %s
+                    and language = %s
+                    and number_of_repetitions != 0
+                    """, (user_id, language_to_learn))
+                result = cur.fetchone()
+                return result[0]
