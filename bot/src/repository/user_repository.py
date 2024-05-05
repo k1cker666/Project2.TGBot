@@ -16,7 +16,7 @@ class UserRepository:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(User)) as cur:
                 cur.execute(
-                    "select * from users where user_id = %s",
+                    "select * from users where user_id = %s;",
                     (id,)
                 )
                 result = cur.fetchone()
@@ -26,7 +26,7 @@ class UserRepository:
         with self.connection_pool.connection() as conn:
             with conn.cursor(row_factory=class_row(User)) as cur:
                 cur.execute(
-                    "select * from users where tg_login = %s",
+                    "select * from users where tg_login = %s;",
                     (tg_login,)
                 )
                 result = cur.fetchone()

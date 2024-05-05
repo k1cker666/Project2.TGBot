@@ -2936,8 +2936,6 @@ insert into words (word_id, language, level, word) values (1468, 'en', 'A3', 'el
 insert into words (word_id, language, level, word) values (1468, 'ru', 'A3', 'избирательный');
 insert into words (word_id, language, level, word) values (1469, 'en', 'A1', 'electric');
 insert into words (word_id, language, level, word) values (1469, 'ru', 'A1', 'электрический');
-insert into words (word_id, language, level, word) values (1470, 'en', 'A1', 'electrical');
-insert into words (word_id, language, level, word) values (1470, 'ru', 'A1', 'электрический');
 insert into words (word_id, language, level, word) values (1471, 'en', 'A1', 'electricity');
 insert into words (word_id, language, level, word) values (1471, 'ru', 'A1', 'электричество');
 insert into words (word_id, language, level, word) values (1472, 'en', 'A1', 'electronic');
