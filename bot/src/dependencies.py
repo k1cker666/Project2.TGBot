@@ -58,7 +58,7 @@ class DependenciesBuilder:
         user_repository = UserRepository(connection_pool=psql_connect_pool)
         
         image_builder = ImageBuilder(
-            word_count=config.word_count
+            common_word_count=config.common_word_count
         )
         
         user_state_processor = UserStateProcessor(
@@ -90,7 +90,7 @@ class DependenciesBuilder:
             user_repository=user_repository,
             word_repository=word_repository,
             image_builder=image_builder,
-            word_count=config.word_count
+            common_word_count=config.common_word_count
         )
         
         start_handler = StartHandler(

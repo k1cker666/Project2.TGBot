@@ -21,13 +21,13 @@ class ImageBuilder:
         encoding='UTF-8'
     )
     text_coords = (208, 168)
-    word_count: int
+    common_word_count: int
 
-    def __init__(self, word_count: int):
-        self.word_count = word_count
+    def __init__(self, common_word_count: int):
+        self.common_word_count = common_word_count
     
     def __get_percent(self, number: int) -> float:
-        percent = number/self.word_count*100
+        percent = number/self.common_word_count*100
         return int(percent) if percent.is_integer() else round(percent, 1)
     
     def __get_x_by_percent(self, percent: int) -> int:

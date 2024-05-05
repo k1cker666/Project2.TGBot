@@ -16,7 +16,7 @@ class StatisticHandler:
     user_repository: UserRepository
     word_repository: WordRepository
     image_builder: ImageBuilder
-    word_count: int
+    common_word_count: int
     
     class CallBackType(Enum):
         init_stat = auto()
@@ -26,12 +26,12 @@ class StatisticHandler:
         user_repository: UserRepository,
         word_repository: WordRepository,
         image_builder: ImageBuilder,
-        word_count: int
+        common_word_count: int
     ):
         self.user_repository = user_repository
         self.word_repository = word_repository
         self.image_builder = image_builder
-        self.word_count = word_count
+        self.common_word_count = common_word_count
         
     async def handle_callback(
         self,
@@ -39,7 +39,6 @@ class StatisticHandler:
         context: ContextTypes.DEFAULT_TYPE,
         callback_data: CallbackData
         ):
-        query = update.callback_query
         if callback_data.cb_type == self.CallBackType.init_stat.name:
             await self.send_statistic(update, context)
     
@@ -64,8 +63,8 @@ class StatisticHandler:
         caption = f"Пользователь: <i>{user.tg_login}</i>" + \
             f"\nАккаунт: <i>{user.login}</i>" + \
             f"\nТекущий уровень изучаемых слов: <b>{user.word_level.get_description()}</b>" + \
-            f"\nПройдено слов: <b>{passed_words}/{self.word_count}</b>" + \
-            f"\nВыучено слов: <b>{learned_words}/{self.word_count}</b>"
+            f"\nПройдено слов: <b>{passed_words}/{self.common_word_count}</b>" + \
+            f"\nВыучено слов: <b>{learned_words}/{self.common_word_count}</b>"
         query = update.callback_query
         await query.delete_message()
         await context.bot.send_photo(

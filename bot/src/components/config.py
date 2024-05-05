@@ -19,7 +19,7 @@ class Config(BaseModel):
     bot_token: str
     psql: PostgresDB
     redis: RedisDB
-    word_count: int
+    common_word_count: int
 
 def load_config() -> Config:
     with open(f'{os.path.abspath(os.curdir)}/bot/config/config.json', 'r') as config_json:
