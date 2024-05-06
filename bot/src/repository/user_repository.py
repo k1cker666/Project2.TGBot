@@ -31,3 +31,12 @@ class UserRepository:
                 )
                 result = cur.fetchone()
                 return result
+            
+    def update_user_word_level(self, user_id: int, word_level: str):
+        with self.connection_pool.connection() as conn:
+            with conn.cursor(row_factory=class_row(User)) as cur:
+                cur.execute("""
+                    update users set word_level = %s 
+                    where user_id = %s
+                    """, (word_level, user_id))
+                conn.commit()

@@ -10,6 +10,9 @@ from src.components.user_state_processor import UserStateProcessor, State
 from src.components.image_builder import ImageBuilder
 from src.models.callback import CallbackData
 from src.models.lesson_dto import LessonDTO, Question
+from src.models.enums import WordLevel
+from src.models.user import User
+from src.repository.user_repository import UserRepository
 from src.helpfuncs.menu import build_menu
 
 class LessonHandler:
@@ -17,6 +20,7 @@ class LessonHandler:
     lesson_init_processor: LessonInitProcessor
     user_state_processor: UserStateProcessor
     image_builder: ImageBuilder
+    user_repository: UserRepository
     name = "lesson"
     
     class CallBackType(Enum):
@@ -27,11 +31,13 @@ class LessonHandler:
         self,
         lesson_init_processor: LessonInitProcessor,
         user_state_processor: UserStateProcessor,
-        image_builder: ImageBuilder
+        image_builder: ImageBuilder,
+        user_repository: UserRepository
         ):
         self.lesson_init_processor = lesson_init_processor
         self.user_state_processor = user_state_processor
         self.image_builder = image_builder
+        self.user_repository = user_repository
         
     async def handle_callback(
         self,
@@ -82,14 +88,30 @@ class LessonHandler:
         self.user_state_processor.set_data(user_id=user_id, data=data.model_dump_json())
         return data
     
-    async def __end_lesson(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def __end_lesson(self, update: Update, context: ContextTypes.DEFAULT_TYPE, is_level_empty: bool):
         query = update.callback_query
         await query.delete_message()
         photo_buffer = self.image_builder.get_end_lesson_image()
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo_buffer
-        )
+        if is_level_empty:
+            captions = {
+                WordLevel.A1.name : "Поздравляю! Вы перешли на новый уровень слов: " + \
+                    f"{WordLevel.A2.get_description()}",
+                WordLevel.A2.name : "Поздравляю! Вы перешли на новый уровень слов: " + \
+                    f"{WordLevel.A3.get_description()}",
+                WordLevel.A3.name : "Поздравляю! Вы прошли все имеющиеся слова!"
+            }
+            user = self.user_repository.fetch_user_by_tg_login(tg_login='@k1cker666')
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=photo_buffer,
+                caption=captions[user.word_level.name]
+            )
+            # self.__update_user_word_level(user=user) пока закомменцено, чтобы не обновлось
+        else:
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=photo_buffer
+            )
         photo_buffer.close()
         self.user_state_processor.set_state(user_id=update.effective_user.username, state=State.lesson_inactive)
     
@@ -124,6 +146,17 @@ class LessonHandler:
                 data = self.__update_active_question(user_id=update.effective_user.username, data=data)
                 await self.__send_next_question(update=update, context=context, data=data)
             else:
-                await self.__end_lesson(update=update, context=context)
+                await self.__end_lesson(update=update, context=context, is_level_empty=data.is_current_level_empty)
         else:
             await self.__send_same_question(update=update, context=context, data=data)
+            
+    def __update_user_word_level(self, user: User):
+        word_level = {
+            WordLevel.A1.name : WordLevel.A2.name,
+            WordLevel.A2.name : WordLevel.A3.name
+        }
+        if user.word_level != WordLevel.A3:
+            self.user_repository.update_user_word_level(
+                user_id=user.user_id,
+                word_level=word_level[user.word_level.name]
+            )

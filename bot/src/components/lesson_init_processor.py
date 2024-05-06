@@ -26,13 +26,23 @@ class LessonInitProcessor:
             word_level=user.word_level,
             words_in_lesson=user.words_in_lesson
         )
-        
-        return LessonDTO(questions=self.get_questions(
-            user=user,
-            words_for_lesson=words_for_lesson
-        ))
+        count_words_in_current_level = self.word_repository.fetch_count_words_in_current_level(
+            user_id=user.user_id,
+            word_language=user.language_to_learn,
+            word_level=user.word_level
+        )
+        return LessonDTO(
+            questions=self.__get_questions(
+                user=user,
+                words_for_lesson=words_for_lesson
+            ),
+            is_current_level_empty=self.__is_current_level_empty(
+                count_words_for_lesson=len(words_for_lesson),
+                count_words_in_current_level=count_words_in_current_level
+            )
+        )
     
-    def get_questions(
+    def __get_questions(
         self,
         user: User,
         words_for_lesson: List[Word]
@@ -53,3 +63,10 @@ class LessonInitProcessor:
                     correct_answer=correct_answer.word
                 ))
         return questions
+    
+    def __is_current_level_empty(
+        self,
+        count_words_for_lesson: int,
+        count_words_in_current_level: int
+    ) -> bool:
+        return count_words_in_current_level-count_words_for_lesson==0

@@ -12,3 +12,4 @@ class LessonDTO(BaseModel):
     
     questions: List[Question]
     active_question: int = 0
+    is_current_level_empty: bool | None = None
