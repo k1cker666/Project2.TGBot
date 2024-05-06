@@ -9,14 +9,16 @@ from src.components.user_state_processor import State, UserStateProcessor
 from src.components.repetition_init_processor import RepetitionInitProcessor
 from src.components.image_builder import ImageBuilder
 from src.models.lesson_dto import LessonDTO, Question
-from src.helpfuncs.menu import build_menu
 from src.models.callback import CallbackData
+from src.repository.word_repository import WordRepository
+from src.helpfuncs.menu import build_menu
 
 class RepetitionHandler:
     
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
     image_builder: ImageBuilder
+    word_repository: WordRepository
     name = "repetition"
     
     class CallBackType(Enum):
@@ -27,11 +29,13 @@ class RepetitionHandler:
         self,
         repetition_init_processor: RepetitionInitProcessor,
         user_state_processor: UserStateProcessor,
-        image_builder: ImageBuilder
+        image_builder: ImageBuilder,
+        word_repository: WordRepository
         ):
         self.repetition_init_processor = repetition_init_processor
         self.user_state_processor = user_state_processor
         self.image_builder = image_builder
+        word_repository = word_repository
     
     async def handle_callback(
         self,

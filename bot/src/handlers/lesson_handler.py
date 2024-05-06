@@ -10,6 +10,7 @@ from src.components.user_state_processor import UserStateProcessor, State
 from src.components.image_builder import ImageBuilder
 from src.models.callback import CallbackData
 from src.models.lesson_dto import LessonDTO, Question
+from src.repository.word_repository import WordRepository
 from src.helpfuncs.menu import build_menu
 
 class LessonHandler:
@@ -17,6 +18,7 @@ class LessonHandler:
     lesson_init_processor: LessonInitProcessor
     user_state_processor: UserStateProcessor
     image_builder: ImageBuilder
+    word_repository: WordRepository
     name = "lesson"
     
     class CallBackType(Enum):
@@ -27,11 +29,13 @@ class LessonHandler:
         self,
         lesson_init_processor: LessonInitProcessor,
         user_state_processor: UserStateProcessor,
-        image_builder: ImageBuilder
+        image_builder: ImageBuilder,
+        word_repository: WordRepository
         ):
         self.lesson_init_processor = lesson_init_processor
         self.user_state_processor = user_state_processor
         self.image_builder = image_builder
+        self.word_repository = word_repository
         
     async def handle_callback(
         self,
