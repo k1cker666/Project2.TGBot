@@ -154,7 +154,7 @@ class WordRepository:
                 
     def is_current_level_empty(
         self,
-        user_id: int,
+        user_tg_login: int,
         language: str
     ) -> bool:
         with self.connection_pool.connection() as conn:
@@ -167,6 +167,6 @@ class WordRepository:
                     and wip.user_id = %s
                     where wip is null
                     and words.language = %s
-                    """, (user_id, language))
+                    """, (user_tg_login, language))
                 result = cur.fetchone()
                 return result[0]==0
