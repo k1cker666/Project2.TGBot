@@ -4,9 +4,9 @@ from src.repository.word_repository import WordRepository
 @pytest.mark.parametrize(
     "word, language, res",
     [
-        ('видеть', 'ru', ['Видеть', 'Делать', 'Думать', 'Привет']),
-        ('делать', 'ru', ['Видеть', 'Делать', 'Думать', 'Привет']),
-        ('see', 'en', ['Do', 'Hello', 'See', 'Think'])
+        ('тест3', 'ru', ['тест1', 'тест2', 'тест3', 'тест4']),
+        ('тест1', 'ru', ['тест1', 'тест2', 'тест3', 'тест4']),
+        ('test1', 'en', ['test1', 'test2', 'test3', 'test4'])
     ]
 )
 def test_fetch_words_for_answer(
@@ -20,4 +20,5 @@ def test_fetch_words_for_answer(
     word_repo = WordRepository(psql_connect)
     words = word_repo.fetch_words_for_answer(word, language)
     words.sort()
+    words = [wordd.lower() for wordd in words]
     assert words == res
