@@ -134,7 +134,7 @@ class LessonHandler:
                 photo=photo_buffer,
                 caption=captions[user.word_level.name]
             )
-            # self.__update_user_word_level(user=user) пока закомменцено, чтобы не обновлось
+            # self.__update_user_word_level(user=user) #TODO: пока закомменцено, чтобы не обновлось
         else:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
