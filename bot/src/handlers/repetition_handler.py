@@ -12,7 +12,7 @@ from src.models.lesson_dto import LessonDTO, Question
 from src.models.callback import CallbackData
 from src.helpfuncs.menu import build_menu
 
-class RepetitionHandler:
+class RepetitionHandler: #TODO: 1)уменьшать повторения для слова при верном ответе, 2)сообщение пользователю если он изучил все слова
     
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor

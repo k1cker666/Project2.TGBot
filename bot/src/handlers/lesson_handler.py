@@ -15,7 +15,7 @@ from src.models.user import User
 from src.repository.user_repository import UserRepository
 from src.helpfuncs.menu import build_menu
 
-class LessonHandler:
+class LessonHandler: #TODO: добавлять слово в wip, при верном ответе
     
     lesson_init_processor: LessonInitProcessor
     user_state_processor: UserStateProcessor
