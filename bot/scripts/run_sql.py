@@ -8,7 +8,7 @@ import psycopg
 
 file = sys.argv[1]
 
-with open(f"{os.path.abspath(os.curdir)}/bot/scripts/{file}") as sql_file:
+with open(f"{os.path.abspath(os.curdir)}/bot/scripts/sql/{file}") as sql_file:
     text = sql_file.read()
     commands = text.split('\n')
 
