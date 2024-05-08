@@ -1,6 +1,6 @@
 {
     "bot_token" : "7148494691:AAFgTWiU8919YwGHw6l8LTAAa3nxuhGUmO4",
-    "common_word_count" : 1234,
+    "common_word_count" : 4951,
     "psql" : {
         "dbname" : "tgbot",
         "user" : "postgres",

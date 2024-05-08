@@ -4,7 +4,7 @@ from src.repository.word_repository import WordRepository
 @pytest.mark.parametrize(
     "user_id, word_language, word_in_progress, res",
     [
-        (1, 'en', 1, ['hello'])
+        (1, 'en', 1, ['test1'])
     ]
 )
 def test_fetch_words_for_repetition(

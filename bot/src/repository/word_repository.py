@@ -152,21 +152,23 @@ class WordRepository:
                     """, (user_id, word_id, language))
                 conn.commit()
                 
-    def is_current_level_empty(
+    def fetch_count_words_in_current_level(
         self,
         user_id: int,
-        language: str
-    ) -> bool:
+        word_language: str,
+        word_level: str
+    ) -> int:
         with self.connection_pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select count(*) from words
-                    left join words_in_progress wip
-                    on words.word_id = wip.word_id
-                    and words.language = wip.language
-                    and wip.user_id = %s
-                    where wip is null
-                    and words.language = %s
-                    """, (user_id, language))
+                    left join words_in_progress
+                    on words.word_id = words_in_progress.word_id
+                    and words.language = words_in_progress.language
+                    and words_in_progress.user_id = %s
+                    where words_in_progress is null
+                    and words.language=%s
+                    and words.level=%s;
+                    """, (user_id, word_language, word_level))
                 result = cur.fetchone()
-                return result[0]==0
+                return result[0]

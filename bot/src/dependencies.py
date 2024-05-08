@@ -73,7 +73,8 @@ class DependenciesBuilder:
         lesson_handler = LessonHandler(
             lesson_init_processor=lesson_init_processor,
             user_state_processor=user_state_processor,
-            image_builder=image_builder
+            image_builder=image_builder,
+            user_repository=user_repository
         )
         
         repetition_init_processor = RepetitionInitProcessor(

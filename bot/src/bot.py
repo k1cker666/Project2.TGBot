@@ -11,7 +11,6 @@ from telegram.ext import (
     )
 from src.handlers import help, echo
 from functools import partial
-from loguru import logger
 from src.dependencies import Dependencies
 from src.models.callback import CallbackData
 
@@ -21,8 +20,6 @@ def start_bot(deps: Dependencies):
         return partial(func, deps = deps)
         
     application = Application.builder().token(deps.config.bot_token).build()
-    
-    logger.info('Application was started')
     
     application.add_handler(CommandHandler("start", partial_deps(start)))
     application.add_handler(CommandHandler("help", help.help_command))
