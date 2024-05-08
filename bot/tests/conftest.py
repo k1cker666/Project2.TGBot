@@ -23,16 +23,21 @@ def redis_connect(config_init):
 def psql_connect(config_init):
     config = config_init.psql
     pool = create_connection_pool(config)
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                truncate words_in_progress cascade;
+                truncate users cascade;
+                truncate words cascade;
+                """)
+            conn.commit()
     yield pool
     with pool.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                delete from words_in_progress where word_id = -1;
-                delete from users where user_id = 32766;
-                delete from words where word_id = -1;
-                delete from words where word_id = -2;
-                delete from words where word_id = -3;
-                delete from words where word_id = -4;
+                truncate words_in_progress cascade;
+                truncate users cascade;
+                truncate words cascade;
                 """)
             conn.commit()
     pool.close()
@@ -43,7 +48,7 @@ def setup_users_table(psql_connect):
         with conn.cursor() as cur:
             cur.execute("""
             insert into users (user_id, tg_login, login, password, words_in_lesson, native_language, language_to_learn, word_level)
-            values (32766, '@test', 'test', 'test', 4, 'ru', 'en', 'A1')
+            values (1, '@test', 'test', 'test', 4, 'ru', 'en', 'A1')
             on conflict do nothing;
             """)
         conn.commit()
@@ -53,23 +58,23 @@ def setup_words_table(psql_connect):
     with psql_connect.connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-            insert into words (word_id, language, level, word) VALUES (-1, 'ru', 'A1', 'тест1')
+            insert into words (word_id, language, level, word) VALUES (1, 'ru', 'A1', 'тест1')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) VALUES (-1, 'en', 'A1', 'test1')
+            insert into words (word_id, language, level, word) VALUES (1, 'en', 'A1', 'test1')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) values (-2, 'ru', 'A1', 'тест2')
+            insert into words (word_id, language, level, word) values (2, 'ru', 'A1', 'тест2')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) values (-2, 'en', 'A1', 'test2')
+            insert into words (word_id, language, level, word) values (2, 'en', 'A1', 'test2')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) values (-3, 'ru', 'A1', 'тест3')
+            insert into words (word_id, language, level, word) values (3, 'ru', 'A1', 'тест3')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) values (-3, 'en', 'A1', 'test3')
+            insert into words (word_id, language, level, word) values (3, 'en', 'A1', 'test3')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) values (-4, 'ru', 'A1', 'тест4')
+            insert into words (word_id, language, level, word) values (4, 'ru', 'A1', 'тест4')
             on conflict do nothing;
-            insert into words (word_id, language, level, word) values (-4, 'en', 'A1', 'test4')
+            insert into words (word_id, language, level, word) values (4, 'en', 'A1', 'test4')
             on conflict do nothing;
-            insert into words_in_progress (user_id, word_id, language, number_of_repetitions) values (32766, -1, 'en', 3)
+            insert into words_in_progress (user_id, word_id, language, number_of_repetitions) values (1, 1, 'en', 3)
             on conflict do nothing;
             """)
         conn.commit()

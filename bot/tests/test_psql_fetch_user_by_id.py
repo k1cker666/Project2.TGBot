@@ -4,8 +4,8 @@ from src.repository.user_repository import UserRepository
 @pytest.mark.parametrize(
     "id, res",
     [
-        (32766, '@test'),
-        (32766.0, '@test')
+        (1, '@test'),
+        (1.0, '@test')
     ]
 )
 def test_fetch_user_by_id(psql_connect, setup_users_table, id, res):
@@ -16,7 +16,7 @@ def test_fetch_user_by_id(psql_connect, setup_users_table, id, res):
 @pytest.mark.parametrize(
     "id, res",
     [
-        (32767, None),
+        (2, None),
         (-10, None)
     ]
 )

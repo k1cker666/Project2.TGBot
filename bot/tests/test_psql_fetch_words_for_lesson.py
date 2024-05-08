@@ -4,9 +4,9 @@ from src.repository.word_repository import WordRepository
 @pytest.mark.parametrize(
     "user_id, word_language, word_level, word_in_progress, res",
     [
-        (32766, 'ru', 'A1', 4, ['тест1', 'тест2', 'тест3', 'тест4']),
-        (32766, 'en', 'A1', 3, ['test2', 'test3', 'test4']),
-        (32766, 'en', 'A1', 4, ['test2', 'test3', 'test4'])
+        (1, 'ru', 'A1', 4, ['тест1', 'тест2', 'тест3', 'тест4']),
+        (1, 'en', 'A1', 3, ['test2', 'test3', 'test4']),
+        (1, 'en', 'A1', 4, ['test2', 'test3', 'test4'])
     ]
 )
 def test_fetch_words_for_lesson(
@@ -28,8 +28,8 @@ def test_fetch_words_for_lesson(
 @pytest.mark.parametrize(
     "user_id, word_language, word_level, word_in_progress, res",
     [
-        (32766, 'en', 'A2', 2, None),
-        (32766, 'ru', 'A2', 2, None)
+        (1, 'en', 'A2', 2, None),
+        (1, 'ru', 'A2', 2, None)
     ]
 )
 def test_fetch_words_for_lesson_nonetype(

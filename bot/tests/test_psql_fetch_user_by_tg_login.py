@@ -4,7 +4,7 @@ from src.repository.user_repository import UserRepository
 @pytest.mark.parametrize(
     "tg_login, res",
     [
-        ('@test', 32766)
+        ('@test', 1)
     ]
 )
 def test_fetch_user_by_tg_login(psql_connect, setup_users_table, tg_login, res):

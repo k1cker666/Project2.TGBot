@@ -4,9 +4,9 @@ from src.repository.word_repository import WordRepository
 @pytest.mark.parametrize(
     "id, language, res",
     [
-        (-1, 'en', 'test1'),
-        (-1, 'ru', 'тест1'),
-        ("-1", 'ru', 'тест1')
+        (1, 'en', 'test1'),
+        (1, 'ru', 'тест1'),
+        ("1", 'ru', 'тест1')
     ]
 )
 def test_fetch_word(psql_connect, setup_words_table, id, language, res):
