@@ -33,10 +33,10 @@ services:
       POSTGRES_PASSWORD: roma1234
       POSTGRES_DB: postgres
     ports:
-      - 5000:5432
+      - 5001:5432
 
   redis:
     restart: always
     image: redis:6.0
     ports:
-      - 6000:6379
+      - 6001:6379
