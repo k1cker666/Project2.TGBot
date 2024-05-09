@@ -1,8 +1,9 @@
-from src import bot
-from src.dependencies import DependenciesBuilder
 from psycopg import OperationalError
 from redis.exceptions import ConnectionError
+from src import bot
+from src.dependencies import DependenciesBuilder
 from src.log import *
+
 
 def main():
     try:
@@ -13,6 +14,7 @@ def main():
         return
     except ConnectionError:
         return
-    
+
+
 if __name__ == "__main__":
     main()

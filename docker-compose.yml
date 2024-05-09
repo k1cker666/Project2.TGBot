@@ -24,6 +24,13 @@ services:
     command: sh -c "while ! pg_isready -h postgres -p 5432; do sleep 5; done 
       && python3 /project/bot/scripts/run_migrations.py"
 
+  backend:
+    build: backend/
+    restart: always
+    container_name: backend
+    depends_on:
+      - tgbot
+
   postgres:
     restart: always
     image: postgres:14.11
@@ -33,10 +40,10 @@ services:
       POSTGRES_PASSWORD: roma1234
       POSTGRES_DB: postgres
     ports:
-      - 5000:5432
+      - 5001:5432
 
   redis:
     restart: always
     image: redis:6.0
     ports:
-      - 6000:6379
+      - 6001:6379
