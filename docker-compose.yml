@@ -2,7 +2,9 @@ version: "3.3"
 
 services:
   tgbot:
-    build: bot/
+    build:
+      context: ./
+      dockerfile: bot/Dockerfile
     restart: always
     container_name: tgbot
     depends_on:
@@ -15,8 +17,8 @@ services:
   
   migrations:
     build:
-      context: ./bot/
-      dockerfile: scripts/Dockerfile
+      context: ./
+      dockerfile: bot/scripts/Dockerfile
     restart: 'no'
     container_name: migrations
     depends_on:
@@ -25,7 +27,9 @@ services:
       && python3 /project/bot/scripts/run_migrations.py"
 
   backend:
-    build: backend/
+    build:
+      context: ./
+      dockerfile: backend/Dockerfile
     restart: always
     container_name: backend
     depends_on:
