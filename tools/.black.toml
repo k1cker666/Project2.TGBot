@@ -1,0 +1,11 @@
+[tool.black]
+line-length = 79
+extend-exclude = '''
+(
+    __init__.py
+    test.py
+    .venv/
+    .vscode/
+    .pytest_cache/
+)
+'''
