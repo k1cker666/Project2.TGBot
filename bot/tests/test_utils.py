@@ -1,5 +1,6 @@
-from src.utils import sum
 import pytest
+from src.utils import sum
+
 
 @pytest.mark.parametrize(
     "x, y, res",
@@ -11,8 +12,8 @@ import pytest
         ("1", 6, 7),
         ("f", 2, "Error"),
         (None, 1, "Error"),
-        (1, True, "Error")
-    ]
+        (1, True, "Error"),
+    ],
 )
 def test_sum(x, y, res):
     assert sum(x, y) == res
