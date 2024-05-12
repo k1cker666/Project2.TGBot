@@ -1,0 +1,23 @@
+repos:
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: isort --settings-file tools/.isort.cfg .
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: black
+        name: black
+        entry: black --config tools/.black.toml .
+        language: system
+        types: [python]
+        pass_filenames: false
+
+      - id: falke8
+        name: falke8
+        entry: flake8 --config tools/.flake8 .
+        language: system
+        types: [python]
+        pass_filenames: false
