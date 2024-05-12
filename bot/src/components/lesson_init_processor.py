@@ -33,14 +33,18 @@ class LessonInitProcessor:
                 word_level=user.word_level,
             )
         )
-        return LessonDTO(
-            questions=self.__get_questions(
-                user=user, words_for_lesson=words_for_lesson
-            ),
-            is_current_level_empty=self.__is_current_level_empty(
-                count_words_for_lesson=len(words_for_lesson),
-                count_words_in_current_level=count_words_in_current_level,
-            ),
+        return (
+            None
+            if words_for_lesson is None
+            else LessonDTO(
+                questions=self.__get_questions(
+                    user=user, words_for_lesson=words_for_lesson
+                ),
+                is_current_level_empty=self.__is_current_level_empty(
+                    count_words_for_lesson=len(words_for_lesson),
+                    count_words_in_current_level=count_words_in_current_level,
+                ),
+            )
         )
 
     def __get_questions(

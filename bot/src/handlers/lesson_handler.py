@@ -79,25 +79,35 @@ class LessonHandler:
         data = self.lesson_init_processor.get_lesson(
             user_telegram_login="@k1cker666"
         )
-        self.user_state_processor.set_data(
-            user_id=update.effective_user.username, data=data.model_dump_json()
-        )
-        self.user_state_processor.set_state(
-            user_id=update.effective_user.username, state=State.lesson_active
-        )
-        reply_markup = self.create_answers_menu(
-            question=data.questions[data.active_question]
-        )
-        word_to_translate = data.questions[data.active_question][
-            "word_to_translate"
-        ].capitalize()
-        photo_buffer = self.image_builder.get_start_image(word_to_translate)
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo_buffer,
-            reply_markup=reply_markup,
-        )
-        photo_buffer.close()
+        if data is None:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Слова для изучения закончились!",
+            )
+        else:
+            self.user_state_processor.set_data(
+                user_id=update.effective_user.username,
+                data=data.model_dump_json(),
+            )
+            self.user_state_processor.set_state(
+                user_id=update.effective_user.username,
+                state=State.lesson_active,
+            )
+            reply_markup = self.create_answers_menu(
+                question=data.questions[data.active_question]
+            )
+            word_to_translate = data.questions[data.active_question][
+                "word_to_translate"
+            ].capitalize()
+            photo_buffer = self.image_builder.get_start_image(
+                word_to_translate
+            )
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=photo_buffer,
+                reply_markup=reply_markup,
+            )
+            photo_buffer.close()
 
     def __have_next_question(
         self, active_question: int, questions_pool: int

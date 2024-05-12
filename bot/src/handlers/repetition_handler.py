@@ -12,7 +12,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 
-class RepetitionHandler:  # TODO: 1)уменьшать повторения для слова при верном ответе, 2)сообщение пользователю если он изучил все слова
+class RepetitionHandler:  # TODO 2)сообщение пользователю если он изучил все слова
 
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
@@ -79,25 +79,35 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
         data = self.repetition_init_processor.get_lesson(
             user_telegram_login="@k1cker666"
         )
-        self.user_state_processor.set_data(
-            user_id=update.effective_user.username, data=data.model_dump_json()
-        )
-        self.user_state_processor.set_state(
-            user_id=update.effective_user.username, state=State.lesson_active
-        )
-        reply_markup = self.create_answers_menu(
-            question=data.questions[data.active_question]
-        )
-        word_to_translate = data.questions[data.active_question][
-            "word_to_translate"
-        ].capitalize()
-        photo_buffer = self.image_builder.get_start_image(word_to_translate)
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo_buffer,
-            reply_markup=reply_markup,
-        )
-        photo_buffer.close()
+        if data is None:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Слов для повторения пока нет!",
+            )
+        else:
+            self.user_state_processor.set_data(
+                user_id=update.effective_user.username,
+                data=data.model_dump_json(),
+            )
+            self.user_state_processor.set_state(
+                user_id=update.effective_user.username,
+                state=State.lesson_active,
+            )
+            reply_markup = self.create_answers_menu(
+                question=data.questions[data.active_question]
+            )
+            word_to_translate = data.questions[data.active_question][
+                "word_to_translate"
+            ].capitalize()
+            photo_buffer = self.image_builder.get_start_image(
+                word_to_translate
+            )
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=photo_buffer,
+                reply_markup=reply_markup,
+            )
+            photo_buffer.close()
 
     def __have_next_question(
         self, active_question: int, questions_pool: int
@@ -114,7 +124,9 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
         return data
 
     async def __end_repetition(
-        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
     ):
         query = update.callback_query
         await query.delete_message()
@@ -124,7 +136,8 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
         )
         photo_buffer.close()
         self.user_state_processor.set_state(
-            user_id=update.effective_user.username, state=State.lesson_inactive
+            user_id=update.effective_user.username,
+            state=State.lesson_inactive,
         )
 
     async def __send_next_question(
@@ -198,7 +211,10 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
                     update=update, context=context, data=data
                 )
             else:
-                await self.__end_repetition(update=update, context=context)
+                await self.__end_repetition(
+                    update=update,
+                    context=context,
+                )
         else:
             await self.__send_same_question(
                 update=update, context=context, data=data

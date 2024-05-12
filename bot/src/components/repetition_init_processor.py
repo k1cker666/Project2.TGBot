@@ -20,23 +20,26 @@ class RepetitionInitProcessor:
 
     def get_lesson(self, user_telegram_login: str) -> LessonDTO:
         user = self.user_repository.fetch_user_by_tg_login(user_telegram_login)
-        words_for_lesson = self.word_repository.fetch_words_for_repetition(
+        words_for_repetition = self.word_repository.fetch_words_for_repetition(
             user_id=user.user_id,
             word_language=user.language_to_learn,
             words_in_lesson=user.words_in_lesson,
         )
-
-        return LessonDTO(
-            questions=self.get_questions(
-                user=user, words_for_lesson=words_for_lesson
+        return (
+            None
+            if words_for_repetition is None
+            else LessonDTO(
+                questions=self.get_questions(
+                    user=user, words_for_repetition=words_for_repetition
+                )
             )
         )
 
     def get_questions(
-        self, user: User, words_for_lesson: List[Word]
+        self, user: User, words_for_repetition: List[Word]
     ) -> List[Question]:
         questions = []
-        for word in words_for_lesson:
+        for word in words_for_repetition:
             correct_answer = self.word_repository.fetch(
                 id=word.word_id, language=user.native_language.name
             )
