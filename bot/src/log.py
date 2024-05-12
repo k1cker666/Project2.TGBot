@@ -25,8 +25,8 @@ class InterceptHandler(logging.Handler):
         )
 
 
-logging.basicConfig(
+logget_config = logging.basicConfig(
     handlers=[InterceptHandler()], level=logging.INFO, force=True
 )
-logging.getLogger("httpx").setLevel(logging.WARNING)
-logging.getLogger(__name__)
+logger_httpx = logging.getLogger("httpx").setLevel(logging.WARNING)
+logger_main = logging.getLogger(__name__)
