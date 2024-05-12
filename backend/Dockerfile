@@ -1,12 +1,16 @@
-FROM python:3-slim
+FROM python:3.10-slim
 
 WORKDIR /project/
 
-COPY *.py /project/backend/
-COPY requirements.txt /project/backend/
+COPY /backend/*.py /project/backend/
+COPY poetry.lock /project/
+COPY pyproject.toml /project/
 
 RUN apt-get update \
     && apt-get install -y postgresql-client \
-    && pip install -r /project/backend/requirements.txt
+    && pip install poetry \
+    && pip install --upgrade pip \
+    && poetry config virtualenvs.create false \
+    && poetry install --only backend --no-root
 
 CMD [ "python", "/project/backend/main.py" ]
