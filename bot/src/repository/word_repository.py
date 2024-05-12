@@ -146,7 +146,7 @@ class WordRepository:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    update word_in_progress set number_of_repetitions = number_of_repetitions-1
+                    update words_in_progress set number_of_repetitions = number_of_repetitions-1
                     where user_id = %s
                     and word_id = %s
                     and language = %s

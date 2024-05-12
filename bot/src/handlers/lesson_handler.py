@@ -1,6 +1,5 @@
 from enum import Enum, auto
 
-from src.repository.word_repository import WordRepository
 from src.components.image_builder import ImageBuilder
 from src.components.lesson_init_processor import LessonInitProcessor
 from src.components.user_state_processor import State, UserStateProcessor
@@ -10,11 +9,12 @@ from src.models.enums import WordLevel
 from src.models.lesson_dto import LessonDTO, Question
 from src.models.user import User
 from src.repository.user_repository import UserRepository
+from src.repository.word_repository import WordRepository
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 
-class LessonHandler:  # TODO: добавлять слово в wip, при верном ответе
+class LessonHandler:
 
     lesson_init_processor: LessonInitProcessor
     user_state_processor: UserStateProcessor
@@ -33,7 +33,7 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
         user_state_processor: UserStateProcessor,
         image_builder: ImageBuilder,
         user_repository: UserRepository,
-        word_repository: WordRepository
+        word_repository: WordRepository,
     ):
         self.lesson_init_processor = lesson_init_processor
         self.user_state_processor = user_state_processor
@@ -239,17 +239,18 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
                 user_id=user.user_id,
                 word_level=word_level[user.word_level.name],
             )
-    
+
     def __add_word_in_words_in_progress(
         self,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
-        data: LessonDTO
+        data: LessonDTO,
     ):
-        user = self.user_repository.fetch_user_by_tg_login(tg_login="@k1cker666")
-        word_id = data.questions[data.active_question]["id"]
+        user = self.user_repository.fetch_user_by_tg_login(
+            tg_login="@k1cker666"
+        )
         self.word_repository.add_word_in_words_in_progress(
             user_id=user.user_id,
-            word_id=word_id,
-            language=user.language_to_learn
+            word_id=data.questions[data.active_question]["id"],
+            language=user.language_to_learn,
         )

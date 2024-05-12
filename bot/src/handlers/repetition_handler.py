@@ -6,6 +6,8 @@ from src.components.user_state_processor import State, UserStateProcessor
 from src.helpfuncs.menu import build_menu
 from src.models.callback import CallbackData
 from src.models.lesson_dto import LessonDTO, Question
+from src.repository.user_repository import UserRepository
+from src.repository.word_repository import WordRepository
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
@@ -15,6 +17,8 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
     image_builder: ImageBuilder
+    user_repository: UserRepository
+    word_repository: WordRepository
     name = "repetition"
 
     class CallBackType(Enum):
@@ -26,10 +30,14 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
         repetition_init_processor: RepetitionInitProcessor,
         user_state_processor: UserStateProcessor,
         image_builder: ImageBuilder,
+        user_repository: UserRepository,
+        word_repository: WordRepository,
     ):
         self.repetition_init_processor = repetition_init_processor
         self.user_state_processor = user_state_processor
         self.image_builder = image_builder
+        self.user_repository = user_repository
+        self.word_repository = word_repository
 
     async def handle_callback(
         self,
@@ -179,6 +187,9 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
         if callback_data.word.lower() == correct_answer:
+            self.__decrease_numder_of_repetitions(
+                update=update, context=context, data=data
+            )
             if self.__have_next_question(data.active_question, data.questions):
                 data = self.__update_active_question(
                     user_id=update.effective_user.username, data=data
@@ -192,3 +203,18 @@ class RepetitionHandler:  # TODO: 1)уменьшать повторения дл
             await self.__send_same_question(
                 update=update, context=context, data=data
             )
+
+    def __decrease_numder_of_repetitions(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
+        data: LessonDTO,
+    ):
+        user = self.user_repository.fetch_user_by_tg_login(
+            tg_login="@k1cker666"
+        )
+        self.word_repository.decrease_numder_of_repetitions(
+            user_id=user.user_id,
+            word_id=data.questions[data.active_question]["id"],
+            language=user.language_to_learn,
+        )
