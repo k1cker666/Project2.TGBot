@@ -1,10 +1,12 @@
-import json
 import os
 import time
 
+from dotenv import load_dotenv
 from loguru import logger
 import psycopg
 import click
+
+load_dotenv()
 
 @click.command()
 @click.option('--file', help='Name of file in folder /bot/scripts/sql/')
@@ -14,16 +16,12 @@ def run_sql(file):
         commands = text.split('\n')
         commands_count = len(commands)
 
-    json_dir = f"{os.path.abspath(os.curdir)}/bot/config/config.json"
-    with open(json_dir, 'r') as file:
-        config = json.load(file)['psql']
-
     try:
-        db_name = config['dbname']
-        db_user = config['user']
-        db_password = config['password']
-        db_host = config['host']
-        db_port =  config['port']
+        db_name = os.getenv('PSQL_DBNAME')
+        db_user = os.getenv('PSQL_USER')
+        db_password = os.getenv('PSQL_PASSWORD')
+        db_host = os.getenv('PSQL_HOST')
+        db_port = os.getenv('PSQL_PORT')
         with psycopg.connect(
             dbname = db_name,
             user = db_user,

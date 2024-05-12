@@ -1,5 +1,5 @@
 from src.db import psql, redis
-from src.components.config import load_config, Config
+from src.components.config import load_config, EnvConfig
 from src.components.lesson_init_processor import LessonInitProcessor
 from src.components.user_state_processor import UserStateProcessor
 from src.components.repetition_init_processor import RepetitionInitProcessor
@@ -17,7 +17,7 @@ class Dependencies:
     start_handler: StartHandler
     word_repository: WordRepository
     user_repository: UserRepository
-    config: Config
+    config: EnvConfig
     user_state_processor: UserStateProcessor
     
     def __init__(
@@ -25,7 +25,7 @@ class Dependencies:
         start_handler: StartHandler,
         word_repository: WordRepository,
         user_repository: UserRepository,
-        config: Config,
+        config: EnvConfig,
         user_state_processor: UserStateProcessor,
         lesson_handler: LessonHandler,
         repetition_handler: RepetitionHandler,

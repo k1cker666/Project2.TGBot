@@ -1,28 +1,27 @@
-import json
 from pydantic import BaseModel
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class PostgresDB(BaseModel):
-    dbname: str
-    user: str
-    password: str
-    host: str
-    port: str
-    pool_max_size: int
+    dbname: str = os.getenv('PSQL_DBNAME')
+    user: str = os.getenv('PSQL_USER')
+    password: str = os.getenv('PSQL_PASSWORD')
+    host: str = os.getenv('PSQL_HOST')
+    port: str = os.getenv('PSQL_PORT')
+    pool_max_size: int = int(os.getenv('PSQL_POOL_MAX_COUNT'))
 
 class RedisDB(BaseModel):
-    host: str
-    port: int
-    ttl: int
+    host: str = os.getenv('REDIS_HOST')
+    port: int = int(os.getenv('REDIS_PORT'))
+    ttl: int = int(os.getenv('REDIS_TTL'))
 
-class Config(BaseModel):
-    bot_token: str
-    psql: PostgresDB
-    redis: RedisDB
-    common_word_count: int
+class EnvConfig(BaseModel):
+    bot_token: str = os.getenv('BOT_TOKEN')
+    common_word_count: int  = int(os.getenv('COMMON_WORD_COUNT'))
+    psql: PostgresDB = PostgresDB()
+    redis: RedisDB = RedisDB()
 
-def load_config() -> Config:
-    with open(f'{os.path.abspath(os.curdir)}/bot/config/config.json', 'r') as config_json:
-        config_json = json.load(config_json)
-        config = Config(**config_json)
-        return config
+def load_config() -> EnvConfig:
+    return EnvConfig()
