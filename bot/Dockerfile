@@ -16,6 +16,7 @@ WORKDIR /project/
 COPY poetry.lock pyproject.toml /project/
 RUN poetry install --only tgbot --no-root --no-directory
 
+COPY .env /project/
 COPY /bot/*.py /project/bot/
 COPY /bot/tests/*.py /project/bot/test/
 COPY /bot/src/*.py /project/bot/src/
@@ -25,6 +26,5 @@ COPY /bot/src/components/*.py /project/bot/src/components/
 COPY /bot/src/helpfuncs/*.py /project/bot/src/helpfuncs/
 COPY /bot/src/models/*.py /project/bot/src/models/
 COPY /bot/src/repository/*.py /project/bot/src/repository/
-COPY /bot/config/*.json /project/bot/config/
 COPY /bot/images/*template.png /project/bot/images/
 COPY /bot/fonts/*.ttf /project/bot/fonts/

@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+from src.repository.word_repository import WordRepository
 from src.components.image_builder import ImageBuilder
 from src.components.lesson_init_processor import LessonInitProcessor
 from src.components.user_state_processor import State, UserStateProcessor
@@ -19,6 +20,7 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
     user_state_processor: UserStateProcessor
     image_builder: ImageBuilder
     user_repository: UserRepository
+    word_repository: WordRepository
     name = "lesson"
 
     class CallBackType(Enum):
@@ -31,11 +33,13 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
         user_state_processor: UserStateProcessor,
         image_builder: ImageBuilder,
         user_repository: UserRepository,
+        word_repository: WordRepository
     ):
         self.lesson_init_processor = lesson_init_processor
         self.user_state_processor = user_state_processor
         self.image_builder = image_builder
         self.user_repository = user_repository
+        self.word_repository = word_repository
 
     async def handle_callback(
         self,
@@ -134,7 +138,7 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
                 photo=photo_buffer,
                 caption=captions[user.word_level.name],
             )
-            # self.__update_user_word_level(user=user) #TODO: пока закомменцено, чтобы не обновлось
+            self.__update_user_word_level(user=user)
         else:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id, photo=photo_buffer
@@ -204,6 +208,9 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
         if callback_data.word.lower() == correct_answer:
+            self.__add_word_in_words_in_progress(
+                update=update, context=context, data=data
+            )
             if self.__have_next_question(data.active_question, data.questions):
                 data = self.__update_active_question(
                     user_id=update.effective_user.username, data=data
@@ -232,3 +239,17 @@ class LessonHandler:  # TODO: добавлять слово в wip, при ве�
                 user_id=user.user_id,
                 word_level=word_level[user.word_level.name],
             )
+    
+    def __add_word_in_words_in_progress(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
+        data: LessonDTO
+    ):
+        user = self.user_repository.fetch_user_by_tg_login(tg_login="@k1cker666")
+        word_id = data.questions[data.active_question]["id"]
+        self.word_repository.add_word_in_words_in_progress(
+            user_id=user.user_id,
+            word_id=word_id,
+            language=user.language_to_learn
+        )

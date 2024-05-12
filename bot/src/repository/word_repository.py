@@ -125,14 +125,14 @@ class WordRepository:
                 result = cur.fetchone()
                 return result[0]
 
-    def add_word_in_word_in_progress(
+    def add_word_in_words_in_progress(
         self, user_id: int, word_id: int, language: str
     ):
         with self.connection_pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    insert into word_in_progress (user_id, word_id, language, number_of_repetitions)
+                    insert into words_in_progress (user_id, word_id, language, number_of_repetitions)
                     values (%s, %s, %s, 3);
                     """,
                     (user_id, word_id, language),

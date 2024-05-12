@@ -75,6 +75,7 @@ class DependenciesBuilder:
             user_state_processor=user_state_processor,
             image_builder=image_builder,
             user_repository=user_repository,
+            word_repository=word_repository
         )
 
         repetition_init_processor = RepetitionInitProcessor(
