@@ -5,7 +5,7 @@ def sum(x, y):
         else:
             x = float(x)
             y = float(y)
-            res = x+y
+            res = x + y
             if res.is_integer():
                 return int(res)
             else:

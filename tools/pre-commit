@@ -1,0 +1,3 @@
+isort --settings-file tools/.isort.cfg .
+black --config tools/.black.toml .
+flake8 --config tools/.flake8 .
