@@ -1,24 +1,21 @@
-import os
+from typing import Union
 
-import psycopg
-from dotenv import load_dotenv
-from loguru import logger
+from fastapi import FastAPI
+from src.log import logger_config, logger_main
 
 
-load_dotenv()
+logger_config
+logger_main
 
-db_name = os.getenv("PSQL_DBNAME")
-db_user = os.getenv("PSQL_USER")
-db_password = os.getenv("PSQL_PASSWORD")
-db_host = os.getenv("PSQL_HOST")
-db_port = os.getenv("PSQL_PORT")
 
-try:
-    connect = psycopg.connect(
-        f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-    )
-except psycopg.OperationalError as e:
-    logger.error(f"{e}")
-else:
-    logger.debug("Connection is ok")
-    connect.close()
+app = FastAPI()
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Union[str, None] = None):
+    return {"item_id": item_id, "q": q}

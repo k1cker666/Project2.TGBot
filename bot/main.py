@@ -2,10 +2,10 @@ from psycopg import OperationalError
 from redis.exceptions import ConnectionError
 from src import bot
 from src.dependencies import DependenciesBuilder
-from src.log import logger_httpx, logger_main, logget_config
+from src.log import logger_config, logger_httpx, logger_main
 
 
-logget_config
+logger_config
 logger_httpx
 logger_main
 
