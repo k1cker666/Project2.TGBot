@@ -1,8 +1,9 @@
 import os
 import uuid
+
+import psycopg
 from dotenv import load_dotenv
 from fastapi import FastAPI
-import psycopg
 
 
 load_dotenv()
@@ -23,12 +24,12 @@ def check_pg_connection():
         connection = psycopg.connect(
             f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         )
-    except psycopg.OperationalError as e:
-        return {"connection" : False}
+    except psycopg.OperationalError:
+        return {"connection": False}
     else:
         params = connection.info.get_parameters()
         connection.close()
-        return {"connection" : True, "connection_info" : params}
+        return {"connection": True, "connection_info": params}
 
 
 @app.get("/get_token/")

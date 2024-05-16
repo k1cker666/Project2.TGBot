@@ -1,7 +1,7 @@
 import redis
 from loguru import logger
 from redis.exceptions import ConnectionError
-from src.components.config import RedisDB
+from src.components.envconfig import RedisDB
 
 
 def create_connection(config: RedisDB) -> redis.Redis:

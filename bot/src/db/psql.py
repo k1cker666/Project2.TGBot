@@ -1,7 +1,7 @@
 import psycopg_pool
 from loguru import logger
 from psycopg import OperationalError
-from src.components.config import PostgresDB
+from src.components.envconfig import PostgresDB
 
 
 def create_connection_pool(config: PostgresDB) -> psycopg_pool.ConnectionPool:
