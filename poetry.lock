@@ -944,6 +944,7 @@ files = [
 
 [package.dependencies]
 psycopg-binary = {version = "3.1.19", optional = true, markers = "implementation_name != \"pypy\" and extra == \"binary\""}
+psycopg-pool = {version = "*", optional = true, markers = "extra == \"pool\""}
 typing-extensions = ">=4.1"
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
@@ -1845,4 +1846,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "3af96f1ca5f27a716f817a431067a0c3466f42b31fadc2545a0e4df1d6788b0a"
+content-hash = "e13f1e1801ddb36652ba33121da1bc0b65f3bc6233cf4458b1d0d4fa7884ded6"

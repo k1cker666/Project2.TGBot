@@ -1,19 +1,16 @@
-import os
 import uuid
 
 import psycopg
-from dotenv import load_dotenv
 from fastapi import FastAPI
+from src.dependencies import DependenciesBuilder
+from src.log import logger_config, logger_main
 
 
-load_dotenv()
+logger_config
+logger_main
 
-db_name = os.getenv("PSQL_DBNAME")
-db_user = os.getenv("PSQL_USER")
-db_password = os.getenv("PSQL_PASSWORD")
-db_host = os.getenv("PSQL_HOST")
-db_port = os.getenv("PSQL_PORT")
-ff = os.getenv("PSQL_POOL_MAX_SIZE")
+deps = DependenciesBuilder.build()
+
 
 app = FastAPI()
 
@@ -21,14 +18,12 @@ app = FastAPI()
 @app.get("/")
 def check_pg_connection():
     try:
-        connection = psycopg.connect(
-            f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        )
+        connection = deps.postgres.connection_pool.getconn()
     except psycopg.OperationalError:
         return {"connection": False}
     else:
         params = connection.info.get_parameters()
-        connection.close()
+        deps.postgres.connection_pool.putconn(connection)
         return {"connection": True, "connection_info": params}
 
 

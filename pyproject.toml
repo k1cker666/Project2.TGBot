@@ -30,7 +30,7 @@ python-dotenv = "^1.0.1"
 
 
 [tool.poetry.group.backend.dependencies]
-psycopg = {extras = ["binary"], version = "^3.1.19"}
+psycopg = {extras = ["pool"], version = "^3.1.19"}
 loguru = "^0.7.2"
 python-dotenv = "^1.0.1"
 fastapi = "^0.111.0"
