@@ -11,7 +11,6 @@ logger_config
 logger_main
 
 deps = DependenciesBuilder.build()
-redis = deps.redis.connection
 
 
 app = FastAPI()
@@ -41,5 +40,5 @@ def check_redis_connection():
 @app.get("/get_token/")
 def get_token(tg_login: str):
     uuid_token = uuid.uuid5(uuid.NAMESPACE_DNS, tg_login)
-    redis.set(name=str(uuid_token), value=tg_login)
-    return {"tg_login": tg_login, "uuid_token": uuid_token}
+    deps.redis.set_token(tg_login=tg_login, uuid_token=str(uuid_token))
+    return {"tg_login": tg_login, "uuid_token": str(uuid_token)}

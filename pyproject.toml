@@ -30,12 +30,12 @@ python-dotenv = "^1.0.1"
 
 
 [tool.poetry.group.backend.dependencies]
-psycopg = {extras = ["pool"], version = "^3.1.19"}
 loguru = "^0.7.2"
 python-dotenv = "^1.0.1"
 fastapi = "^0.111.0"
 pydantic-settings = "^2.2.1"
 redis = {extras = ["hiredis"], version = "^5.0.4"}
+sqlalchemy = "^2.0.30"
 
 
 [tool.poetry.group.dev.dependencies]

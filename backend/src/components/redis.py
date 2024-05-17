@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import redis
 from loguru import logger
 from redis.exceptions import ConnectionError
@@ -30,3 +32,8 @@ class Redis:
             logger.error(f"{self.config.host}:{self.config.port} - {e}")
             logger.info("Application was not started")
             raise ConnectionError
+
+    def set_token(self, tg_login: str, uuid_token: str):
+        self.connection.set(name=uuid_token, value=tg_login)
+        ttl = timedelta(minutes=self.config.ttl)
+        self.connection.expire(name=uuid_token, time=ttl)
