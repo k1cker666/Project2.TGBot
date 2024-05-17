@@ -1,17 +1,18 @@
 from src.components.envconfig import EnvConfig, load_config
-from src.components.psql import PostgreSQL
+from src.components.psql_core import PostgreSQL
 from src.components.redis import Redis
 
 
 class Dependencies:
-    config: EnvConfig
-    postgres: PostgreSQL
-    redis: Redis
 
-    def __init__(self, config: EnvConfig, postgres: PostgreSQL, redis: Redis):
+    config: EnvConfig
+    redis: Redis
+    postgres: PostgreSQL
+
+    def __init__(self, config: EnvConfig, redis: Redis, postgres: PostgreSQL):
         self.config = config
-        self.postgres = postgres
         self.redis = redis
+        self.postgres = postgres
 
 
 class DependenciesBuilder:
@@ -20,8 +21,8 @@ class DependenciesBuilder:
 
         config = load_config()
 
-        postgres = PostgreSQL(config=config.psql)
-
         redis = Redis(config=config.redis)
 
-        return Dependencies(config=config, postgres=postgres, redis=redis)
+        postgres = PostgreSQL(config=config.psql)
+
+        return Dependencies(config=config, redis=redis, postgres=postgres)

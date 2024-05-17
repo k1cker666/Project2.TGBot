@@ -1,31 +1,37 @@
 import uuid
+from contextlib import asynccontextmanager
 
-import psycopg
 from fastapi import FastAPI
 from redis.exceptions import ConnectionError
-from src.dependencies import DependenciesBuilder
+from src.dependencies import Dependencies, DependenciesBuilder
 from src.log import logger_config, logger_main
 
 
-logger_config
-logger_main
-
-deps = DependenciesBuilder.build()
+deps: Dependencies
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger_config
+    logger_main
+    global deps
+    deps = DependenciesBuilder.build()
+    yield
 
 
-@app.get("/check_pg/")
-def check_pg_connection():
-    try:
-        connection = deps.postgres.connection_pool.getconn()
-    except psycopg.OperationalError:
-        return {"pg_connection": False}
-    else:
-        params = connection.info.get_parameters()
-        deps.postgres.connection_pool.putconn(connection)
-        return {"pg_connection": True, "connection_info": params}
+app = FastAPI(lifespan=lifespan)
+
+
+# @app.get("/check_pg/")
+# def check_pg_connection():
+#     try:
+#         connection = deps.postgres.connection_pool.getconn()
+#     except psycopg.OperationalError:
+#         return {"pg_connection": False}
+#     else:
+#         params = connection.info.get_parameters()
+#         deps.postgres.connection_pool.putconn(connection)
+#         return {"pg_connection": True, "connection_info": params}
 
 
 @app.get("/check_redis/")

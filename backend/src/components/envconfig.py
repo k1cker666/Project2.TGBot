@@ -18,7 +18,7 @@ class PostgreSQLConfig(BaseSettings):
 
     def get_conninfo(self):
         conninfo = (
-            f"postgresql://{self.user}:"
+            f"postgresql+psycopg://{self.user}:"
             + f"{self.password}@{self.host}:{self.port}/{self.dbname}"
         )
         return conninfo

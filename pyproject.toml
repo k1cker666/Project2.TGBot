@@ -35,7 +35,8 @@ python-dotenv = "^1.0.1"
 fastapi = "^0.111.0"
 pydantic-settings = "^2.2.1"
 redis = {extras = ["hiredis"], version = "^5.0.4"}
-sqlalchemy = "^2.0.30"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
+psycopg = {extras = ["binary"], version = "^3.1.19"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -55,6 +56,7 @@ flake8 = "^7.0.0"
 pre-commit = "^3.7.1"
 fastapi = "^0.111.0"
 pydantic-settings = "^2.2.1"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
 
 [build-system]
 requires = ["poetry-core"]
