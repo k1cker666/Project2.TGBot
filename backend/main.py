@@ -22,16 +22,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-# @app.get("/check_pg/")
-# def check_pg_connection():
-#     try:
-#         connection = deps.postgres.connection_pool.getconn()
-#     except psycopg.OperationalError:
-#         return {"pg_connection": False}
-#     else:
-#         params = connection.info.get_parameters()
-#         deps.postgres.connection_pool.putconn(connection)
-#         return {"pg_connection": True, "connection_info": params}
+@app.get("/check_pg/")
+def check_pg_connection():
+    if deps.postgres.check_connect():
+        return {"pg_connection": True}
+    return {"pg_connection": False}
 
 
 @app.get("/check_redis/")
