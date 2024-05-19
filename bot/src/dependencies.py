@@ -100,6 +100,7 @@ class DependenciesBuilder:
             lesson_handler=lesson_handler,
             repetition_handler=repetition_handler,
             statistic_handler=statistic_handler,
+            backend_url=config.backend_url,
         )
 
         return Dependencies(

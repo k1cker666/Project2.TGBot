@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+import requests
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.statistic_handler import StatisticHandler
@@ -15,6 +16,7 @@ class StartHandler:
     lesson_handler: LessonHandler
     repetition_handler: RepetitionHandler
     statistic_handler: StatisticHandler
+    backend_url: str
 
     class CallBackType(Enum):
         auth = auto()
@@ -24,16 +26,20 @@ class StartHandler:
         lesson_handler: LessonHandler,
         repetition_handler: RepetitionHandler,
         statistic_handler: StatisticHandler,
+        backend_url: str,
     ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
         self.statistic_handler = statistic_handler
+        self.backend_url = backend_url
 
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
         await update.message.reply_html(
             rf"Привет {user.mention_html()}, я бот, который поможет тебе выучить иностранные слова!"
         )
+        user_token = self.__get_token(user.username)
+        print(user_token)
         buttons = [
             InlineKeyboardButton(
                 "Авторизация",
@@ -89,3 +95,9 @@ class StartHandler:
                 text="Авторизация успешно выполнена\nВыбери следующее действие",
                 reply_markup=reply_markup,
             )
+
+    def __get_token(self, tg_login: str):
+        r = requests.get(
+            url=f"{self.backend_url}/get_token/", params={"tg_login": tg_login}
+        )
+        return r.json()["uuid_token"]
