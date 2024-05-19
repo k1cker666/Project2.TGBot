@@ -39,7 +39,8 @@ class StartHandler:
             rf"Привет {user.mention_html()}, я бот, который поможет тебе выучить иностранные слова!"
         )
         user_token = self.__get_token(user.username)
-        print(user_token)
+        auth = self.__get_authorization_url(user_token)
+        print(auth)
         buttons = [
             InlineKeyboardButton(
                 "Авторизация",
@@ -101,3 +102,10 @@ class StartHandler:
             url=f"{self.backend_url}/get_token/", params={"tg_login": tg_login}
         )
         return r.json()["uuid_token"]
+
+    def __get_authorization_url(self, uuid_token: str) -> str:
+        r = requests.post(
+            url=f"{self.backend_url}/authorization/",
+            params={"uuid_token": uuid_token},
+        )
+        return r.text
