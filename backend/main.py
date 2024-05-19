@@ -63,7 +63,9 @@ def auth(uuid_token: str):
 
 @app.post("/login/")
 async def login(
-    username: Annotated[str, Form()], password: Annotated[str, Form()]
+    username: Annotated[str, Form()],
+    password: Annotated[str, Form()],
+    uuid_token: Annotated[str, Form()],
 ):
     if username != "1" or password != "1":
         raise HTTPException(
@@ -78,6 +80,8 @@ async def register(
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     confirm_password: Annotated[str, Form()],
+    word_count: Annotated[int, Form()],
+    uuid_token: Annotated[str, Form()],
 ):
     # TODO: Сделать проверку зарегестрирован ли уже логин
     if password != confirm_password:
