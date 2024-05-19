@@ -1,4 +1,4 @@
-from sqlalchemy import Engine, create_engine, select
+from sqlalchemy import Engine, create_engine, insert, select
 from sqlalchemy.exc import OperationalError
 from src.components.envconfig import PostgreSQLConfig
 from src.models import metadata, users
@@ -34,3 +34,19 @@ class PostgreSQL:
             result = conn.execute(stmt)
             result = result.one_or_none()
         return not bool(result)
+
+    def add_user_in_database(
+        self, tg_login: str, login: str, password: str, words_in_lesson
+    ):
+        with self.engine.connect() as conn:
+            stmt = insert(users).values(
+                tg_login=tg_login,
+                login=login,
+                password=password,
+                words_in_lesson=words_in_lesson,
+                native_language="ru",
+                language_to_learn="en",
+                word_level="A1",
+            )
+            conn.execute(stmt)
+            conn.commit()

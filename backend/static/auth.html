@@ -196,7 +196,7 @@
             const login = document.getElementById('registerUsername').value;
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
-            const wordCount = document.getElementById('wordCount').value;
+            const words_in_lesson = document.getElementById('wordCount').value;
             const uuid_token = getUUIDToken()
 
             const response = await fetch('/register/', {
@@ -204,7 +204,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams({ login, password, confirm_password: confirmPassword, word_count: wordCount, uuid_token })
+                body: new URLSearchParams({ login, password, confirm_password: confirmPassword, words_in_lesson, uuid_token })
             });
 
             const registerError = document.getElementById('registerError');

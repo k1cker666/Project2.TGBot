@@ -56,7 +56,7 @@ def check_redis_connection():
 @app.get("/get_token/")
 def get_token(tg_login: str):
     uuid_token = uuid.uuid5(uuid.NAMESPACE_DNS, tg_login)
-    deps.redis.set_token(tg_login=tg_login, uuid_token=str(uuid_token))
+    deps.redis.set_tg_login(tg_login=tg_login, uuid_token=str(uuid_token))
     return {"tg_login": tg_login, "uuid_token": str(uuid_token)}
 
 
@@ -87,7 +87,7 @@ async def register(
     login: Annotated[str, Form()],
     password: Annotated[str, Form()],
     confirm_password: Annotated[str, Form()],
-    word_count: Annotated[int, Form()],
+    words_in_lesson: Annotated[int, Form()],
     uuid_token: Annotated[str, Form()],
 ):
     if validation_for_registration_with_psql(
@@ -95,8 +95,14 @@ async def register(
         password=password,
         confirm_password=confirm_password,
     ):
-
-        return {"message": "reg succces"}
+        tg_login = deps.redis.get_tg_login(uuid_token=uuid_token)
+        deps.postgres.add_user_in_database(
+            tg_login=tg_login,
+            login=login,
+            password=password,
+            words_in_lesson=words_in_lesson,
+        )
+        return {}
 
 
 @app.get("/registration_complete/", response_class=HTMLResponse)

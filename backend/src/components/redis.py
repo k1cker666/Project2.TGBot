@@ -33,7 +33,7 @@ class Redis:
             logger.info("Application was not started")
             raise ConnectionError
 
-    def set_token(self, tg_login: str, uuid_token: str):
+    def set_tg_login(self, tg_login: str, uuid_token: str):
         self.connection.set(name=uuid_token, value=tg_login)
         ttl = timedelta(minutes=self.config.ttl)
         self.connection.expire(name=uuid_token, time=ttl)
@@ -41,3 +41,6 @@ class Redis:
     def is_valid_token(self, uuid_token: str) -> bool:
         res = self.connection.get(uuid_token)
         return bool(res)
+
+    def get_tg_login(self, uuid_token: str) -> str:
+        return self.connection.get(uuid_token)
