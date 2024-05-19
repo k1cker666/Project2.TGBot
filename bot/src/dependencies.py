@@ -101,6 +101,7 @@ class DependenciesBuilder:
             repetition_handler=repetition_handler,
             statistic_handler=statistic_handler,
             backend_url=config.backend_url,
+            user_repository=user_repository,
         )
 
         return Dependencies(
