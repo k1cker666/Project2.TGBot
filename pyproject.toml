@@ -20,6 +20,7 @@ pytest = "^8.2.0"
 python-telegram-bot = "^21.1.1"
 python-dotenv = "^1.0.1"
 pydantic-settings = "^2.2.1"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.migrations.dependencies]
@@ -57,6 +58,7 @@ pre-commit = "^3.7.1"
 fastapi = "^0.111.0"
 pydantic-settings = "^2.2.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
+requests = "^2.31.0"
 
 [build-system]
 requires = ["poetry-core"]
