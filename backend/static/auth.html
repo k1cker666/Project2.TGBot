@@ -73,10 +73,16 @@
         .toggle a:hover {
             text-decoration: underline;
         }
+        .error {
+            color: #d9534f;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="loginContainer">
         <h2>Вход</h2>
         <form id="loginForm">
             <input type="text" id="loginUsername" placeholder="Имя пользователя" required>
@@ -86,14 +92,15 @@
                     <img src="/images/eye_closed.png" alt="Показать пароль">
                 </span>
             </div>
-            <button type="submit">Войти</button>
+            <button type="button" onclick="submitLoginForm()">Войти</button>
+            <div id="loginError" class="error"></div>
         </form>
         <div class="toggle">
             Нет аккаунта? <a href="#" onclick="toggleForm()">Регистрация</a>
         </div>
     </div>
 
-    <div class="container" style="display: none;">
+    <div class="container" id="registerContainer" style="display: none;">
         <h2>Регистрация</h2>
         <form id="registerForm">
             <input type="text" id="registerUsername" placeholder="Имя пользователя" required>
@@ -109,7 +116,8 @@
                     <img src="/images/eye_closed.png" alt="Показать пароль">
                 </span>
             </div>
-            <button type="submit">Зарегистрироваться</button>
+            <button type="button" onclick="submitRegisterForm()">Зарегистрироваться</button>
+            <div id="registerError" class="error"></div>
         </form>
         <div class="toggle">
             Уже есть аккаунт? <a href="#" onclick="toggleForm()">Вход</a>
@@ -118,8 +126,8 @@
 
     <script>
         function toggleForm() {
-            const loginContainer = document.querySelectorAll('.container')[0];
-            const registerContainer = document.querySelectorAll('.container')[1];
+            const loginContainer = document.getElementById('loginContainer');
+            const registerContainer = document.getElementById('registerContainer');
             if (loginContainer.style.display === 'none') {
                 loginContainer.style.display = 'block';
                 registerContainer.style.display = 'none';
@@ -140,6 +148,55 @@
                 input.type = 'password';
                 img.src = '/images/eye_closed.png';
                 img.alt = 'Показать пароль';
+            }
+        }
+
+        async function submitLoginForm() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ username, password })
+            });
+
+            const loginError = document.getElementById('loginError');
+
+            if (response.ok) {
+                loginError.style.display = 'none';
+                window.location.href = '/login_complete/'
+            } else {
+                const result = await response.json();
+                loginError.style.display = 'block';
+                loginError.textContent = result.detail;
+            }
+        }
+
+        async function submitRegisterForm() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ username, password, confirm_password: confirmPassword })
+            });
+
+            const registerError = document.getElementById('registerError');
+
+            if (response.ok) {
+                registerError.style.display = 'none';
+                window.location.href = '/registration_complete/'
+            } else {
+                const result = await response.json();
+                registerError.style.display = 'block';
+                registerError.textContent = result.detail;
             }
         }
     </script>
