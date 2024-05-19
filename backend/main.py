@@ -45,6 +45,6 @@ def get_token(tg_login: str):
     return {"tg_login": tg_login, "uuid_token": str(uuid_token)}
 
 
-@app.post("/authorization/")
+@app.get("/authorization/")
 def auth(uuid_token: str):
     return {"authorization": True, "uuid_token": uuid_token}

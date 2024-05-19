@@ -40,13 +40,13 @@ class StartHandler:
         )
         user_token = self.__get_token(user.username)
         auth = self.__get_authorization_url(user_token)
-        print(auth)
         buttons = [
             InlineKeyboardButton(
-                "Авторизация",
+                text="Авторизация",
                 callback_data=CallbackData(
                     cb_processor=self.name, cb_type=self.CallBackType.auth.name
                 ).to_string(),
+                url=auth,
             )
         ]
         reply_markup = InlineKeyboardMarkup(
@@ -104,8 +104,4 @@ class StartHandler:
         return r.json()["uuid_token"]
 
     def __get_authorization_url(self, uuid_token: str) -> str:
-        r = requests.post(
-            url=f"{self.backend_url}/authorization/",
-            params={"uuid_token": uuid_token},
-        )
-        return r.text
+        return f"{self.backend_url}/authorization/?uuid_token={uuid_token}"
