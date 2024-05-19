@@ -2,9 +2,11 @@ import uuid
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from redis.exceptions import ConnectionError
 from src.dependencies import Dependencies, DependenciesBuilder
 from src.log import logger_config, logger_main
+from starlette.responses import FileResponse
 
 
 deps: Dependencies
@@ -20,6 +22,11 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+
+app.mount(
+    "/images", StaticFiles(directory="backend/static/images"), name="iamges"
+)
 
 
 @app.get("/check_pg/")
@@ -47,4 +54,4 @@ def get_token(tg_login: str):
 
 @app.get("/authorization/")
 def auth(uuid_token: str):
-    return {"authorization": True, "uuid_token": uuid_token}
+    return FileResponse("backend/static/auth.html")
