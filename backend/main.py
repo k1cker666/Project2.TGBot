@@ -54,4 +54,6 @@ def get_token(tg_login: str):
 
 @app.get("/authorization/")
 def auth(uuid_token: str):
-    return FileResponse("backend/static/auth.html")
+    if deps.redis.is_valid_token(uuid_token=uuid_token):
+        return FileResponse("backend/static/auth.html")
+    return FileResponse("backend/static/access_denied.html")

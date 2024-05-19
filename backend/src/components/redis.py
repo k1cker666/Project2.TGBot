@@ -37,3 +37,7 @@ class Redis:
         self.connection.set(name=uuid_token, value=tg_login)
         ttl = timedelta(minutes=self.config.ttl)
         self.connection.expire(name=uuid_token, time=ttl)
+
+    def is_valid_token(self, uuid_token: str) -> bool:
+        res = self.connection.get(uuid_token)
+        return bool(res)
