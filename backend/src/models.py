@@ -22,5 +22,5 @@ users = Table(
     Column("words_in_lesson", SmallInteger, nullable=False),
     Column("native_language", language, nullable=False),
     Column("language_to_learn", language, nullable=False),
-    Column("level", level, nullable=False),
+    Column("word_level", level, nullable=False),
 )

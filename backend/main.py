@@ -20,6 +20,8 @@ async def lifespan(app: FastAPI):
     logger_main
     global deps
     deps = DependenciesBuilder.build()
+    deps.postgres.is_login_available("admin")
+    deps.postgres.is_login_available("1212")
     yield
 
 
@@ -69,7 +71,8 @@ async def login(
 ):
     if username != "1" or password != "1":
         raise HTTPException(
-            status_code=401, detail="Неверное имя пользователя или пароль"
+            status_code=401,
+            detail="Неверное имя пользователя или пароль",
         )
     # TODO: Сделать проверку юзера
     return {"message": "login succes"}
@@ -77,15 +80,32 @@ async def login(
 
 @app.post("/register/")
 async def register(
-    username: Annotated[str, Form()],
+    login: Annotated[str, Form()],
     password: Annotated[str, Form()],
     confirm_password: Annotated[str, Form()],
     word_count: Annotated[int, Form()],
     uuid_token: Annotated[str, Form()],
 ):
-    # TODO: Сделать проверку зарегестрирован ли уже логин
+    if len(login) < 5:
+        raise HTTPException(
+            status_code=409,
+            detail="Логин должен состоять как минимум из 5 символов",
+        )
+    if not deps.postgres.is_login_available(login):
+        raise HTTPException(
+            status_code=409,
+            detail="Такой логин уже используется",
+        )
     if password != confirm_password:
-        raise HTTPException(status_code=400, detail="Пароли не совпадают")
+        raise HTTPException(
+            status_code=400,
+            detail="Пароли не совпадают",
+        )
+    if len(password) < 8:
+        raise HTTPException(
+            status_code=409,
+            detail="Пароль должен состоять как минимум из 8 символов",
+        )
     # TODO: Здесь нужно добавить регистрацию пользователя в базе данных
     return {"message": "reg succces"}
 

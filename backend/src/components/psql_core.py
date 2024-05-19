@@ -1,7 +1,7 @@
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine, create_engine, select
 from sqlalchemy.exc import OperationalError
 from src.components.envconfig import PostgreSQLConfig
-from src.models import metadata
+from src.models import metadata, users
 
 
 class PostgreSQL:
@@ -27,3 +27,10 @@ class PostgreSQL:
         else:
             conn.close()
             return True
+
+    def is_login_available(self, login: str) -> bool:
+        with self.engine.connect() as conn:
+            stmt = select(users).filter_by(login=login)
+            result = conn.execute(stmt)
+            result = result.one_or_none()
+        return not bool(result)
