@@ -1,5 +1,6 @@
 import uuid
 from contextlib import asynccontextmanager
+from functools import partial
 from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException
@@ -8,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from redis.exceptions import ConnectionError
 from src.dependencies import Dependencies, DependenciesBuilder
 from src.log import logger_config, logger_main
+from src.validator import validation_for_registration
 from starlette.responses import FileResponse
 
 
@@ -20,8 +22,10 @@ async def lifespan(app: FastAPI):
     logger_main
     global deps
     deps = DependenciesBuilder.build()
-    deps.postgres.is_login_available("admin")
-    deps.postgres.is_login_available("1212")
+    global validation_for_registration_with_psql
+    validation_for_registration_with_psql = partial(
+        validation_for_registration, postgres=deps.postgres
+    )
     yield
 
 
@@ -86,28 +90,13 @@ async def register(
     word_count: Annotated[int, Form()],
     uuid_token: Annotated[str, Form()],
 ):
-    if len(login) < 5:
-        raise HTTPException(
-            status_code=409,
-            detail="Логин должен состоять как минимум из 5 символов",
-        )
-    if not deps.postgres.is_login_available(login):
-        raise HTTPException(
-            status_code=409,
-            detail="Такой логин уже используется",
-        )
-    if password != confirm_password:
-        raise HTTPException(
-            status_code=400,
-            detail="Пароли не совпадают",
-        )
-    if len(password) < 8:
-        raise HTTPException(
-            status_code=409,
-            detail="Пароль должен состоять как минимум из 8 символов",
-        )
-    # TODO: Здесь нужно добавить регистрацию пользователя в базе данных
-    return {"message": "reg succces"}
+    if validation_for_registration_with_psql(
+        login=login,
+        password=password,
+        confirm_password=confirm_password,
+    ):
+
+        return {"message": "reg succces"}
 
 
 @app.get("/registration_complete/", response_class=HTMLResponse)
