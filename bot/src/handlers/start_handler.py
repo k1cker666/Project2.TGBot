@@ -37,6 +37,35 @@ class StartHandler:
         self.backend_url = backend_url
         self.user_repository = user_repository
 
+    def __get_authorization_url(self, uuid_token: str) -> str:
+        return f"{self.backend_url}/authorization/?uuid_token={uuid_token}"
+
+    def __check_user_authorization(self, tg_login):
+        user = self.user_repository.fetch_user_by_tg_login(tg_login=tg_login)
+        return bool(user)
+
+    def __get_token(self, tg_login: str) -> str:
+        r = requests.get(
+            url=f"{self.backend_url}/get_token/", params={"tg_login": tg_login}
+        )
+        return r.json()["uuid_token"]
+
+    async def handle_callback(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
+        callback_data: CallbackData,
+    ):
+        query = update.callback_query
+        if callback_data.cb_type == self.CallBackType.auth.name:
+            await query.delete_message()
+            reply_markup = self.__reply_markup_for_authorized_user()
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Авторизация успешно выполнена\nВыбери следующее действие",
+                reply_markup=reply_markup,
+            )
+
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
         if self.__check_user_authorization(tg_login=user.username):
@@ -70,35 +99,6 @@ class StartHandler:
                 text="Выбери действие",
                 reply_markup=reply_markup,
             )
-
-    async def handle_callback(
-        self,
-        update: Update,
-        context: ContextTypes.DEFAULT_TYPE,
-        callback_data: CallbackData,
-    ):
-        query = update.callback_query
-        if callback_data.cb_type == self.CallBackType.auth.name:
-            await query.delete_message()
-            reply_markup = self.__reply_markup_for_authorized_user()
-            await context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="Авторизация успешно выполнена\nВыбери следующее действие",
-                reply_markup=reply_markup,
-            )
-
-    def __get_token(self, tg_login: str) -> str:
-        r = requests.get(
-            url=f"{self.backend_url}/get_token/", params={"tg_login": tg_login}
-        )
-        return r.json()["uuid_token"]
-
-    def __get_authorization_url(self, uuid_token: str) -> str:
-        return f"{self.backend_url}/authorization/?uuid_token={uuid_token}"
-
-    def __check_user_authorization(self, tg_login):
-        user = self.user_repository.fetch_user_by_tg_login(tg_login=tg_login)
-        return bool(user)
 
     def __reply_markup_for_authorized_user(self):
         buttons = [
