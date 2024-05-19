@@ -43,3 +43,8 @@ def get_token(tg_login: str):
     uuid_token = uuid.uuid5(uuid.NAMESPACE_DNS, tg_login)
     deps.redis.set_token(tg_login=tg_login, uuid_token=str(uuid_token))
     return {"tg_login": tg_login, "uuid_token": str(uuid_token)}
+
+
+@app.post("/authorization/")
+def auth(uuid_token: str):
+    return {"authorization": True, "uuid_token": uuid_token}

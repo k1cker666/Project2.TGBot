@@ -96,7 +96,7 @@ class StartHandler:
                 reply_markup=reply_markup,
             )
 
-    def __get_token(self, tg_login: str):
+    def __get_token(self, tg_login: str) -> str:
         r = requests.get(
             url=f"{self.backend_url}/get_token/", params={"tg_login": tg_login}
         )
