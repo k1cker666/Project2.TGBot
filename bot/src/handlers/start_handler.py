@@ -72,7 +72,7 @@ class StartHandler:
             reply_markup = self.__reply_markup_for_authorized_user()
             await context.bot.send_message(
                 chat_id=update.message.chat_id,
-                text="Вы уже авторизированы, выбете действие",
+                text="Вы уже авторизированы, выбери действие",
                 reply_markup=reply_markup,
             )
         else:

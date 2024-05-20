@@ -33,7 +33,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 app.mount(
-    "/images", StaticFiles(directory="backend/static/images"), name="iamges"
+    "/images", StaticFiles(directory="backend/static/images"), name="images"
 )
 
 
