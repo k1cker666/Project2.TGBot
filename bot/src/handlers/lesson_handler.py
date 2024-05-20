@@ -147,6 +147,14 @@ class LessonHandler:
                 chat_id=update.effective_chat.id,
                 photo=photo_buffer,
                 caption=captions[user.word_level.name],
+                reply_markup=InlineKeyboardMarkup.from_button(
+                    InlineKeyboardButton(
+                        text="Вернуться в меню",
+                        callback_data=CallbackData(
+                            cb_processor="start", cb_type="menu"
+                        ).to_string(),
+                    )
+                ),
             )
             self.__update_user_word_level(user=user)
         else:

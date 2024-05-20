@@ -132,7 +132,16 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
         await query.delete_message()
         photo_buffer = self.image_builder.get_end_lesson_image()
         await context.bot.send_photo(
-            chat_id=update.effective_chat.id, photo=photo_buffer
+            chat_id=update.effective_chat.id,
+            photo=photo_buffer,
+            reply_markup=InlineKeyboardMarkup.from_button(
+                InlineKeyboardButton(
+                    text="Вернуться в меню",
+                    callback_data=CallbackData(
+                        cb_processor="start", cb_type="menu"
+                    ).to_string(),
+                )
+            ),
         )
         photo_buffer.close()
         self.user_state_processor.set_state(
