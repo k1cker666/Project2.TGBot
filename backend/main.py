@@ -66,7 +66,8 @@ async def login(
     uuid_token: Annotated[str, Form()],
 ):
     if validation_for_login_with_psql(login=login, password=password):
-        # TODO: Сделать проверку юзера
+        tg_login = deps.redis.get_tg_login(uuid_token=uuid_token)
+        deps.postgres.update_user_tg_login(tg_login=tg_login, login=login)
         return {"login": "success"}
     return {"login": "failed"}
 
