@@ -1,6 +1,5 @@
 from functools import partial
 
-from src.components.user_state_processor import State
 from src.dependencies import Dependencies
 from src.handlers import echo, help
 from src.models.callback import CallbackData
@@ -61,9 +60,6 @@ async def callback_handler(
                     update, context, callback_data
                 )
             else:
-                deps.user_state_processor.set_state(
-                    user_id=tg_login, state=State.lesson_inactive
-                )
                 await deps.start_handler.build_base_menu(
                     update, context, "long_afk"
                 )
@@ -75,9 +71,6 @@ async def callback_handler(
                     update, context, callback_data
                 )
             else:
-                deps.user_state_processor.set_state(
-                    user_id=tg_login, state=State.lesson_inactive
-                )
                 await deps.start_handler.build_base_menu(
                     update, context, "long_afk"
                 )

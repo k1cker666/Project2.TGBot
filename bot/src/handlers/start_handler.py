@@ -71,6 +71,10 @@ class StartHandler:
                 text="Авторизация успешно выполнена\nВыберите следующее действие",
                 reply_markup=reply_markup,
             )
+        if callback_data.cb_type == self.CallBackType.menu.name:
+            await self.build_base_menu(
+                update=update, context=context, type="menu"
+            )
 
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
@@ -118,12 +122,15 @@ class StartHandler:
         self,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
-        type: Literal["menu", "long_afk"] = "menu",
+        type: Literal["menu", "long_afk"],
     ):
         messages = {
             "menu": "Главное меню\nЧто делаем дальше?",
             "long_afk": "Вы слишком долго бездействовали, урок закончился",
         }
+        self.user_state_processor.set_state(
+            user_id=update.effective_user.username, state=State.lesson_inactive
+        )
         query = update.callback_query
         await query.delete_message()
         reply_markup = self.__reply_markup_for_authorized_user()
