@@ -79,21 +79,10 @@ class StartHandler:
             await update.message.reply_html(
                 rf"Привет {user.mention_html()}, я бот, который поможет тебе выучить иностранные слова!"
             )
-            user_token = self.__get_token(user.username)
-            auth = self.__get_authorization_url(user_token)
-            buttons = [
-                InlineKeyboardButton(
-                    text="Авторизация",
-                    callback_data=CallbackData(
-                        cb_processor=self.name,
-                        cb_type=self.CallBackType.auth.name,
-                    ).to_string(),
-                    url=auth,
-                )
-            ]
-            # TODO: Решить проблему перехода к следующему шагу
-            reply_markup = InlineKeyboardMarkup(
-                build_menu(buttons=buttons, n_cols=1)
+            uuid_token = self.__get_token(tg_login=user.username)
+            auth_url = self.__get_authorization_url(uuid_token=uuid_token)
+            reply_markup = self.__reply_markup_for_authorization(
+                auth_url=auth_url
             )
             await context.bot.send_message(
                 chat_id=update.message.chat_id,
@@ -101,7 +90,43 @@ class StartHandler:
                 reply_markup=reply_markup,
             )
 
-    def __reply_markup_for_authorized_user(self):
+    async def request_authorization(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ):
+        tg_login = update.effective_user.username
+        uuid_token = self.__get_token(tg_login=tg_login)
+        auth_url = self.__get_authorization_url(uuid_token=uuid_token)
+        reply_markup = self.__reply_markup_for_authorization(auth_url=auth_url)
+        query = update.callback_query
+        await query.delete_message()
+        await context.bot.send_message(
+            text="Сначала обходимо пройти авторизацию",
+            chat_id=update.effective_chat.id,
+            reply_markup=reply_markup,
+        )
+
+    def __reply_markup_for_authorization(
+        self, auth_url: str
+    ) -> InlineKeyboardMarkup:
+        buttons = [
+            InlineKeyboardButton(
+                text="Авторизация",
+                url=auth_url,
+            ),
+            InlineKeyboardButton(
+                text="Проверить авторизацию",
+                callback_data=CallbackData(
+                    cb_processor=self.name,
+                    cb_type=self.CallBackType.auth.name,
+                ).to_string(),
+            ),
+        ]
+        reply_markup = InlineKeyboardMarkup(
+            build_menu(buttons=buttons, n_cols=1)
+        )
+        return reply_markup
+
+    def __reply_markup_for_authorized_user(self) -> InlineKeyboardMarkup:
         buttons = [
             InlineKeyboardButton(
                 "Начать новый урок",
