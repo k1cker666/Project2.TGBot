@@ -1,5 +1,6 @@
 from functools import partial
 
+from src.components.user_state_processor import State
 from src.dependencies import Dependencies
 from src.handlers import echo, help
 from src.models.callback import CallbackData
@@ -53,13 +54,33 @@ async def callback_handler(
                 update, context, callback_data
             )
         if callback_data.cb_processor == deps.lesson_handler.name:
-            await deps.lesson_handler.handle_callback(
-                update, context, callback_data
-            )
+            if deps.user_state_processor.is_user_online(
+                user_id=update.effective_user.username
+            ):
+                await deps.lesson_handler.handle_callback(
+                    update, context, callback_data
+                )
+            else:
+                deps.user_state_processor.set_state(
+                    user_id=tg_login, state=State.lesson_inactive
+                )
+                await deps.start_handler.build_base_menu(
+                    update, context, "long_afk"
+                )
         if callback_data.cb_processor == deps.repetition_handler.name:
-            await deps.repetition_handler.handle_callback(
-                update, context, callback_data
-            )
+            if deps.user_state_processor.is_user_online(
+                user_id=update.effective_user.username
+            ):
+                await deps.repetition_handler.handle_callback(
+                    update, context, callback_data
+                )
+            else:
+                deps.user_state_processor.set_state(
+                    user_id=tg_login, state=State.lesson_inactive
+                )
+                await deps.start_handler.build_base_menu(
+                    update, context, "long_afk"
+                )
         if callback_data.cb_processor == deps.statistic_handler.name:
             await deps.statistic_handler.handle_callback(
                 update, context, callback_data

@@ -102,6 +102,7 @@ class DependenciesBuilder:
             statistic_handler=statistic_handler,
             backend_url=config.backend_url,
             user_repository=user_repository,
+            user_state_processor=user_state_processor,
         )
 
         return Dependencies(

@@ -1,6 +1,8 @@
 from enum import Enum, auto
+from typing import Literal
 
 import requests
+from src.components.user_state_processor import State, UserStateProcessor
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.statistic_handler import StatisticHandler
@@ -19,9 +21,11 @@ class StartHandler:
     statistic_handler: StatisticHandler
     backend_url: str
     user_repository: UserRepository
+    user_state_processor: UserStateProcessor
 
     class CallBackType(Enum):
         auth = auto()
+        menu = auto()
 
     def __init__(
         self,
@@ -30,12 +34,14 @@ class StartHandler:
         statistic_handler: StatisticHandler,
         backend_url: str,
         user_repository: UserRepository,
+        user_state_processor: UserStateProcessor,
     ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
         self.statistic_handler = statistic_handler
         self.backend_url = backend_url
         self.user_repository = user_repository
+        self.user_state_processor = user_state_processor
 
     def __get_authorization_url(self, uuid_token: str) -> str:
         return f"{self.backend_url}/authorization/?uuid_token={uuid_token}"
@@ -62,22 +68,25 @@ class StartHandler:
             reply_markup = self.__reply_markup_for_authorized_user()
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Авторизация успешно выполнена\nВыбери следующее действие",
+                text="Авторизация успешно выполнена\nВыберите следующее действие",
                 reply_markup=reply_markup,
             )
 
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
         if self.__check_user_authorization(tg_login=user.username):
+            self.user_state_processor.set_state(
+                user_id=user.username, state=State.lesson_inactive
+            )
             reply_markup = self.__reply_markup_for_authorized_user()
             await context.bot.send_message(
                 chat_id=update.message.chat_id,
-                text="Вы уже авторизированы, выбери действие",
+                text="Вы уже авторизированы, выберите действие",
                 reply_markup=reply_markup,
             )
         else:
             await update.message.reply_html(
-                rf"Привет {user.mention_html()}, я бот, который поможет тебе выучить иностранные слова!"
+                rf"Привет {user.mention_html()}, я бот, который поможет вам выучить иностранные слова!"
             )
             uuid_token = self.__get_token(tg_login=user.username)
             auth_url = self.__get_authorization_url(uuid_token=uuid_token)
@@ -101,6 +110,25 @@ class StartHandler:
         await query.delete_message()
         await context.bot.send_message(
             text="Сначала обходимо пройти авторизацию",
+            chat_id=update.effective_chat.id,
+            reply_markup=reply_markup,
+        )
+
+    async def build_base_menu(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
+        type: Literal["menu", "long_afk"] = "menu",
+    ):
+        messages = {
+            "menu": "Главное меню\nЧто делаем дальше?",
+            "long_afk": "Вы слишком долго бездействовали, урок закончился",
+        }
+        query = update.callback_query
+        await query.delete_message()
+        reply_markup = self.__reply_markup_for_authorized_user()
+        await context.bot.send_message(
+            text=messages[type],
             chat_id=update.effective_chat.id,
             reply_markup=reply_markup,
         )
