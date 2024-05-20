@@ -62,9 +62,14 @@ def get_token(tg_login: str):
 
 @app.get("/authorization/")
 def auth(uuid_token: str):
+    headers = {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
     if deps.redis.is_valid_token(uuid_token=uuid_token):
-        return FileResponse("backend/static/auth.html")
-    return FileResponse("backend/static/access_denied.html")
+        return FileResponse("backend/static/auth.html", headers=headers)
+    return FileResponse("backend/static/access_denied.html", headers=headers)
 
 
 @app.post("/login/")
