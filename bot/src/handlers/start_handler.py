@@ -91,6 +91,7 @@ class StartHandler:
                     url=auth,
                 )
             ]
+            # TODO: Решить проблему перехода к следующему шагу
             reply_markup = InlineKeyboardMarkup(
                 build_menu(buttons=buttons, n_cols=1)
             )

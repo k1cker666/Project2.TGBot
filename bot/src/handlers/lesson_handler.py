@@ -77,7 +77,7 @@ class LessonHandler:
         query = update.callback_query
         await query.delete_message()
         data = self.lesson_init_processor.get_lesson(
-            user_telegram_login="@k1cker666"
+            user_telegram_login=update.effective_user.username
         )
         if data is None:
             await context.bot.send_message(
@@ -141,7 +141,7 @@ class LessonHandler:
                 WordLevel.A3.name: "Поздравляю! Вы прошли все имеющиеся слова!",
             }
             user = self.user_repository.fetch_user_by_tg_login(
-                tg_login="@k1cker666"
+                tg_login=update.effective_user.username
             )
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
@@ -257,7 +257,7 @@ class LessonHandler:
         data: LessonDTO,
     ):
         user = self.user_repository.fetch_user_by_tg_login(
-            tg_login="@k1cker666"
+            tg_login=update.effective_user.username
         )
         self.word_repository.add_word_in_words_in_progress(
             user_id=user.user_id,

@@ -45,7 +45,7 @@ class StatisticHandler:
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ):
         user = self.user_repository.fetch_user_by_tg_login(
-            tg_login="@k1cker666"
+            tg_login=update.effective_user.username
         )
         passed_words = self.word_repository.fetch_count_passed_words(
             user_id=user.user_id, language_to_learn=user.language_to_learn

@@ -77,7 +77,7 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
         query = update.callback_query
         await query.delete_message()
         data = self.repetition_init_processor.get_lesson(
-            user_telegram_login="@k1cker666"
+            user_telegram_login=update.effective_user.username
         )
         if data is None:
             await context.bot.send_message(
@@ -227,7 +227,7 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
         data: LessonDTO,
     ):
         user = self.user_repository.fetch_user_by_tg_login(
-            tg_login="@k1cker666"
+            tg_login=update.effective_user.username
         )
         self.word_repository.decrease_numder_of_repetitions(
             user_id=user.user_id,
