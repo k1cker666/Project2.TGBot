@@ -1,5 +1,5 @@
 from loguru import logger
-from src.components.config import EnvConfig, load_config
+from src.components.envconfig import EnvConfig, load_config
 from src.components.image_builder import ImageBuilder
 from src.components.lesson_init_processor import LessonInitProcessor
 from src.components.repetition_init_processor import RepetitionInitProcessor
@@ -100,6 +100,8 @@ class DependenciesBuilder:
             lesson_handler=lesson_handler,
             repetition_handler=repetition_handler,
             statistic_handler=statistic_handler,
+            backend_url=config.backend_url,
+            user_repository=user_repository,
         )
 
         return Dependencies(

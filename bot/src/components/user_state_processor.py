@@ -3,7 +3,7 @@ from datetime import timedelta
 from enum import Enum, auto
 
 import redis
-from src.components.config import RedisDB
+from src.components.envconfig import RedisDB
 
 
 class State(Enum):

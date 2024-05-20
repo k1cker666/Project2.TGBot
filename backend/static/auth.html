@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход / Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            position: relative;
+            margin: 10px 0;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .toggle-password img {
+            width: 20px;
+            height: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .toggle {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .toggle a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .toggle a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: #d9534f;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        select {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <h2>Вход</h2>
+        <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Имя пользователя" required>
+            <div class="input-group">
+                <input type="password" id="loginPassword" placeholder="Пароль" required>
+                <span class="toggle-password" onclick="togglePassword('loginPassword', this)">
+                    <img src="/images/eye_closed.png" alt="Показать пароль">
+                </span>
+            </div>
+            <button type="button" onclick="submitLoginForm()">Войти</button>
+            <div id="loginError" class="error"></div>
+        </form>
+        <div class="toggle">
+            Нет аккаунта? <a href="#" onclick="toggleForm()">Регистрация</a>
+        </div>
+    </div>
+
+    <div class="container" id="registerContainer" style="display: none;">
+        <h2>Регистрация</h2>
+        <form id="registerForm">
+            <input type="text" id="registerUsername" placeholder="Имя пользователя" required>
+            <div class="input-group">
+                <input type="password" id="registerPassword" placeholder="Пароль" required>
+                <span class="toggle-password" onclick="togglePassword('registerPassword', this)">
+                    <img src="/images/eye_closed.png" alt="Показать пароль">
+                </span>
+            </div>
+            <div class="input-group">
+                <input type="password" id="registerConfirmPassword" placeholder="Подтвердите пароль" required>
+                <span class="toggle-password" onclick="togglePassword('registerConfirmPassword', this)">
+                    <img src="/images/eye_closed.png" alt="Показать пароль">
+                </span>
+            </div>
+            <div class="input-group">
+                <label for="wordCount">Количество слов в уроке:</label>
+                <select id="wordCount" name="wordCount">
+                    <option value="10">Мало(10)</option>
+                    <option value="20">Средне(20)</option>
+                    <option value="30">Много(30)</option>
+                </select>
+            </div>
+            <button type="button" onclick="submitRegisterForm()">Зарегистрироваться</button>
+            <div id="registerError" class="error"></div>
+        </form>
+        <div class="toggle">
+            Уже есть аккаунт? <a href="#" onclick="toggleForm()">Вход</a>
+        </div>
+    </div>
+
+    <script>
+        function getUUIDToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('uuid_token');
+        }
+
+        function toggleForm() {
+            const loginContainer = document.getElementById('loginContainer');
+            const registerContainer = document.getElementById('registerContainer');
+            if (loginContainer.style.display === 'none') {
+                loginContainer.style.display = 'block';
+                registerContainer.style.display = 'none';
+            } else {
+                loginContainer.style.display = 'none';
+                registerContainer.style.display = 'block';
+            }
+        }
+
+        function togglePassword(id, element) {
+            const input = document.getElementById(id);
+            const img = element.querySelector('img');
+            if (input.type === 'password') {
+                input.type = 'text';
+                img.src = '/images/eye_open.png';
+                img.alt = 'Скрыть пароль';
+            } else {
+                input.type = 'password';
+                img.src = '/images/eye_closed.png';
+                img.alt = 'Показать пароль';
+            }
+        }
+
+        async function submitLoginForm() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const uuid_token = getUUIDToken()
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ username, password, uuid_token })
+            });
+
+            const loginError = document.getElementById('loginError');
+
+            if (response.ok) {
+                loginError.style.display = 'none';
+                window.location.href = '/login_complete/'
+            } else {
+                const result = await response.json();
+                loginError.style.display = 'block';
+                loginError.textContent = result.detail;
+            }
+        }
+
+        async function submitRegisterForm() {
+            const login = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const words_in_lesson = document.getElementById('wordCount').value;
+            const uuid_token = getUUIDToken()
+
+            const response = await fetch('/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ login, password, confirm_password: confirmPassword, words_in_lesson, uuid_token })
+            });
+
+            const registerError = document.getElementById('registerError');
+
+            if (response.ok) {
+                registerError.style.display = 'none';
+                window.location.href = '/registration_complete/'
+            } else {
+                const result = await response.json();
+                registerError.style.display = 'block';
+                registerError.textContent = result.detail;
+            }
+        }
+    </script>
+</body>
+</html>

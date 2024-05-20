@@ -19,6 +19,8 @@ pillow = "^10.3.0"
 pytest = "^8.2.0"
 python-telegram-bot = "^21.1.1"
 python-dotenv = "^1.0.1"
+pydantic-settings = "^2.2.1"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.migrations.dependencies]
@@ -29,9 +31,14 @@ python-dotenv = "^1.0.1"
 
 
 [tool.poetry.group.backend.dependencies]
-psycopg = {extras = ["binary"], version = "^3.1.19"}
 loguru = "^0.7.2"
 python-dotenv = "^1.0.1"
+fastapi = "^0.111.0"
+pydantic-settings = "^2.2.1"
+redis = {extras = ["hiredis"], version = "^5.0.4"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
+psycopg = {extras = ["binary"], version = "^3.1.19"}
+python-multipart = "^0.0.9"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -49,6 +56,11 @@ black = "^24.4.2"
 isort = "^5.13.2"
 flake8 = "^7.0.0"
 pre-commit = "^3.7.1"
+fastapi = "^0.111.0"
+pydantic-settings = "^2.2.1"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
+requests = "^2.31.0"
+python-multipart = "^0.0.9"
 
 [build-system]
 requires = ["poetry-core"]

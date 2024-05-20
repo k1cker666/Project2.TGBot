@@ -1,6 +1,6 @@
 import pytest
 import redis
-from src.components.config import load_config
+from src.components.envconfig import load_config
 from src.db.psql import create_connection_pool
 
 
