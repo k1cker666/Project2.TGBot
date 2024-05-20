@@ -50,3 +50,10 @@ class PostgreSQL:
             )
             conn.execute(stmt)
             conn.commit()
+
+    def fetch_user_by_login(self, login: str) -> dict | None:
+        with self.engine.connect() as conn:
+            stmt = select(users).filter_by(login=login)
+            row = conn.execute(stmt)
+            res = row.one_or_none()
+        return None if res is None else res._asdict()
