@@ -6,7 +6,6 @@ from typing import Annotated
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from redis.exceptions import ConnectionError
 from src.dependencies import Dependencies, DependenciesBuilder
 from src.log import logger_config, logger_main
 from src.validator import validation_for_registration
@@ -35,22 +34,6 @@ app = FastAPI(lifespan=lifespan)
 app.mount(
     "/images", StaticFiles(directory="backend/static/images"), name="images"
 )
-
-
-@app.get("/check_pg/")
-def check_pg_connection():
-    if deps.postgres.check_connect():
-        return {"pg_connection": True}
-    return {"pg_connection": False}
-
-
-@app.get("/check_redis/")
-def check_redis_connection():
-    try:
-        deps.redis.connection.ping()
-        return {"redis_connection": True}
-    except ConnectionError:
-        return {"redis_connection": False}
 
 
 @app.get("/get_token/")
