@@ -1,7 +1,7 @@
 from functools import partial
 
 from src.dependencies import Dependencies
-from src.handlers import echo, help
+from src.handlers import help
 from src.models.callback import CallbackData
 from telegram import Update
 from telegram.ext import (
@@ -9,8 +9,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     CommandHandler,
     ContextTypes,
-    MessageHandler,
-    filters,
 )
 
 
@@ -23,10 +21,6 @@ def start_bot(deps: Dependencies):
 
     application.add_handler(CommandHandler("start", partial_deps(start)))
     application.add_handler(CommandHandler("help", help.help_command))
-
-    application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, echo.echo)
-    )
 
     application.add_handler(
         CallbackQueryHandler(partial_deps(callback_handler))
