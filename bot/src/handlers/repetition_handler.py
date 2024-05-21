@@ -83,6 +83,14 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Слов для повторения пока нет!",
+                reply_markup=InlineKeyboardMarkup.from_button(
+                    InlineKeyboardButton(
+                        text="Вернуться в меню",
+                        callback_data=CallbackData(
+                            cb_processor="start", cb_type="menu"
+                        ).to_string(),
+                    )
+                ),
             )
         else:
             self.user_state_processor.set_data(
