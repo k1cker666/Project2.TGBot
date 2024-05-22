@@ -1,3 +1,5 @@
+from bot.src.components.practice_init_processor import PracticeInitProcessor
+from bot.src.handlers.prectice_handler import PracticeHandler
 from loguru import logger
 from src.components.envconfig import EnvConfig, load_config
 from src.components.image_builder import ImageBuilder
@@ -89,6 +91,17 @@ class DependenciesBuilder:
             word_repository=word_repository,
         )
 
+        practice_init_processor = PracticeInitProcessor(
+            user_repository=user_repository, word_repository=word_repository
+        )
+
+        practice_handler = PracticeHandler(
+            practice_init_processor=practice_init_processor,
+            user_state_processor=user_state_processor,
+            image_builder=image_builder,
+            user_repository=user_repository,
+            word_repository=word_repository,
+        )
         statistic_handler = StatisticHandler(
             user_repository=user_repository,
             word_repository=word_repository,
@@ -100,6 +113,7 @@ class DependenciesBuilder:
             lesson_handler=lesson_handler,
             repetition_handler=repetition_handler,
             statistic_handler=statistic_handler,
+            practice_handler=practice_handler,
             backend_url=config.backend_url,
             user_repository=user_repository,
             user_state_processor=user_state_processor,

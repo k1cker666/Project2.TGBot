@@ -12,7 +12,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 
-class RepetitionHandler:  # TODO 2)сообщение пользователю если он изучил все слова
+class RepetitionHandler:
 
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
