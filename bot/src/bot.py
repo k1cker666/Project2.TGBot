@@ -68,6 +68,17 @@ async def callback_handler(
                 await deps.start_handler.build_base_menu(
                     update, context, "long_afk"
                 )
+        if callback_data.cb_processor == deps.practice_handler.name:
+            if deps.user_state_processor.is_user_online(
+                user_id=update.effective_user.username
+            ):
+                await deps.practice_handler.handle_callback(
+                    update, context, callback_data
+                )
+            else:
+                await deps.start_handler.build_base_menu(
+                    update, context, "long_afk"
+                )
         if callback_data.cb_processor == deps.statistic_handler.name:
             await deps.statistic_handler.handle_callback(
                 update, context, callback_data

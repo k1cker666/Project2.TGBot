@@ -1,13 +1,13 @@
-from bot.src.components.practice_init_processor import PracticeInitProcessor
-from bot.src.handlers.prectice_handler import PracticeHandler
 from loguru import logger
 from src.components.envconfig import EnvConfig, load_config
 from src.components.image_builder import ImageBuilder
 from src.components.lesson_init_processor import LessonInitProcessor
+from src.components.practice_init_processor import PracticeInitProcessor
 from src.components.repetition_init_processor import RepetitionInitProcessor
 from src.components.user_state_processor import UserStateProcessor
 from src.db import psql, redis
 from src.handlers.lesson_handler import LessonHandler
+from src.handlers.prectice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.start_handler import StartHandler
 from src.handlers.statistic_handler import StatisticHandler
@@ -32,6 +32,7 @@ class Dependencies:
         user_state_processor: UserStateProcessor,
         lesson_handler: LessonHandler,
         repetition_handler: RepetitionHandler,
+        practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
     ):
         self.start_handler = start_handler
@@ -41,6 +42,7 @@ class Dependencies:
         self.user_state_processor = user_state_processor
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
+        self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
 
     def close(self):
@@ -127,5 +129,6 @@ class DependenciesBuilder:
             user_state_processor=user_state_processor,
             lesson_handler=lesson_handler,
             repetition_handler=repetition_handler,
+            practice_handler=practice_handler,
             statistic_handler=statistic_handler,
         )

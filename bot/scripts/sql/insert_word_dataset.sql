@@ -3069,7 +3069,7 @@ insert into words (word_id, language, level, word) values (1534, 'ru', 'A3', 'я
 insert into words (word_id, language, level, word) values (1535, 'en', 'A2', 'explode');
 insert into words (word_id, language, level, word) values (1535, 'ru', 'A2', 'взорваться');
 insert into words (word_id, language, level, word) values (1536, 'en', 'A1', 'exploit');
-insert into words (word_id, language, level, word) values (1536, 'ru', 'A1', 'эксплойт');
+insert into words (word_id, language, level, word) values (1536, 'ru', 'A1', 'эксплуатировать');
 insert into words (word_id, language, level, word) values (1537, 'en', 'A3', 'exploitation');
 insert into words (word_id, language, level, word) values (1537, 'ru', 'A3', 'эксплуатация');
 insert into words (word_id, language, level, word) values (1538, 'en', 'A1', 'exploration');

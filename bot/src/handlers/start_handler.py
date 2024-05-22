@@ -33,6 +33,7 @@ class StartHandler:
         self,
         lesson_handler: LessonHandler,
         repetition_handler: RepetitionHandler,
+        practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
         backend_url: str,
         user_repository: UserRepository,
@@ -40,6 +41,7 @@ class StartHandler:
     ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
+        self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
         self.backend_url = backend_url
         self.user_repository = user_repository
@@ -180,12 +182,27 @@ class StartHandler:
                 ).to_string(),
             ),
             InlineKeyboardButton(
+                "Практика",
+                callback_data=CallbackData(
+                    cb_processor=self.practice_handler.name,
+                    cb_type=self.practice_handler.CallBackType.init_practice.name,
+                ).to_string(),
+            ),
+        ]
+        footer_button = [
+            InlineKeyboardButton(
                 "Посмотреть статистику",
                 callback_data=CallbackData(
                     cb_processor=self.statistic_handler.name,
                     cb_type=self.statistic_handler.CallBackType.init_stat.name,
                 ).to_string(),
-            ),
+            )
         ]
-        reply_markup = InlineKeyboardMarkup(build_menu(buttons, 2))
+        reply_markup = InlineKeyboardMarkup(
+            build_menu(
+                buttons=buttons,
+                n_cols=2,
+                footer_buttons=footer_button,
+            )
+        )
         return reply_markup
