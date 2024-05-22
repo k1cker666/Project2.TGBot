@@ -42,9 +42,9 @@ def psql_connect(config_init):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                truncate words_in_progress cascade;
-                truncate users cascade;
-                truncate words cascade;
+                truncate words_in_progress restart identity cascade;
+                truncate users restart identity cascade;
+                truncate words restart identity cascade;
                 """
             )
             conn.commit()

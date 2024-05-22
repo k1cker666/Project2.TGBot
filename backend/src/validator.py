@@ -26,3 +26,13 @@ def validation_for_registration(
             detail="Пароль должен состоять как минимум из 8 символов",
         )
     return True
+
+
+def validation_for_login(postgres: PostgreSQL, login: str, password: str):
+    user = postgres.fetch_user_by_login(login=login)
+    if user is None or password != user["password"]:
+        raise HTTPException(
+            status_code=409,
+            detail="Неверное имя пользователя или пароль",
+        )
+    return True

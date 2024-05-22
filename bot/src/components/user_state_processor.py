@@ -36,3 +36,7 @@ class UserStateProcessor:
     def get_data(self, user_id: str) -> dict:
         data = self.conn.hget(user_id, "data")
         return json.loads(data) if data else None
+
+    def is_user_online(self, user_id: str) -> bool:
+        online = self.conn.exists(user_id)
+        return True if online else False
