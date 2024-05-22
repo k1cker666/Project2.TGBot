@@ -217,7 +217,7 @@ class RepetitionHandler:
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
         if callback_data.word.lower() == correct_answer:
-            self.__decrease_numder_of_repetitions(
+            self.__decrease_number_of_repetitions(
                 update=update, context=context, data=data
             )
             if self.__have_next_question(data.active_question, data.questions):
@@ -237,7 +237,7 @@ class RepetitionHandler:
                 update=update, context=context, data=data
             )
 
-    def __decrease_numder_of_repetitions(
+    def __decrease_number_of_repetitions(
         self,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
@@ -246,7 +246,7 @@ class RepetitionHandler:
         user = self.user_repository.fetch_user_by_tg_login(
             tg_login=update.effective_user.username
         )
-        self.word_repository.decrease_numder_of_repetitions(
+        self.word_repository.decrease_number_of_repetitions(
             user_id=user.user_id,
             word_id=data.questions[data.active_question]["id"],
             language=user.language_to_learn,

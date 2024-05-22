@@ -2,9 +2,9 @@ from enum import Enum, auto
 from typing import Literal
 
 import requests
+from bot.src.handlers.practice_handler import PracticeHandler
 from src.components.user_state_processor import State, UserStateProcessor
 from src.handlers.lesson_handler import LessonHandler
-from src.handlers.prectice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.statistic_handler import StatisticHandler
 from src.helpfuncs.menu import build_menu
@@ -89,7 +89,7 @@ class StartHandler:
             reply_markup = self.__reply_markup_for_authorized_user()
             await context.bot.send_message(
                 chat_id=update.message.chat_id,
-                text="Вы уже авторизированы, выберите действие",
+                text="Вы уже авторизованы, выберите действие",
                 reply_markup=reply_markup,
             )
         else:

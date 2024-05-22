@@ -139,7 +139,7 @@ class WordRepository:
                 )
                 conn.commit()
 
-    def decrease_numder_of_repetitions(
+    def decrease_number_of_repetitions(
         self, user_id: int, word_id: int, language: str
     ):
         with self.connection_pool.connection() as conn:
