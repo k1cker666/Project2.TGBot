@@ -34,8 +34,8 @@ class Validator:
             )
         return True
 
-    def validation_for_login(postgres: PostgreSQL, login: str, password: str):
-        user = postgres.fetch_user_by_login(login=login)
+    def validation_for_login(self, login: str, password: str):
+        user = self.postgres.fetch_user_by_login(login=login)
         if user is None or password != user["password"]:
             raise HTTPException(
                 status_code=409,

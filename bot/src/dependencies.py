@@ -7,6 +7,7 @@ from src.components.repetition_init_processor import RepetitionInitProcessor
 from src.components.user_state_processor import UserStateProcessor
 from src.db import psql, redis
 from src.handlers.lesson_handler import LessonHandler
+from src.handlers.logout_handler import LogoutHandler
 from src.handlers.prectice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.start_handler import StartHandler
@@ -22,6 +23,11 @@ class Dependencies:
     user_repository: UserRepository
     config: EnvConfig
     user_state_processor: UserStateProcessor
+    lesson_handler: LessonHandler
+    repetition_handler: RepetitionHandler
+    practice_handler: PracticeHandler
+    statistic_handler: StatisticHandler
+    logout_handler: LogoutHandler
 
     def __init__(
         self,
@@ -34,6 +40,7 @@ class Dependencies:
         repetition_handler: RepetitionHandler,
         practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
+        logout_handler: LogoutHandler,
     ):
         self.start_handler = start_handler
         self.word_repository = word_repository
@@ -44,6 +51,7 @@ class Dependencies:
         self.repetition_handler = repetition_handler
         self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
+        self.logout_handler = logout_handler
 
     def close(self):
         self.user_state_processor.conn.close()
@@ -121,6 +129,10 @@ class DependenciesBuilder:
             user_state_processor=user_state_processor,
         )
 
+        logout_handler = LogoutHandler(
+            backend_url=config.backend_url, user_repository=user_repository
+        )
+
         return Dependencies(
             start_handler=start_handler,
             word_repository=word_repository,
@@ -131,4 +143,5 @@ class DependenciesBuilder:
             repetition_handler=repetition_handler,
             practice_handler=practice_handler,
             statistic_handler=statistic_handler,
+            logout_handler=logout_handler,
         )

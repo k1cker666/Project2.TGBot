@@ -68,6 +68,10 @@ class StartHandler:
     ):
         query = update.callback_query
         if callback_data.cb_type == self.CallBackType.auth.name:
+            self.user_state_processor.set_state(
+                user_id=update.effective_user.username,
+                state=State.lesson_inactive,
+            )
             await query.delete_message()
             reply_markup = self.__reply_markup_for_authorized_user()
             await context.bot.send_message(
