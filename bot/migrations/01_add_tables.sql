@@ -22,9 +22,9 @@ $$;
 
 create table if not exists users (
     user_id smallserial primary key,
-    tg_login text not null,
-    login varchar(16) not null unique,
-    password varchar(16) not null,
+    tg_login text,
+    login varchar(50) not null unique,
+    password varchar(50) not null,
     words_in_lesson smallint not null,
     native_language language_t_v1  not null,
     language_to_learn language_t_v1 not null,
@@ -53,3 +53,4 @@ create extension if not exists plpgsql with schema public;
 create extension if not exists pg_trgm with schema public;
 create index if not exists word_trgm_index on words using GIN (word gin_trgm_ops);
 create index if not exists user_tg_login on users (tg_login);
+create index if not exists user_login on users (login);

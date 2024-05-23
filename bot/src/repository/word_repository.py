@@ -175,3 +175,22 @@ class WordRepository:
                 )
                 result = cur.fetchone()
                 return result[0]
+
+    def fetch_words_for_practice(
+        self,
+        word_language: str,
+        words_in_lesson: int,
+    ) -> List[Word] | None:
+        with self.connection_pool.connection() as conn:
+            with conn.cursor(row_factory=class_row(Word)) as cur:
+                cur.execute(
+                    """
+                    select word_id, language, level, word from words
+                    where language=%s
+                    order by random()
+                    limit %s;
+                    """,
+                    (word_language, words_in_lesson),
+                )
+                result = cur.fetchmany(size=words_in_lesson)
+                return result if len(result) != 0 else None

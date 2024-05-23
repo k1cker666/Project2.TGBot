@@ -2,7 +2,7 @@ import uuid
 from contextlib import asynccontextmanager
 from typing import Annotated
 
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from src.dependencies import Dependencies, DependenciesBuilder
@@ -19,6 +19,10 @@ async def lifespan(app: FastAPI):
     logger_main
     global deps
     deps = DependenciesBuilder.build()
+    global validation_for_registration_with_psql
+    validation_for_registration_with_psql = partial(
+        validation_for_registration, postgres=deps.postgres
+    )
     yield
 
 
@@ -51,17 +55,15 @@ def auth(uuid_token: str):
 
 @app.post("/login/")
 async def login(
-    username: Annotated[str, Form()],
+    login: Annotated[str, Form()],
     password: Annotated[str, Form()],
     uuid_token: Annotated[str, Form()],
 ):
-    if username != "1" or password != "1":
-        raise HTTPException(
-            status_code=401,
-            detail="Неверное имя пользователя или пароль",
-        )
-    # TODO: Сделать проверку юзера
-    return {"message": "login succes"}
+    if validation_for_login_with_psql(login=login, password=password):
+        tg_login = deps.redis.get_tg_login(uuid_token=uuid_token)
+        deps.postgres.update_user_tg_login(tg_login=tg_login, login=login)
+        return {"login": "success"}
+    return {"login": "failed"}
 
 
 @app.post("/register/")
@@ -84,7 +86,8 @@ async def register(
             password=password,
             words_in_lesson=words_in_lesson,
         )
-        return {}
+        return {"registration": "success"}
+    return {"registration": "failed"}
 
 
 @app.get("/registration_complete/", response_class=HTMLResponse)

@@ -12,7 +12,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 
-class RepetitionHandler:  # TODO 2)сообщение пользователю если он изучил все слова
+class RepetitionHandler:
 
     repetition_init_processor: RepetitionInitProcessor
     user_state_processor: UserStateProcessor
@@ -77,12 +77,20 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
         query = update.callback_query
         await query.delete_message()
         data = self.repetition_init_processor.get_lesson(
-            user_telegram_login="@k1cker666"
+            user_telegram_login=update.effective_user.username
         )
         if data is None:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Слов для повторения пока нет!",
+                reply_markup=InlineKeyboardMarkup.from_button(
+                    InlineKeyboardButton(
+                        text="Вернуться в меню",
+                        callback_data=CallbackData(
+                            cb_processor="start", cb_type="menu"
+                        ).to_string(),
+                    )
+                ),
             )
         else:
             self.user_state_processor.set_data(
@@ -132,7 +140,16 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
         await query.delete_message()
         photo_buffer = self.image_builder.get_end_lesson_image()
         await context.bot.send_photo(
-            chat_id=update.effective_chat.id, photo=photo_buffer
+            chat_id=update.effective_chat.id,
+            photo=photo_buffer,
+            reply_markup=InlineKeyboardMarkup.from_button(
+                InlineKeyboardButton(
+                    text="Вернуться в меню",
+                    callback_data=CallbackData(
+                        cb_processor="start", cb_type="menu"
+                    ).to_string(),
+                )
+            ),
         )
         photo_buffer.close()
         self.user_state_processor.set_state(
@@ -227,7 +244,7 @@ class RepetitionHandler:  # TODO 2)сообщение пользователю �
         data: LessonDTO,
     ):
         user = self.user_repository.fetch_user_by_tg_login(
-            tg_login="@k1cker666"
+            tg_login=update.effective_user.username
         )
         self.word_repository.decrease_numder_of_repetitions(
             user_id=user.user_id,

@@ -4,7 +4,7 @@ from src.components.image_builder import ImageBuilder
 from src.models.callback import CallbackData
 from src.repository.user_repository import UserRepository
 from src.repository.word_repository import WordRepository
-from telegram import Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
@@ -45,7 +45,7 @@ class StatisticHandler:
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ):
         user = self.user_repository.fetch_user_by_tg_login(
-            tg_login="@k1cker666"
+            tg_login=update.effective_user.username
         )
         passed_words = self.word_repository.fetch_count_passed_words(
             user_id=user.user_id, language_to_learn=user.language_to_learn
@@ -70,5 +70,13 @@ class StatisticHandler:
             photo=photo_buffer,
             caption=caption,
             parse_mode=ParseMode.HTML,
+            reply_markup=InlineKeyboardMarkup.from_button(
+                InlineKeyboardButton(
+                    text="Вернуться в меню",
+                    callback_data=CallbackData(
+                        cb_processor="start", cb_type="menu"
+                    ).to_string(),
+                )
+            ),
         )
         photo_buffer.close()

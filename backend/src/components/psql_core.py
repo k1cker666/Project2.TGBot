@@ -1,4 +1,4 @@
-from sqlalchemy import Engine, create_engine, insert, select
+from sqlalchemy import Engine, create_engine, insert, select, update
 from sqlalchemy.exc import OperationalError
 from src.components.envconfig import PostgreSQLConfig
 from src.models import metadata, users
@@ -30,8 +30,8 @@ class PostgreSQL:
 
     def is_login_available(self, login: str) -> bool:
         with self.engine.connect() as conn:
-            stmt = select(users).filter_by(login=login)
-            result = conn.execute(stmt)
+            query = select(users).filter_by(login=login)
+            result = conn.execute(query)
             result = result.one_or_none()
         return not bool(result)
 
@@ -39,7 +39,7 @@ class PostgreSQL:
         self, tg_login: str, login: str, password: str, words_in_lesson
     ):
         with self.engine.connect() as conn:
-            stmt = insert(users).values(
+            query = insert(users).values(
                 tg_login=tg_login,
                 login=login,
                 password=password,
@@ -48,5 +48,20 @@ class PostgreSQL:
                 language_to_learn="en",
                 word_level="A1",
             )
-            conn.execute(stmt)
+            conn.execute(query)
+            conn.commit()
+
+    def fetch_user_by_login(self, login: str) -> dict | None:
+        with self.engine.connect() as conn:
+            query = select(users).filter_by(login=login)
+            row = conn.execute(query)
+            res = row.one_or_none()
+        return None if res is None else res._asdict()
+
+    def update_user_tg_login(self, tg_login: str, login: str):
+        with self.engine.connect() as conn:
+            query = (
+                update(users).values(tg_login=tg_login).filter_by(login=login)
+            )
+            conn.execute(query)
             conn.commit()

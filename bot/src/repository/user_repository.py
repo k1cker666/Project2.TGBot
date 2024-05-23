@@ -37,3 +37,7 @@ class UserRepository:
                     (word_level, user_id),
                 )
                 conn.commit()
+
+    def is_user_authorized(self, tg_login: str) -> bool:
+        authorization = bool(self.fetch_user_by_tg_login(tg_login=tg_login))
+        return authorization
