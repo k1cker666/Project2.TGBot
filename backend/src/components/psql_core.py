@@ -65,3 +65,13 @@ class PostgreSQL:
             )
             conn.execute(query)
             conn.commit()
+
+    def clear_tg_login(self, tg_login: str):
+        with self.engine.connect() as conn:
+            query = (
+                update(users)
+                .values(tg_login=None)
+                .filter_by(tg_login=tg_login)
+            )
+            conn.execute(query)
+            conn.commit()

@@ -30,8 +30,6 @@ class LogoutHandler:
                 url=f"{self.backend_url}/logout/",
                 params={"uuid_token": uuid_token},
             )
-            # TODO: 1) Добавить обнуление тг логина в бд
-            # TODO: 2) Добавить /logout/ в backend
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Вы успешно вышли из системы",
