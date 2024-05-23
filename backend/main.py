@@ -1,6 +1,5 @@
 import uuid
 from contextlib import asynccontextmanager
-from functools import partial
 from typing import Annotated
 
 from fastapi import FastAPI, Form, HTTPException
@@ -8,7 +7,6 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from src.dependencies import Dependencies, DependenciesBuilder
 from src.log import logger_config, logger_main
-from src.validator import validation_for_registration
 from starlette.responses import FileResponse
 
 
@@ -21,10 +19,6 @@ async def lifespan(app: FastAPI):
     logger_main
     global deps
     deps = DependenciesBuilder.build()
-    global validation_for_registration_with_psql
-    validation_for_registration_with_psql = partial(
-        validation_for_registration, postgres=deps.postgres
-    )
     yield
 
 
