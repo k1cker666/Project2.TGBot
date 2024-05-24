@@ -15,6 +15,7 @@ COPY poetry.lock pyproject.toml /project/
 RUN poetry install --only migrations --no-root --no-directory
 
 COPY .env /project/
-COPY /bot/scripts/*.py /project/bot/scripts/
+COPY /bot/scripts/run_migrations.py /project/bot/scripts/
+COPY /bot/scripts/run_sql.py /project/bot/scripts/
 COPY /bot/scripts/sql/insert_word_dataset.sql /project/bot/scripts/sql
 COPY /bot/migrations/*.sql /project/bot/migrations/
