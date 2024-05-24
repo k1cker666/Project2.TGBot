@@ -28,3 +28,4 @@ COPY /bot/src/models/*.py /project/bot/src/models/
 COPY /bot/src/repository/*.py /project/bot/src/repository/
 COPY /bot/images/*template.png /project/bot/images/
 COPY /bot/fonts/*.ttf /project/bot/fonts/
+COPY main.py /project/

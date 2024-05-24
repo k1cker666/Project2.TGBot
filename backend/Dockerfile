@@ -20,5 +20,4 @@ COPY /backend/static/images/*.png /project/backend/static/images/
 COPY /backend/src/*.py /project/backend/src/
 COPY /backend/src/components/*.py /project/backend/src/components/
 COPY .env /project/
-
-CMD ["fastapi", "dev", "/project/backend/main.py" ]
+COPY main.py /project/
