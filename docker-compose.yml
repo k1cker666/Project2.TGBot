@@ -11,7 +11,7 @@ services:
       - postgres
       - redis
       - migrations
-    command: python3 /project/main.py --file=tgbot
+    command: python main.py --service=tgbot
   
   migrations:
     build:
@@ -21,7 +21,7 @@ services:
     container_name: migrations
     depends_on:
       - postgres
-    command: python3 project/bot/scripts/main.py
+    command: python bot/scripts/main.py
 
   backend:
     build:
@@ -31,7 +31,7 @@ services:
     container_name: backend
     depends_on:
       - tgbot
-    command: python3 /project/main.py --file=backend
+    command: python main.py --service=backend
 
   postgres:
     restart: always

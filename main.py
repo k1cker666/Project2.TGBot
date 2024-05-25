@@ -57,9 +57,13 @@ def check_redis():
 
 @click.command()
 @click.option("--service", help="Name of service(tgbot/backend)")
-def start_service(service_name: str):
+def start_service(service: str):
     if check_pg() and check_redis():
-        if service_name == "tgbot":
-            os.system("python3 project/bot/main.py")
-        if service_name == "backend":
-            os.system("fastapi dev project/backend/main.py")
+        if service == "tgbot":
+            os.system("python3 bot/main.py")
+        if service == "backend":
+            os.system("fastapi dev backend/main.py")
+
+
+if __name__ == "__main__":
+    start_service()

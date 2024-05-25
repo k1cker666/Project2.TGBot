@@ -38,12 +38,13 @@ def check_db():
 def run_migrations():
     try:
         result = subprocess.run(
-            ["python3", "project/bot/script/run_migrations.py"], check=True
+            ["python3", "bot/scripts/run_migrations.py"], check=True
         )
-        print(f"Migrations complete with return code {result.returncode}")
+        logger.info(
+            f"Migrations complete with return code {result.returncode}"
+        )
     except subprocess.CalledProcessError as e:
-        print(f"Migrations complete with return code {result.returncode}")
-        print(f"Error output: {e.output}")
+        logger.info(f"Error output: {e.output}")
 
 
 def run_sql():
@@ -51,18 +52,19 @@ def run_sql():
         result = subprocess.run(
             [
                 "python3",
-                "project/bot/script/run_sql.py",
+                "bot/scripts/run_sql.py",
                 "--file=insert_word_dataset.sql",
             ],
             check=True,
         )
-        print(f"Migrations complete with return code {result.returncode}")
+        logger.info(
+            f"Migrations complete with return code {result.returncode}"
+        )
     except subprocess.CalledProcessError as e:
-        print(f"Migrations complete with return code {result.returncode}")
-        print(f"Error output: {e.output}")
+        logger.info(f"Error output: {e.output}")
 
 
-if __name__ == "__main___":
+if __name__ == "__main__":
     if check_db:
         run_migrations()
-        run_sql()
+        # run_sql()
