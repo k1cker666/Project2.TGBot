@@ -4,7 +4,7 @@ from typing import Literal
 import requests
 from src.components.user_state_processor import State, UserStateProcessor
 from src.handlers.lesson_handler import LessonHandler
-from src.handlers.prectice_handler import PracticeHandler
+from src.handlers.practice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.statistic_handler import StatisticHandler
 from src.helpfuncs.menu import build_menu

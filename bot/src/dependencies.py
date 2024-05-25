@@ -8,7 +8,7 @@ from src.components.user_state_processor import UserStateProcessor
 from src.db import psql, redis
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.logout_handler import LogoutHandler
-from src.handlers.prectice_handler import PracticeHandler
+from src.handlers.practice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
 from src.handlers.start_handler import StartHandler
 from src.handlers.statistic_handler import StatisticHandler

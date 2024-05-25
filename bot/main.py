@@ -9,7 +9,6 @@ logger_config
 logger_httpx
 logger_main
 
-
 def main():
     try:
         deps = DependenciesBuilder.build()
@@ -19,7 +18,6 @@ def main():
         return
     except ConnectionError:
         return
-
 
 if __name__ == "__main__":
     main()
