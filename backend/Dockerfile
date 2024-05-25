@@ -15,6 +15,9 @@ COPY poetry.lock pyproject.toml /project/
 RUN poetry install --only backend --no-root --no-directory
 
 COPY /backend/*.py /project/backend/
+COPY /backend/static/*.html /project/backend/static/
+COPY /backend/static/images/*.png /project/backend/static/images/
+COPY /backend/src/*.py /project/backend/src/
+COPY /backend/src/components/*.py /project/backend/src/components/
 COPY .env /project/
-
-CMD [ "python", "/project/backend/main.py" ]
+COPY main.py /project/

@@ -1,6 +1,5 @@
 import uuid
 from contextlib import asynccontextmanager
-from functools import partial
 from typing import Annotated
 
 from fastapi import FastAPI, Form
@@ -8,7 +7,6 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from src.dependencies import Dependencies, DependenciesBuilder
 from src.log import logger_config, logger_main
-from src.validator import validation_for_login, validation_for_registration
 from starlette.responses import FileResponse
 
 
@@ -21,14 +19,6 @@ async def lifespan(app: FastAPI):
     logger_main
     global deps
     deps = DependenciesBuilder.build()
-    global validation_for_registration_with_psql
-    validation_for_registration_with_psql = partial(
-        validation_for_registration, postgres=deps.postgres
-    )
-    global validation_for_login_with_psql
-    validation_for_login_with_psql = partial(
-        validation_for_login, postgres=deps.postgres
-    )
     yield
 
 
@@ -65,7 +55,7 @@ async def login(
     password: Annotated[str, Form()],
     uuid_token: Annotated[str, Form()],
 ):
-    if validation_for_login_with_psql(login=login, password=password):
+    if deps.validator.validation_for_login(login=login, password=password):
         tg_login = deps.redis.get_tg_login(uuid_token=uuid_token)
         deps.postgres.update_user_tg_login(tg_login=tg_login, login=login)
         return {"login": "success"}
@@ -80,7 +70,7 @@ async def register(
     words_in_lesson: Annotated[int, Form()],
     uuid_token: Annotated[str, Form()],
 ):
-    if validation_for_registration_with_psql(
+    if deps.validator.validation_for_registration(
         login=login,
         password=password,
         confirm_password=confirm_password,
@@ -104,3 +94,11 @@ async def registration_complete():
 @app.get("/login_complete/", response_class=HTMLResponse)
 async def login_complete():
     return FileResponse("backend/static/login_complete.html")
+
+
+@app.get("/logout/")
+async def logout(uuid_token: str):
+    tg_login = deps.redis.get_tg_login(uuid_token=uuid_token)
+    deps.postgres.clear_tg_login(tg_login=tg_login)
+    deps.redis.clear_data(data=tg_login)
+    deps.redis.clear_data(data=uuid_token)

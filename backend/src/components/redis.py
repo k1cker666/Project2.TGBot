@@ -44,3 +44,7 @@ class Redis:
 
     def get_tg_login(self, uuid_token: str) -> str:
         return self.connection.get(uuid_token)
+
+    def clear_data(self, data: str):
+        if self.connection.exists(data):
+            self.connection.expire(data, 1)

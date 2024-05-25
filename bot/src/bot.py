@@ -21,6 +21,9 @@ def start_bot(deps: Dependencies):
 
     application.add_handler(CommandHandler("start", partial_deps(start)))
     application.add_handler(CommandHandler("help", help.help_command))
+    application.add_handler(
+        CommandHandler("logout", deps.logout_handler.handle)
+    )
 
     application.add_handler(
         CallbackQueryHandler(partial_deps(callback_handler))
