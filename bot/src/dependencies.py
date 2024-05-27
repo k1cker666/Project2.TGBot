@@ -125,6 +125,7 @@ class DependenciesBuilder:
             statistic_handler=statistic_handler,
             practice_handler=practice_handler,
             backend_url=config.backend_url,
+            user_url=config.user_url,
             user_repository=user_repository,
             user_state_processor=user_state_processor,
         )

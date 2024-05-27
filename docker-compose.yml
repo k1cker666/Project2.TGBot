@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 
 services:
   tgbot:
@@ -7,11 +7,15 @@ services:
       dockerfile: bot/Dockerfile
     restart: always
     container_name: tgbot
+    env_file:
+      - .env
     depends_on:
       - postgres
       - redis
       - migrations
-    command: python main.py --service=tgbot
+    command: sh -c "sleep 7 && while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping; do sleep 5; done 
+      && while ! pg_isready -d ${PSQL_DBNAME} -h ${PSQL_HOST} -p ${PSQL_PORT} -U ${PSQL_USER}; do sleep 10; done
+      && python3 bot/main.py"
   
   migrations:
     build:
@@ -19,9 +23,12 @@ services:
       dockerfile: bot/scripts/Dockerfile
     restart: 'no'
     container_name: migrations
+    env_file:
+      - .env
     depends_on:
       - postgres
-    command: python bot/scripts/main.py
+    command: sh -c "while ! pg_isready -h ${PSQL_HOST} -p ${PSQL_PORT} -U ${PSQL_USER}; do sleep 5; done
+      && python3 bot/scripts/main.py"
 
   backend:
     build:
@@ -29,23 +36,32 @@ services:
       dockerfile: backend/Dockerfile
     restart: always
     container_name: backend
+    env_file:
+      - .env
+    ports:
+      - 8001:8000
     depends_on:
       - tgbot
-    command: python main.py --service=backend
+    command: sh -c "sleep 7 && while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping; do sleep 5; done 
+      && while ! pg_isready -d ${PSQL_DBNAME} -h ${PSQL_HOST} -p ${PSQL_PORT} -U ${PSQL_USER}; do sleep 10; done
+      && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
 
   postgres:
     restart: always
     image: postgres:14.11
     container_name: psql_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: roma1234
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${PSQL_USER}
+      POSTGRES_PASSWORD: ${PSQL_PASSWORD}
+      POSTGRES_DB: ${PSQL_DBNAME}
     ports:
       - 5001:5432
+    volumes:
+      - .postgres:/var/lib/postgres/data
 
   redis:
     restart: always
     image: redis:6.0
+    container_name: redis
     ports:
       - 6001:6379

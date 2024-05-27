@@ -30,6 +30,7 @@ class EnvConfig(BaseSettings):
     bot_token: str
     common_word_count: int
     backend_url: str
+    user_url: str
     psql: PostgresDB = PostgresDB()
     redis: RedisDB = RedisDB()
 

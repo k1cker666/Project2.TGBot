@@ -11,10 +11,9 @@ RUN apt update \
 
 WORKDIR /project/
 
-COPY poetry.lock pyproject.toml /project/
-RUN poetry install --only migrations --no-root --no-directory
+COPY poetry.lock pyproject.toml .env /project/
+RUN poetry install --only=migrations --no-root --no-directory
 
-COPY .env /project/
 COPY /bot/scripts/run_migrations.py /project/bot/scripts/
 COPY /bot/scripts/run_sql.py /project/bot/scripts/
 COPY /bot/scripts/main.py /project/bot/scripts/

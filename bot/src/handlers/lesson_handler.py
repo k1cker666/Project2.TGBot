@@ -83,6 +83,14 @@ class LessonHandler:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Слова для изучения закончились!",
+                reply_markup=InlineKeyboardMarkup.from_button(
+                    InlineKeyboardButton(
+                        text="Вернуться в меню",
+                        callback_data=CallbackData(
+                            cb_processor="start", cb_type="menu"
+                        ).to_string(),
+                    )
+                ),
             )
         else:
             self.user_state_processor.set_data(

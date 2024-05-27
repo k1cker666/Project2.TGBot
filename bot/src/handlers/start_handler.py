@@ -22,6 +22,7 @@ class StartHandler:
     statistic_handler: StatisticHandler
     practice_handler: PracticeHandler
     backend_url: str
+    user_url: str
     user_repository: UserRepository
     user_state_processor: UserStateProcessor
 
@@ -36,6 +37,7 @@ class StartHandler:
         practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
         backend_url: str,
+        user_url: str,
         user_repository: UserRepository,
         user_state_processor: UserStateProcessor,
     ):
@@ -44,11 +46,12 @@ class StartHandler:
         self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
         self.backend_url = backend_url
+        self.user_url = user_url
         self.user_repository = user_repository
         self.user_state_processor = user_state_processor
 
     def __get_authorization_url(self, uuid_token: str) -> str:
-        return f"{self.backend_url}/authorization/?uuid_token={uuid_token}"
+        return f"{self.user_url}/authorization/?uuid_token={uuid_token}"
 
     def __check_user_authorization(self, tg_login):
         user = self.user_repository.fetch_user_by_tg_login(tg_login=tg_login)

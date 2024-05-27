@@ -41,6 +41,7 @@ sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
 psycopg = {extras = ["binary"], version = "^3.1.19"}
 python-multipart = "^0.0.9"
 click = "^8.1.7"
+gunicorn = "^22.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -63,6 +64,7 @@ pydantic-settings = "^2.2.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.30"}
 requests = "^2.31.0"
 python-multipart = "^0.0.9"
+gunicorn = "^22.0.0"
 
 
 [tool.poetry.group.dataset.dependencies]

@@ -25,9 +25,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-app.mount(
-    "/images", StaticFiles(directory="backend/static/images"), name="images"
-)
+app.mount("/images", StaticFiles(directory="static/images"), name="images")
 
 
 @app.get("/get_token/")
@@ -45,8 +43,8 @@ def auth(uuid_token: str):
         "Expires": "0",
     }
     if deps.redis.is_valid_token(uuid_token=uuid_token):
-        return FileResponse("backend/static/auth.html", headers=headers)
-    return FileResponse("backend/static/access_denied.html", headers=headers)
+        return FileResponse("static/auth.html", headers=headers)
+    return FileResponse("static/access_denied.html", headers=headers)
 
 
 @app.post("/login/")
@@ -88,12 +86,12 @@ async def register(
 
 @app.get("/registration_complete/", response_class=HTMLResponse)
 async def registration_complete():
-    return FileResponse("backend/static/registration_complete.html")
+    return FileResponse("static/registration_complete.html")
 
 
 @app.get("/login_complete/", response_class=HTMLResponse)
 async def login_complete():
-    return FileResponse("backend/static/login_complete.html")
+    return FileResponse("static/login_complete.html")
 
 
 @app.get("/logout/")
