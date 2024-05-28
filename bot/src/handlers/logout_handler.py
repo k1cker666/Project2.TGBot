@@ -37,5 +37,5 @@ class LogoutHandler:
         else:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Вы не авторизированы в системе",
+                text="Вы не авторизованы в системе",
             )
