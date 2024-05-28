@@ -36,7 +36,12 @@ class PostgreSQL:
         return not bool(result)
 
     def add_user_in_database(
-        self, tg_login: str, login: str, password: str, words_in_lesson
+        self,
+        tg_login: str,
+        login: str,
+        password: str,
+        words_in_lesson,
+        word_level,
     ):
         with self.engine.connect() as conn:
             query = insert(users).values(
@@ -46,7 +51,7 @@ class PostgreSQL:
                 words_in_lesson=words_in_lesson,
                 native_language="ru",
                 language_to_learn="en",
-                word_level="A1",
+                word_level=word_level,
             )
             conn.execute(query)
             conn.commit()

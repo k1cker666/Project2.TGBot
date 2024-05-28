@@ -127,6 +127,14 @@
                     <option value="30">Много(30)</option>
                 </select>
             </div>
+            <div class="input-group">
+                <label for="wordLevel">Уровень слов:</label>
+                <select id="wordLevel" name="wordLevel">
+                    <option value="A1">Начальный</option>
+                    <option value="A2">Средний</option>
+                    <option value="A3">Продвинутый</option>
+                </select>
+            </div>
             <button type="button" onclick="submitRegisterForm()">Зарегистрироваться</button>
             <div id="registerError" class="error"></div>
         </form>
@@ -197,6 +205,7 @@
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
             const words_in_lesson = document.getElementById('wordCount').value;
+            const words_level = document.getElementById('wordLevel').value;
             const uuid_token = getUUIDToken()
 
             const response = await fetch('/register/', {
@@ -204,7 +213,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams({ login, password, confirm_password: confirmPassword, words_in_lesson, uuid_token })
+                body: new URLSearchParams({ login, password, confirm_password: confirmPassword, words_in_lesson, word_level, uuid_token })
             });
 
             const registerError = document.getElementById('registerError');
