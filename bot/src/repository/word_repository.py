@@ -117,8 +117,7 @@ class WordRepository:
                     """
                     select count(*) from words_in_progress
                     where user_id = %s
-                    and language = %s
-                    and number_of_repetitions != 0;
+                    and language = %s;
                     """,
                     (user_id, language_to_learn),
                 )
