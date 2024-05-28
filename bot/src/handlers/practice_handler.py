@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import List
 
 from src.components.image_builder import ImageBuilder
 from src.components.practice_init_processor import PracticeInitProcessor
@@ -9,6 +10,7 @@ from src.models.lesson_dto import LessonDTO, Question
 from src.repository.user_repository import UserRepository
 from src.repository.word_repository import WordRepository
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
 
@@ -135,13 +137,17 @@ class PracticeHandler:
         self,
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
+        questions: List[Question],
     ):
         query = update.callback_query
         await query.delete_message()
         photo_buffer = self.image_builder.get_end_lesson_image()
+        summary = self.__get_word_summary(questions=questions)
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo_buffer,
+            caption=summary,
+            parse_mode=ParseMode.HTML,
             reply_markup=InlineKeyboardMarkup.from_button(
                 InlineKeyboardButton(
                     text="Вернуться в меню",
@@ -156,6 +162,13 @@ class PracticeHandler:
             user_id=update.effective_user.username,
             state=State.lesson_inactive,
         )
+
+    def __get_word_summary(self, questions: List[Question]):
+        summary = "Итак, подведем итоги. Слова из урока:\n"
+        for question in questions:
+            text = f"\n<b>{question['word_to_translate']} &#8212; {question['correct_answer']}</b>"
+            summary += text
+        return summary
 
     async def __send_next_question(
         self,
@@ -226,8 +239,7 @@ class PracticeHandler:
                 )
             else:
                 await self.__end_practice(
-                    update=update,
-                    context=context,
+                    update=update, context=context, questions=data.questions
                 )
         else:
             await self.__send_same_question(

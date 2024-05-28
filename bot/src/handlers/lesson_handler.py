@@ -193,7 +193,7 @@ class LessonHandler:
     def __get_word_summary(self, questions: List[Question]):
         summary = "Итак, подведем итоги. Слова из урока:\n"
         for question in questions:
-            text = f"\n<b>{question['word_to_translate']}-{question['correct_answer']}</b>"
+            text = f"\n<b>{question['word_to_translate']} &#8212; {question['correct_answer']}</b>"
             summary += text
         return summary
 
