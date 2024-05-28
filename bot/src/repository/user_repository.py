@@ -26,17 +26,31 @@ class UserRepository:
                 result = cur.fetchone()
                 return result
 
-    def update_user_word_level(self, user_id: int, word_level: str):
-        with self.connection_pool.connection() as conn:
-            with conn.cursor(row_factory=class_row(User)) as cur:
-                cur.execute(
-                    """
-                    update users set word_level = %s
-                    where user_id = %s
-                    """,
-                    (word_level, user_id),
-                )
-                conn.commit()
+    def update_user_word_level(
+        self, word_level: str, user_id: int = None, tg_login: str = None
+    ):
+        if user_id is not None:
+            with self.connection_pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        update users set word_level = %s
+                        where user_id = %s
+                        """,
+                        (word_level, user_id),
+                    )
+                    conn.commit()
+        if tg_login is not None:
+            with self.connection_pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        update users set word_level = %s
+                        where tg_login = %s
+                        """,
+                        (word_level, tg_login),
+                    )
+                    conn.commit()
 
     def is_user_authorized(self, tg_login: str) -> bool:
         authorization = bool(self.fetch_user_by_tg_login(tg_login=tg_login))

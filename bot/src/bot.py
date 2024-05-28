@@ -86,5 +86,9 @@ async def callback_handler(
             await deps.statistic_handler.handle_callback(
                 update, context, callback_data
             )
+        if callback_data.cb_processor == deps.settings_handler.name:
+            await deps.settings_handler.handle_callback(
+                update, context, callback_data
+            )
     else:
         await deps.start_handler.request_authorization(update, context)

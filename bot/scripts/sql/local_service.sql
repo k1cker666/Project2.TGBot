@@ -1,4 +1,4 @@
-insert into users (user_id, tg_login, login, password, words_in_lesson, native_language, language_to_learn, word_level) values (1, '@k1cker666', 'admin', 'admin', 5, 'ru', 'en', 'A1');
+insert into users (user_id, tg_login, login, password, words_in_lesson, native_language, language_to_learn, word_level) values (1, 'k1cker666', 'admin', 'admin', 5, 'ru', 'en', 'A1');
 insert into words (word_id, language, level, word) values (1, 'en', 'A1', 'abandon');
 insert into words (word_id, language, level, word) values (1, 'ru', 'A1', 'покидать');
 insert into words (word_id, language, level, word) values (2, 'en', 'A1', 'ability');

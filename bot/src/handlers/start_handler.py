@@ -6,6 +6,7 @@ from src.components.user_state_processor import State, UserStateProcessor
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.practice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
+from src.handlers.setting_handler import SettingsHandler
 from src.handlers.statistic_handler import StatisticHandler
 from src.helpfuncs.menu import build_menu
 from src.models.callback import CallbackData
@@ -21,6 +22,7 @@ class StartHandler:
     repetition_handler: RepetitionHandler
     statistic_handler: StatisticHandler
     practice_handler: PracticeHandler
+    settings_handler: SettingsHandler
     backend_url: str
     user_url: str
     user_repository: UserRepository
@@ -36,6 +38,7 @@ class StartHandler:
         repetition_handler: RepetitionHandler,
         practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
+        settings_handler: SettingsHandler,
         backend_url: str,
         user_url: str,
         user_repository: UserRepository,
@@ -45,6 +48,7 @@ class StartHandler:
         self.repetition_handler = repetition_handler
         self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
+        self.settings_handler = settings_handler
         self.backend_url = backend_url
         self.user_url = user_url
         self.user_repository = user_repository
@@ -203,7 +207,14 @@ class StartHandler:
                     cb_processor=self.statistic_handler.name,
                     cb_type=self.statistic_handler.CallBackType.init_stat.name,
                 ).to_string(),
-            )
+            ),
+            InlineKeyboardButton(
+                "Настройки",
+                callback_data=CallbackData(
+                    cb_processor=self.settings_handler.name,
+                    cb_type=self.settings_handler.CallBackType.settings.name,
+                ).to_string(),
+            ),
         ]
         reply_markup = InlineKeyboardMarkup(
             build_menu(

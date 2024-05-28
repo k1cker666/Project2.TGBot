@@ -10,6 +10,7 @@ from src.handlers.lesson_handler import LessonHandler
 from src.handlers.logout_handler import LogoutHandler
 from src.handlers.practice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
+from src.handlers.setting_handler import SettingsHandler
 from src.handlers.start_handler import StartHandler
 from src.handlers.statistic_handler import StatisticHandler
 from src.repository.user_repository import UserRepository
@@ -27,6 +28,7 @@ class Dependencies:
     repetition_handler: RepetitionHandler
     practice_handler: PracticeHandler
     statistic_handler: StatisticHandler
+    settings_handler: SettingsHandler
     logout_handler: LogoutHandler
 
     def __init__(
@@ -40,6 +42,7 @@ class Dependencies:
         repetition_handler: RepetitionHandler,
         practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
+        settings_handler: SettingsHandler,
         logout_handler: LogoutHandler,
     ):
         self.start_handler = start_handler
@@ -51,6 +54,7 @@ class Dependencies:
         self.repetition_handler = repetition_handler
         self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
+        self.settings_handler = settings_handler
         self.logout_handler = logout_handler
 
     def close(self):
@@ -119,11 +123,16 @@ class DependenciesBuilder:
             common_word_count=config.common_word_count,
         )
 
+        settings_handler = SettingsHandler(
+            user_repository=user_repository,
+        )
+
         start_handler = StartHandler(
             lesson_handler=lesson_handler,
             repetition_handler=repetition_handler,
             statistic_handler=statistic_handler,
             practice_handler=practice_handler,
+            settings_handler=settings_handler,
             backend_url=config.backend_url,
             user_url=config.user_url,
             user_repository=user_repository,
@@ -144,5 +153,6 @@ class DependenciesBuilder:
             repetition_handler=repetition_handler,
             practice_handler=practice_handler,
             statistic_handler=statistic_handler,
+            settings_handler=settings_handler,
             logout_handler=logout_handler,
         )
