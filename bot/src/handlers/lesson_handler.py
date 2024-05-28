@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import List
 
 from src.components.image_builder import ImageBuilder
 from src.components.lesson_init_processor import LessonInitProcessor
@@ -11,6 +12,7 @@ from src.models.user import User
 from src.repository.user_repository import UserRepository
 from src.repository.word_repository import WordRepository
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 
 
@@ -136,17 +138,19 @@ class LessonHandler:
         update: Update,
         context: ContextTypes.DEFAULT_TYPE,
         is_level_empty: bool,
+        questions: List[Question],
     ):
         query = update.callback_query
         await query.delete_message()
         photo_buffer = self.image_builder.get_end_lesson_image()
+        summary = self.__get_word_summary(questions=questions)
         if is_level_empty:
             captions = {
-                WordLevel.A1.name: "Поздравляю! Вы перешли на новый уровень слов: "
+                WordLevel.A1.name: "\n\nПоздравляю! Вы перешли на новый уровень слов: "
                 + f"{WordLevel.A2.get_description()}",
-                WordLevel.A2.name: "Поздравляю! Вы перешли на новый уровень слов: "
+                WordLevel.A2.name: "\n\nПоздравляю! Вы перешли на новый уровень слов: "
                 + f"{WordLevel.A3.get_description()}",
-                WordLevel.A3.name: "Поздравляю! Вы прошли все имеющиеся слова!",
+                WordLevel.A3.name: "\n\nПоздравляю! Вы прошли все имеющиеся слова!",
             }
             user = self.user_repository.fetch_user_by_tg_login(
                 tg_login=update.effective_user.username
@@ -154,7 +158,8 @@ class LessonHandler:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
                 photo=photo_buffer,
-                caption=captions[user.word_level.name],
+                caption=summary + captions[user.word_level.name],
+                parse_mode=ParseMode.HTML,
                 reply_markup=InlineKeyboardMarkup.from_button(
                     InlineKeyboardButton(
                         text="Вернуться в меню",
@@ -167,12 +172,30 @@ class LessonHandler:
             self.__update_user_word_level(user=user)
         else:
             await context.bot.send_photo(
-                chat_id=update.effective_chat.id, photo=photo_buffer
+                chat_id=update.effective_chat.id,
+                photo=photo_buffer,
+                caption=summary,
+                parse_mode=ParseMode.HTML,
+                reply_markup=InlineKeyboardMarkup.from_button(
+                    InlineKeyboardButton(
+                        text="Вернуться в меню",
+                        callback_data=CallbackData(
+                            cb_processor="start", cb_type="menu"
+                        ).to_string(),
+                    )
+                ),
             )
         photo_buffer.close()
         self.user_state_processor.set_state(
             user_id=update.effective_user.username, state=State.lesson_inactive
         )
+
+    def __get_word_summary(self, questions: List[Question]):
+        summary = "Итак, подведем итоги. Слова из урока:\n"
+        for question in questions:
+            text = f"\n<b>{question['word_to_translate']}-{question['correct_answer']}</b>"
+            summary += text
+        return summary
 
     async def __send_next_question(
         self,
@@ -249,6 +272,7 @@ class LessonHandler:
                     update=update,
                     context=context,
                     is_level_empty=data.is_current_level_empty,
+                    questions=data.questions,
                 )
         else:
             await self.__send_same_question(
