@@ -57,7 +57,7 @@ services:
     ports:
       - 5001:5432
     volumes:
-      - .postgres:/var/lib/postgres/data
+      - .postgres:/var/lib/postgres/data/pgdata
 
   redis:
     restart: always
