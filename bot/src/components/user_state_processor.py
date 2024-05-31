@@ -22,7 +22,7 @@ class UserStateProcessor:
 
     def set_state(self, user_id: str, state: State):
         self.conn.hset(f"{user_id}", "state", state.name)
-        ttl = timedelta(minutes=self.config.ttl)
+        ttl = timedelta(days=self.config.ttl)
         self.conn.expire(name=f"{user_id}", time=ttl)
 
     def get_state(self, user_id: str) -> State:
@@ -30,7 +30,7 @@ class UserStateProcessor:
 
     def set_data(self, user_id: str, data: dict):
         self.conn.hset(f"{user_id}", "data", json.dumps(data))
-        ttl = timedelta(minutes=self.config.ttl)
+        ttl = timedelta(days=self.config.ttl)
         self.conn.expire(name=f"{user_id}", time=ttl)
 
     def get_data(self, user_id: str) -> dict:
