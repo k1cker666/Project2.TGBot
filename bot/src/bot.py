@@ -64,11 +64,16 @@ async def callback_handler(
             update, context, callback_data
         )
         return
+    if callback_data.cb_processor == deps.menu_builder.name:
+        await deps.menu_builder.build_base_menu(
+            update, context, callback_data.cb_type
+        )
+        return
 
     if not deps.user_state_processor.is_user_online(
         user_id=update.effective_user.username
     ):
-        await deps.start_handler.build_base_menu(update, context, "long_afk")
+        await deps.menu_builder.build_base_menu(update, context, "long_afk")
         return
 
     if callback_data.cb_processor == deps.lesson_handler.name:

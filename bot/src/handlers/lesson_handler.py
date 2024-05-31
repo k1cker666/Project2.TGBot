@@ -89,7 +89,7 @@ class LessonHandler:
                     InlineKeyboardButton(
                         text="Вернуться в меню",
                         callback_data=CallbackData(
-                            cb_processor="start", cb_type="menu"
+                            cb_processor="menu", cb_type="base"
                         ).to_string(),
                     )
                 ),
@@ -164,7 +164,7 @@ class LessonHandler:
                     InlineKeyboardButton(
                         text="Вернуться в меню",
                         callback_data=CallbackData(
-                            cb_processor="start", cb_type="menu"
+                            cb_processor="menu", cb_type="base"
                         ).to_string(),
                     )
                 ),
@@ -180,7 +180,7 @@ class LessonHandler:
                     InlineKeyboardButton(
                         text="Вернуться в меню",
                         callback_data=CallbackData(
-                            cb_processor="start", cb_type="menu"
+                            cb_processor="menu", cb_type="base"
                         ).to_string(),
                     )
                 ),

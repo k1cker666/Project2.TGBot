@@ -1,7 +1,7 @@
 from enum import Enum, auto
-from typing import Literal
 
 import requests
+from src.components.menu_builder import MenuBuilder
 from src.components.user_state_processor import State, UserStateProcessor
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.practice_handler import PracticeHandler
@@ -27,10 +27,10 @@ class StartHandler:
     user_url: str
     user_repository: UserRepository
     user_state_processor: UserStateProcessor
+    menu_builder: MenuBuilder
 
     class CallBackType(Enum):
         auth = auto()
-        menu = auto()
 
     def __init__(
         self,
@@ -43,6 +43,7 @@ class StartHandler:
         user_url: str,
         user_repository: UserRepository,
         user_state_processor: UserStateProcessor,
+        menu_builder: MenuBuilder,
     ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
@@ -53,6 +54,7 @@ class StartHandler:
         self.user_url = user_url
         self.user_repository = user_repository
         self.user_state_processor = user_state_processor
+        self.menu_builder = menu_builder
 
     def __get_authorization_url(self, uuid_token: str) -> str:
         return f"{self.user_url}/authorization/?uuid_token={uuid_token}"
@@ -85,10 +87,6 @@ class StartHandler:
                 chat_id=update.effective_chat.id,
                 text="Авторизация успешно выполнена\nВыберите следующее действие",
                 reply_markup=reply_markup,
-            )
-        if callback_data.cb_type == self.CallBackType.menu.name:
-            await self.build_base_menu(
-                update=update, context=context, type="menu"
             )
 
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -129,28 +127,6 @@ class StartHandler:
         await query.delete_message()
         await context.bot.send_message(
             text="Сначала обходимо пройти авторизацию",
-            chat_id=update.effective_chat.id,
-            reply_markup=reply_markup,
-        )
-
-    async def build_base_menu(
-        self,
-        update: Update,
-        context: ContextTypes.DEFAULT_TYPE,
-        type: Literal["menu", "long_afk"],
-    ):
-        messages = {
-            "menu": "Главное меню\nЧто делаем дальше?",
-            "long_afk": "Вы слишком долго бездействовали, урок закончился",
-        }
-        self.user_state_processor.set_state(
-            user_id=update.effective_user.username, state=State.lesson_inactive
-        )
-        query = update.callback_query
-        await query.delete_message()
-        reply_markup = self.__reply_markup_for_authorized_user()
-        await context.bot.send_message(
-            text=messages[type],
             chat_id=update.effective_chat.id,
             reply_markup=reply_markup,
         )
