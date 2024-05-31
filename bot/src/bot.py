@@ -42,53 +42,47 @@ async def callback_handler(
     update: Update, context: ContextTypes.DEFAULT_TYPE, deps: Dependencies
 ):
     tg_login = update.effective_user.username
-    if deps.user_repository.is_user_authorized(tg_login=tg_login):
-        query = update.callback_query
-        callback_data: CallbackData = CallbackData.from_string(query.data)
-        if callback_data.cb_processor == deps.start_handler.name:
-            await deps.start_handler.handle_callback(
-                update, context, callback_data
-            )
-        if callback_data.cb_processor == deps.lesson_handler.name:
-            if deps.user_state_processor.is_user_online(
-                user_id=update.effective_user.username
-            ):
-                await deps.lesson_handler.handle_callback(
-                    update, context, callback_data
-                )
-            else:
-                await deps.start_handler.build_base_menu(
-                    update, context, "long_afk"
-                )
-        if callback_data.cb_processor == deps.repetition_handler.name:
-            if deps.user_state_processor.is_user_online(
-                user_id=update.effective_user.username
-            ):
-                await deps.repetition_handler.handle_callback(
-                    update, context, callback_data
-                )
-            else:
-                await deps.start_handler.build_base_menu(
-                    update, context, "long_afk"
-                )
-        if callback_data.cb_processor == deps.practice_handler.name:
-            if deps.user_state_processor.is_user_online(
-                user_id=update.effective_user.username
-            ):
-                await deps.practice_handler.handle_callback(
-                    update, context, callback_data
-                )
-            else:
-                await deps.start_handler.build_base_menu(
-                    update, context, "long_afk"
-                )
-        if callback_data.cb_processor == deps.statistic_handler.name:
-            await deps.statistic_handler.handle_callback(
-                update, context, callback_data
-            )
-        if callback_data.cb_processor == deps.settings_handler.name:
-            await deps.settings_handler.handle_callback(
-                update, context, callback_data
-            )
-    else:
+    if not deps.user_repository.is_user_authorized(tg_login=tg_login):
         await deps.start_handler.request_authorization(update, context)
+        return
+
+    query = update.callback_query
+    callback_data: CallbackData = CallbackData.from_string(query.data)
+
+    if callback_data.cb_processor == deps.start_handler.name:
+        await deps.start_handler.handle_callback(
+            update, context, callback_data
+        )
+        return
+    if callback_data.cb_processor == deps.statistic_handler.name:
+        await deps.statistic_handler.handle_callback(
+            update, context, callback_data
+        )
+        return
+    if callback_data.cb_processor == deps.settings_handler.name:
+        await deps.settings_handler.handle_callback(
+            update, context, callback_data
+        )
+        return
+
+    if not deps.user_state_processor.is_user_online(
+        user_id=update.effective_user.username
+    ):
+        await deps.start_handler.build_base_menu(update, context, "long_afk")
+        return
+
+    if callback_data.cb_processor == deps.lesson_handler.name:
+        await deps.lesson_handler.handle_callback(
+            update, context, callback_data
+        )
+        return
+    if callback_data.cb_processor == deps.repetition_handler.name:
+        await deps.repetition_handler.handle_callback(
+            update, context, callback_data
+        )
+        return
+    if callback_data.cb_processor == deps.practice_handler.name:
+        await deps.practice_handler.handle_callback(
+            update, context, callback_data
+        )
+        return
