@@ -256,11 +256,17 @@ class LessonHandler:
         )
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
+        answers = data.questions[data.active_question]["answers"]
+        if callback_data.word.lower() not in answers:
+            query = update.callback_query
+            await query.delete_message()
+            return
         if callback_data.word.lower() != correct_answer:
             await self.__send_same_question(
                 update=update, context=context, data=data
             )
             return
+
         self.__add_word_in_words_in_progress(
             update=update, context=context, data=data
         )
