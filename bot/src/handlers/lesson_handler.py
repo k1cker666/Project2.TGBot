@@ -266,7 +266,6 @@ class LessonHandler:
                 update=update, context=context, data=data
             )
             return
-
         self.__add_word_in_words_in_progress(
             update=update, context=context, data=data
         )

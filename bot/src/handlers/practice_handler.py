@@ -239,7 +239,6 @@ class PracticeHandler:
                 update=update, context=context, data=data
             )
             return
-
         if self.__have_next_question(data.active_question, data.questions):
             data = self.__update_active_question(
                 user_id=update.effective_user.username, data=data

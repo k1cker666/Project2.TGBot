@@ -239,7 +239,6 @@ class RepetitionHandler:
                 update=update, context=context, data=data
             )
             return
-
         self.__decrease_number_of_repetitions(
             update=update, context=context, data=data
         )
