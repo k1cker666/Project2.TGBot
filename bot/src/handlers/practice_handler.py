@@ -229,19 +229,19 @@ class PracticeHandler:
         )
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
-        if callback_data.word.lower() == correct_answer:
-            if self.__have_next_question(data.active_question, data.questions):
-                data = self.__update_active_question(
-                    user_id=update.effective_user.username, data=data
-                )
-                await self.__send_next_question(
-                    update=update, context=context, data=data
-                )
-            else:
-                await self.__end_practice(
-                    update=update, context=context, questions=data.questions
-                )
-        else:
+        if callback_data.word.lower() != correct_answer:
             await self.__send_same_question(
                 update=update, context=context, data=data
+            )
+            return
+        if self.__have_next_question(data.active_question, data.questions):
+            data = self.__update_active_question(
+                user_id=update.effective_user.username, data=data
+            )
+            await self.__send_next_question(
+                update=update, context=context, data=data
+            )
+        else:
+            await self.__end_practice(
+                update=update, context=context, questions=data.questions
             )

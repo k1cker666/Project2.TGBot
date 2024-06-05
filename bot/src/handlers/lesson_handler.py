@@ -256,27 +256,27 @@ class LessonHandler:
         )
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
-        if callback_data.word.lower() == correct_answer:
-            self.__add_word_in_words_in_progress(
-                update=update, context=context, data=data
-            )
-            if self.__have_next_question(data.active_question, data.questions):
-                data = self.__update_active_question(
-                    user_id=update.effective_user.username, data=data
-                )
-                await self.__send_next_question(
-                    update=update, context=context, data=data
-                )
-            else:
-                await self.__end_lesson(
-                    update=update,
-                    context=context,
-                    is_level_empty=data.is_current_level_empty,
-                    questions=data.questions,
-                )
-        else:
+        if callback_data.word.lower() != correct_answer:
             await self.__send_same_question(
                 update=update, context=context, data=data
+            )
+            return
+        self.__add_word_in_words_in_progress(
+            update=update, context=context, data=data
+        )
+        if self.__have_next_question(data.active_question, data.questions):
+            data = self.__update_active_question(
+                user_id=update.effective_user.username, data=data
+            )
+            await self.__send_next_question(
+                update=update, context=context, data=data
+            )
+        else:
+            await self.__end_lesson(
+                update=update,
+                context=context,
+                is_level_empty=data.is_current_level_empty,
+                questions=data.questions,
             )
 
     def __update_user_word_level(self, user: User):

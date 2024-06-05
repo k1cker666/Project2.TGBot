@@ -229,24 +229,24 @@ class RepetitionHandler:
         )
         data = LessonDTO.model_validate_json(json_data)
         correct_answer = data.questions[data.active_question]["correct_answer"]
-        if callback_data.word.lower() == correct_answer:
+        if callback_data.word.lower() != correct_answer:
             self.__decrease_number_of_repetitions(
                 update=update, context=context, data=data
             )
-            if self.__have_next_question(data.active_question, data.questions):
-                data = self.__update_active_question(
-                    user_id=update.effective_user.username, data=data
-                )
-                await self.__send_next_question(
-                    update=update, context=context, data=data
-                )
-            else:
-                await self.__end_repetition(
-                    update=update, context=context, questions=data.questions
-                )
-        else:
             await self.__send_same_question(
                 update=update, context=context, data=data
+            )
+            return
+        if self.__have_next_question(data.active_question, data.questions):
+            data = self.__update_active_question(
+                user_id=update.effective_user.username, data=data
+            )
+            await self.__send_next_question(
+                update=update, context=context, data=data
+            )
+        else:
+            await self.__end_repetition(
+                update=update, context=context, questions=data.questions
             )
 
     def __decrease_number_of_repetitions(

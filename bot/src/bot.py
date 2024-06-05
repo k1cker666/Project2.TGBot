@@ -70,8 +70,11 @@ async def callback_handler(
         )
         return
 
-    if not deps.user_state_processor.is_user_online(
-        user_id=update.effective_user.username
+    if (
+        not deps.user_state_processor.is_user_online(
+            user_id=update.effective_user.username
+        )
+        and callback_data.cb_type == "check_answer"
     ):
         await deps.menu_builder.build_base_menu(update, context, "long_afk")
         return
