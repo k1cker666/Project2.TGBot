@@ -1,11 +1,12 @@
 from enum import Enum, auto
-from typing import Literal
 
 import requests
+from src.components.menu_builder import MenuBuilder
 from src.components.user_state_processor import State, UserStateProcessor
 from src.handlers.lesson_handler import LessonHandler
 from src.handlers.practice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
+from src.handlers.setting_handler import SettingsHandler
 from src.handlers.statistic_handler import StatisticHandler
 from src.helpfuncs.menu import build_menu
 from src.models.callback import CallbackData
@@ -21,14 +22,15 @@ class StartHandler:
     repetition_handler: RepetitionHandler
     statistic_handler: StatisticHandler
     practice_handler: PracticeHandler
+    settings_handler: SettingsHandler
     backend_url: str
     user_url: str
     user_repository: UserRepository
     user_state_processor: UserStateProcessor
+    menu_builder: MenuBuilder
 
     class CallBackType(Enum):
         auth = auto()
-        menu = auto()
 
     def __init__(
         self,
@@ -36,19 +38,23 @@ class StartHandler:
         repetition_handler: RepetitionHandler,
         practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
+        settings_handler: SettingsHandler,
         backend_url: str,
         user_url: str,
         user_repository: UserRepository,
         user_state_processor: UserStateProcessor,
+        menu_builder: MenuBuilder,
     ):
         self.lesson_handler = lesson_handler
         self.repetition_handler = repetition_handler
         self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
+        self.settings_handler = settings_handler
         self.backend_url = backend_url
         self.user_url = user_url
         self.user_repository = user_repository
         self.user_state_processor = user_state_processor
+        self.menu_builder = menu_builder
 
     def __get_authorization_url(self, uuid_token: str) -> str:
         return f"{self.user_url}/authorization/?uuid_token={uuid_token}"
@@ -82,10 +88,6 @@ class StartHandler:
                 text="Авторизация успешно выполнена\nВыберите следующее действие",
                 reply_markup=reply_markup,
             )
-        if callback_data.cb_type == self.CallBackType.menu.name:
-            await self.build_base_menu(
-                update=update, context=context, type="menu"
-            )
 
     async def handle(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.effective_user
@@ -96,7 +98,7 @@ class StartHandler:
             reply_markup = self.__reply_markup_for_authorized_user()
             await context.bot.send_message(
                 chat_id=update.message.chat_id,
-                text="Вы уже авторизированы, выберите действие",
+                text="Вы уже авторизованы, выберите действие",
                 reply_markup=reply_markup,
             )
         else:
@@ -125,28 +127,6 @@ class StartHandler:
         await query.delete_message()
         await context.bot.send_message(
             text="Сначала обходимо пройти авторизацию",
-            chat_id=update.effective_chat.id,
-            reply_markup=reply_markup,
-        )
-
-    async def build_base_menu(
-        self,
-        update: Update,
-        context: ContextTypes.DEFAULT_TYPE,
-        type: Literal["menu", "long_afk"],
-    ):
-        messages = {
-            "menu": "Главное меню\nЧто делаем дальше?",
-            "long_afk": "Вы слишком долго бездействовали, урок закончился",
-        }
-        self.user_state_processor.set_state(
-            user_id=update.effective_user.username, state=State.lesson_inactive
-        )
-        query = update.callback_query
-        await query.delete_message()
-        reply_markup = self.__reply_markup_for_authorized_user()
-        await context.bot.send_message(
-            text=messages[type],
             chat_id=update.effective_chat.id,
             reply_markup=reply_markup,
         )
@@ -203,7 +183,14 @@ class StartHandler:
                     cb_processor=self.statistic_handler.name,
                     cb_type=self.statistic_handler.CallBackType.init_stat.name,
                 ).to_string(),
-            )
+            ),
+            InlineKeyboardButton(
+                "Настройки",
+                callback_data=CallbackData(
+                    cb_processor=self.settings_handler.name,
+                    cb_type=self.settings_handler.CallBackType.settings.name,
+                ).to_string(),
+            ),
         ]
         reply_markup = InlineKeyboardMarkup(
             build_menu(

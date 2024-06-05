@@ -65,8 +65,8 @@ class WordRepository:
                     (word, language, word),
                 )
                 result = cur.fetchmany(size=3)
-        answers = [answer[0].capitalize() for answer in result]
-        answers.insert(randint(0, 3), word.capitalize())
+        answers = [answer[0].lower() for answer in result]
+        answers.insert(randint(0, 3), word.lower())
         return answers
 
     def fetch_words_for_repetition(
@@ -117,8 +117,7 @@ class WordRepository:
                     """
                     select count(*) from words_in_progress
                     where user_id = %s
-                    and language = %s
-                    and number_of_repetitions != 0;
+                    and language = %s;
                     """,
                     (user_id, language_to_learn),
                 )
@@ -139,7 +138,7 @@ class WordRepository:
                 )
                 conn.commit()
 
-    def decrease_numder_of_repetitions(
+    def decrease_number_of_repetitions(
         self, user_id: int, word_id: int, language: str
     ):
         with self.connection_pool.connection() as conn:

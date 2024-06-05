@@ -2,6 +2,7 @@ from loguru import logger
 from src.components.envconfig import EnvConfig, load_config
 from src.components.image_builder import ImageBuilder
 from src.components.lesson_init_processor import LessonInitProcessor
+from src.components.menu_builder import MenuBuilder
 from src.components.practice_init_processor import PracticeInitProcessor
 from src.components.repetition_init_processor import RepetitionInitProcessor
 from src.components.user_state_processor import UserStateProcessor
@@ -10,6 +11,7 @@ from src.handlers.lesson_handler import LessonHandler
 from src.handlers.logout_handler import LogoutHandler
 from src.handlers.practice_handler import PracticeHandler
 from src.handlers.repetition_handler import RepetitionHandler
+from src.handlers.setting_handler import SettingsHandler
 from src.handlers.start_handler import StartHandler
 from src.handlers.statistic_handler import StatisticHandler
 from src.repository.user_repository import UserRepository
@@ -27,6 +29,8 @@ class Dependencies:
     repetition_handler: RepetitionHandler
     practice_handler: PracticeHandler
     statistic_handler: StatisticHandler
+    settings_handler: SettingsHandler
+    menu_builder: MenuBuilder
     logout_handler: LogoutHandler
 
     def __init__(
@@ -40,6 +44,8 @@ class Dependencies:
         repetition_handler: RepetitionHandler,
         practice_handler: PracticeHandler,
         statistic_handler: StatisticHandler,
+        settings_handler: SettingsHandler,
+        menu_builder: MenuBuilder,
         logout_handler: LogoutHandler,
     ):
         self.start_handler = start_handler
@@ -51,6 +57,8 @@ class Dependencies:
         self.repetition_handler = repetition_handler
         self.practice_handler = practice_handler
         self.statistic_handler = statistic_handler
+        self.settings_handler = settings_handler
+        self.menu_builder = menu_builder
         self.logout_handler = logout_handler
 
     def close(self):
@@ -104,7 +112,6 @@ class DependenciesBuilder:
         practice_init_processor = PracticeInitProcessor(
             user_repository=user_repository, word_repository=word_repository
         )
-
         practice_handler = PracticeHandler(
             practice_init_processor=practice_init_processor,
             user_state_processor=user_state_processor,
@@ -112,6 +119,7 @@ class DependenciesBuilder:
             user_repository=user_repository,
             word_repository=word_repository,
         )
+
         statistic_handler = StatisticHandler(
             user_repository=user_repository,
             word_repository=word_repository,
@@ -119,15 +127,30 @@ class DependenciesBuilder:
             common_word_count=config.common_word_count,
         )
 
+        settings_handler = SettingsHandler(
+            user_repository=user_repository,
+        )
+
+        menu_builder = MenuBuilder(
+            user_state_processor=user_state_processor,
+            lesson_handler=lesson_handler,
+            repetition_handler=repetition_handler,
+            statistic_handler=statistic_handler,
+            practice_handler=practice_handler,
+            settings_handler=settings_handler,
+        )
+
         start_handler = StartHandler(
             lesson_handler=lesson_handler,
             repetition_handler=repetition_handler,
             statistic_handler=statistic_handler,
             practice_handler=practice_handler,
+            settings_handler=settings_handler,
             backend_url=config.backend_url,
             user_url=config.user_url,
             user_repository=user_repository,
             user_state_processor=user_state_processor,
+            menu_builder=menu_builder,
         )
 
         logout_handler = LogoutHandler(
@@ -144,5 +167,7 @@ class DependenciesBuilder:
             repetition_handler=repetition_handler,
             practice_handler=practice_handler,
             statistic_handler=statistic_handler,
+            settings_handler=settings_handler,
+            menu_builder=menu_builder,
             logout_handler=logout_handler,
         )
