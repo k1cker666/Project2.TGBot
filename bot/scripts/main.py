@@ -67,4 +67,4 @@ def run_sql():
 if __name__ == "__main__":
     if check_db:
         run_migrations()
-        # run_sql()
+        run_sql()
