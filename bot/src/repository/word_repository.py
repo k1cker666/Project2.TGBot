@@ -65,8 +65,8 @@ class WordRepository:
                     (word, language, word),
                 )
                 result = cur.fetchmany(size=3)
-        answers = [answer[0].capitalize() for answer in result]
-        answers.insert(randint(0, 3), word.capitalize())
+        answers = [answer[0].lower() for answer in result]
+        answers.insert(randint(0, 3), word.lower())
         return answers
 
     def fetch_words_for_repetition(

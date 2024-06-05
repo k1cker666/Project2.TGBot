@@ -104,8 +104,6 @@ insert into words (word_id, language, level, word) values (52, 'en', 'A1', 'acqu
 insert into words (word_id, language, level, word) values (52, 'ru', 'A1', 'приобретать');
 insert into words (word_id, language, level, word) values (53, 'en', 'A3', 'acquisition');
 insert into words (word_id, language, level, word) values (53, 'ru', 'A3', 'приобретение');
-insert into words (word_id, language, level, word) values (54, 'en', 'A3', 'acre');
-insert into words (word_id, language, level, word) values (54, 'ru', 'A3', 'акра');
 insert into words (word_id, language, level, word) values (55, 'en', 'A1', 'across');
 insert into words (word_id, language, level, word) values (55, 'ru', 'A1', 'через');
 insert into words (word_id, language, level, word) values (56, 'en', 'A2', 'act');
