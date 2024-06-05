@@ -27,6 +27,7 @@ class PracticeHandler:
         init_practice = auto()
         start_practice = auto()
         check_answer = auto()
+        del_summary = auto()
 
     def __init__(
         self,
@@ -53,9 +54,15 @@ class PracticeHandler:
         if callback_data.cb_type == self.CallBackType.start_practice.name:
             await self.__start_practice(update, context)
         if callback_data.cb_type == self.CallBackType.check_answer.name:
-            await self.__check_answer(
-                update, context=context, callback_data=callback_data
-            )
+            await self.__check_answer(update, context, callback_data)
+        if callback_data.cb_type == self.CallBackType.del_summary.name:
+            await self.__del_summary(update, context)
+
+    async def __del_summary(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ):
+        query = update.callback_query
+        await query.delete_message()
 
     def create_answer_button(self, word: str) -> InlineKeyboardButton:
         return InlineKeyboardButton(
@@ -139,7 +146,17 @@ class PracticeHandler:
             original_message=query.message.text
         )
         await query.edit_message_text(
-            text=new_message, parse_mode=ParseMode.HTML
+            text=new_message,
+            parse_mode=ParseMode.HTML,
+            reply_markup=InlineKeyboardMarkup.from_button(
+                InlineKeyboardButton(
+                    text="Удалить данное сообщение",
+                    callback_data=CallbackData(
+                        cb_processor=self.name,
+                        cb_type=self.CallBackType.del_summary.name,
+                    ).to_string(),
+                )
+            ),
         )
         json_data = self.user_state_processor.get_data(
             user_id=update.effective_user.username
@@ -212,7 +229,7 @@ class PracticeHandler:
         }
         summary = summary_messages[type]
         for question in questions:
-            text = f"\n<b>{question['word_to_translate']} &#8212; {question['correct_answer']}</b>"
+            text = f"\n<b>{question['word_to_translate'].capitalize()} &#8212; {question['correct_answer']}</b>"
             summary += text
         return summary
 
