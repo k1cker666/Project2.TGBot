@@ -1,5 +1,4 @@
 import os
-import time
 
 import click
 import psycopg
@@ -47,7 +46,6 @@ def run_sql(file):
                         logger.info(
                             f"{db_host}:{db_port} - Insertion is {int(percent)}% complete"
                         )
-                    time.sleep(0.5)
             logger.info(f"{db_host}:{db_port} - Inserts {file} complete")
 
     except psycopg.OperationalError as error:
