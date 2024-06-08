@@ -66,7 +66,7 @@ async def register(
     password: Annotated[str, Form()],
     confirm_password: Annotated[str, Form()],
     words_in_lesson: Annotated[int, Form()],
-    word_level: Annotated[int, Form()],
+    word_level: Annotated[str, Form()],
     uuid_token: Annotated[str, Form()],
 ):
     if deps.validator.validation_for_registration(

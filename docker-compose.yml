@@ -39,7 +39,7 @@ services:
     env_file:
       - .env
     ports:
-      - 8001:8000
+      - 8000:8000
     depends_on:
       - tgbot
     command: sh -c "sleep 7 && while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} ping; do sleep 5; done 
